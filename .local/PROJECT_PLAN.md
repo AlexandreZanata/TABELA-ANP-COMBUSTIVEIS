@@ -34,32 +34,6 @@ Each item is a **micro-step**. Mark `[x]` when done. Do not skip **Validation ga
 
 ---
 
-## Phase 1 — Domain layer (TDD first)
-
-**Goal:** Pure Kotlin domain with BR-001…BR-015 represented; ≥90% coverage on `:domain`.  
-**Duration:** ~3–5 days ⏱  
-📎 BR-001…BR-015, glossary, agent core §2
-
-### 1.6 Repository ports (interfaces)
-
-- [ ] **1.6.1** `PriceTableRepository`
-- [ ] **1.6.2** `AveragePriceRepository`
-- [ ] **1.6.3** `StationPriceRepository`
-- [ ] **1.6.4** `MunicipalitySearchRepository`
-- [ ] **1.6.5** `UserPreferencesRepository`
-
-**✅ Gate 1.6 — Phase 1 complete:**
-
-```bash
-./gradlew :domain:test
-# Jacoco (optional): domain coverage ≥ 90%
-```
-
-- [ ] No `android.*` or `androidx.*` imports in `:domain`
-- [ ] All BR-001…BR-015 have at least one unit test where applicable
-
----
-
 ## Phase 2 — POC: XLSX streaming parser 🔬
 
 **Goal:** Prove we can parse ANP samples on-device without OOM.  
@@ -507,10 +481,10 @@ A step is **done** only when:
 **If starting from zero today:**
 
 ```
-Phase 1.6 → Gate 1.6
+Phase 2.1 (Parser POC) → Gate 2
          → Phase 2 (Parser POC) → Gate 2
          → Phase 3 (DB POC) → Gate 3
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 1.5 complete ✓ — next action **Phase 1.6 Repository ports**.
+**Current repo status (2026-06-18):** Phase 1 complete ✓ — next action **Phase 2.1 Parser spike**.
