@@ -15,6 +15,13 @@ tasks.register<Exec>("scanSecrets") {
     isIgnoreExitValue = false
 }
 
+tasks.register<Exec>("validateRepoBaseline") {
+    group = "verification"
+    description = "Validates gitignore, cursor rules, and commit conventions (Phase 0.1 / Gate 0.1)"
+    commandLine("bash", "scripts/validate-repo-baseline.sh")
+    isIgnoreExitValue = false
+}
+
 tasks.register("securityCheck") {
     group = "verification"
     description = "Runs security verification tasks (Phase 9.4)"

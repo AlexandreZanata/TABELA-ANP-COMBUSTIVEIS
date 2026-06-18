@@ -24,12 +24,6 @@ Each item is a **micro-step**. Mark `[x]` when done. Do not skip **Validation ga
 **Goal:** Empty repo becomes a buildable Android multi-module skeleton.  
 **Duration:** ~1–2 days ⏱
 
-### 0.1 Git & conventions
-
-- [ ] **0.1.1** Confirm `.gitignore` covers Gradle, IDE, secrets, `data/downloads/`
-- [ ] **0.1.2** Confirm `.cursor/rules/` present (agent core + stack + i18n + commits)
-- [ ] **0.1.3** Read `docs/commit-conventions.md` — align on Conventional Commits in English
-
 **✅ Gate 0.1:** Repo clones clean; no secrets tracked; cursor rules load in IDE.
 
 ---
@@ -222,4 +216,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 10 complete ✓ — MVP v1.0.0 tagged locally; publish GitHub Release when ready.
+**Current repo status (2026-06-18):** All planned phases complete ✓ — Gate 0.1 validated; MVP v1.0.0 tagged locally; publish GitHub Release when ready.

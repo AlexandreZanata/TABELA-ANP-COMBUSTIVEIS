@@ -29,6 +29,12 @@ cd TABELA-ANP-COMBUSTIVEIS
 
 Do not commit `local.properties`, keystores, `.env`, or downloaded ANP files under `data/downloads/`.
 
+Validate repository baseline (Gate 0.1):
+
+```bash
+./gradlew validateRepoBaseline
+```
+
 ## Architecture rules
 
 The project uses Clean Architecture across four Gradle modules:
