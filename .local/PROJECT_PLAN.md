@@ -80,12 +80,6 @@ Implement **one use case at a time** — test before wiring UI.
 
 **✅ Gate 5.2:** UC-001 tests green with mocked ports.
 
-### 5.5 UC-004 — SearchMunicipalityUseCase
-
-- [ ] **5.5.1** BR-007: query < 2 chars → empty without FTS call
-- [ ] **5.5.2** Debounce handled in ViewModel; use case pure
-- [ ] **5.5.3** Tests with mock FTS repository
-
 ### 5.6 UC-005 — GetMunicipalityPricesUseCase
 
 - [ ] **5.6.1** Latest week default (BR-006)
@@ -370,4 +364,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 5.4 UC-003 SelectLocationUseCase complete ✓ — next action **Phase 5.5 UC-004 SearchMunicipalityUseCase**.
+**Current repo status (2026-06-18):** Phase 5.5 UC-004 SearchMunicipalityUseCase complete ✓ — next action **Phase 5.6 UC-005 GetMunicipalityPricesUseCase**.
