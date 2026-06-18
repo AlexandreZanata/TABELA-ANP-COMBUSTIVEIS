@@ -40,15 +40,6 @@ Each item is a **micro-step**. Mark `[x]` when done. Do not skip **Validation ga
 **Duration:** ~3–4 days ⏱  
 📎 UC-004, UC-005, architecture schema
 
-### 3.3 Import pipeline POC
-
-- [ ] **3.3.1** 🔬 Script/test: parser stream → batches of 1000 → Room transaction
-- [ ] **3.3.2** 🔬 Import full summary sample — verify row count in DB
-- [ ] **3.3.3** 🔬 Import full station sample — verify ~19K rows
-- [ ] **3.3.4** 🔬 Query by municipality + week — < 50ms on emulator (informational)
-- [ ] **3.3.5** `EntityDomainMapper` — infra entity ↔ domain model
-- [ ] **3.3.6** `ImportAuditLog` append on each import stage 📎 agent core §6
-
 ### 3.4 Immutable history (BR-003)
 
 - [ ] **3.4.1** Test: re-import same week creates new audit entries, does not DELETE old prices
@@ -428,4 +419,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 3.2 FTS municipality search complete ✓ — next action **Phase 3.3 Import pipeline POC**.
+**Current repo status (2026-06-18):** Phase 3.3 Import pipeline POC complete ✓ — next action **Phase 3.4 Immutable history (BR-003)**.

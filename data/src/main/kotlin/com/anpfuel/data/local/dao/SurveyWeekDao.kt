@@ -20,4 +20,7 @@ interface SurveyWeekDao {
 
     @Query("SELECT COUNT(*) FROM survey_week")
     suspend fun count(): Int
+
+    @Query("UPDATE survey_week SET station_imported_at = :stationImportedAt WHERE id = :id")
+    suspend fun updateStationImportedAt(id: String, stationImportedAt: Long)
 }

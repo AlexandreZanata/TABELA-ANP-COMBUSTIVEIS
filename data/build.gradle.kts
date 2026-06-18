@@ -22,6 +22,12 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+
+    sourceSets {
+        getByName("androidTest") {
+            assets.srcDir("$projectDir/samples")
+        }
+    }
 }
 
 ksp {

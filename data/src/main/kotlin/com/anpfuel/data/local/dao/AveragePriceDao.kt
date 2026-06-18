@@ -28,4 +28,7 @@ interface AveragePriceDao {
 
     @Query("SELECT COUNT(*) FROM average_price")
     suspend fun count(): Int
+
+    @Query("SELECT * FROM average_price WHERE survey_week_id = :surveyWeekId LIMIT 1")
+    suspend fun findAnyBySurveyWeek(surveyWeekId: String): AveragePriceEntity?
 }
