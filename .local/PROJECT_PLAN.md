@@ -97,14 +97,6 @@ All UC-001…UC-008 have at least happy-path + one failure test.
 
 Implement in user journey order:
 
-### 8.2 UC-003 + UC-004 Location & search
-
-- [ ] **8.2.1** `LocationPickerScreen` — state list → municipality list
-- [ ] **8.2.2** `SearchScreen` — debounced FTS, min 2 chars hint
-- [ ] **8.2.3** Persist selection (BR-012)
-
-**✅ Gate 8.2:** Search "CURITIBA" → select → preference saved across restart.
-
 ### 8.3 UC-005 Home & prices
 
 - [ ] **8.3.1** `HomeScreen` — selected city, week range, fuel price cards
@@ -279,4 +271,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 8.1 UC-002 Onboarding complete ✓ — next action **Phase 8.2 Location & search**.
+**Current repo status (2026-06-18):** Phase 8.2 UC-003/UC-004 Location & search complete ✓ — next action **Phase 8.3 Home & prices**.

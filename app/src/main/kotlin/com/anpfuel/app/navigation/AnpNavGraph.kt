@@ -11,12 +11,12 @@ import androidx.navigation.compose.composable
 import com.anpfuel.app.ui.components.LoadingState
 import com.anpfuel.app.ui.home.HomeScreen
 import com.anpfuel.app.ui.onboarding.OnboardingScreen
+import com.anpfuel.app.ui.location.LocationPickerScreen
 import com.anpfuel.app.ui.placeholder.HistoryPlaceholderScreen
-import com.anpfuel.app.ui.placeholder.LocationPlaceholderScreen
 import com.anpfuel.app.ui.placeholder.PricesPlaceholderScreen
-import com.anpfuel.app.ui.placeholder.SearchPlaceholderScreen
 import com.anpfuel.app.ui.placeholder.SettingsPlaceholderScreen
 import com.anpfuel.app.ui.placeholder.StationsPlaceholderScreen
+import com.anpfuel.app.ui.search.SearchScreen
 import com.anpfuel.app.viewmodel.AppStartViewModel
 
 @Composable
@@ -78,10 +78,27 @@ fun AnpNavGraph(
             )
         }
         composable(Routes.SEARCH) {
-            SearchPlaceholderScreen()
+            SearchScreen(
+                onNavigateToHome = {
+                    navController.navigate(Routes.HOME) {
+                        popUpTo(Routes.HOME) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+                onNavigateToLocationPicker = {
+                    navController.navigate(Routes.LOCATION)
+                },
+            )
         }
         composable(Routes.LOCATION) {
-            LocationPlaceholderScreen()
+            LocationPickerScreen(
+                onNavigateToHome = {
+                    navController.navigate(Routes.HOME) {
+                        popUpTo(Routes.HOME) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+            )
         }
         composable(Routes.PRICES) {
             PricesPlaceholderScreen()

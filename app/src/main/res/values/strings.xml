@@ -81,4 +81,46 @@
     <string name="fuel_product_diesel_s10">Diesel S10</string>
     <string name="fuel_product_cng">CNG</string>
     <string name="fuel_product_lpg_p13">LPG (13 kg)</string>
+
+    <!-- UC-003 Location picker -->
+    <string name="location_picker_title">Select location</string>
+    <string name="location_state_label">State</string>
+    <string name="location_municipality_label">Municipalities in %1$s</string>
+    <string name="location_empty_state">No municipalities with price data for this state. Sync ANP tables or choose another state.</string>
+    <string name="location_current_selection">Current: %1$s (%2$s)</string>
+
+    <!-- UC-004 Search -->
+    <string name="search_municipality_hint">Search municipality</string>
+    <string name="search_min_chars_hint">Type at least 2 characters to search.</string>
+    <string name="search_result_format">%1$s — %2$s</string>
+    <string name="search_browse_by_state">Browse by state</string>
+
+    <!-- Brazilian states (UC-003) -->
+    <string name="state_name_acre">Acre</string>
+    <string name="state_name_alagoas">Alagoas</string>
+    <string name="state_name_amapa">Amapá</string>
+    <string name="state_name_amazonas">Amazonas</string>
+    <string name="state_name_bahia">Bahia</string>
+    <string name="state_name_ceara">Ceará</string>
+    <string name="state_name_distrito_federal">Federal District</string>
+    <string name="state_name_espirito_santo">Espírito Santo</string>
+    <string name="state_name_goias">Goiás</string>
+    <string name="state_name_maranhao">Maranhão</string>
+    <string name="state_name_mato_grosso">Mato Grosso</string>
+    <string name="state_name_mato_grosso_do_sul">Mato Grosso do Sul</string>
+    <string name="state_name_minas_gerais">Minas Gerais</string>
+    <string name="state_name_para">Pará</string>
+    <string name="state_name_paraiba">Paraíba</string>
+    <string name="state_name_parana">Paraná</string>
+    <string name="state_name_pernambuco">Pernambuco</string>
+    <string name="state_name_piaui">Piauí</string>
+    <string name="state_name_rio_de_janeiro">Rio de Janeiro</string>
+    <string name="state_name_rio_grande_do_norte">Rio Grande do Norte</string>
+    <string name="state_name_rio_grande_do_sul">Rio Grande do Sul</string>
+    <string name="state_name_rondonia">Rondônia</string>
+    <string name="state_name_roraima">Roraima</string>
+    <string name="state_name_santa_catarina">Santa Catarina</string>
+    <string name="state_name_sao_paulo">São Paulo</string>
+    <string name="state_name_sergipe">Sergipe</string>
+    <string name="state_name_tocantins">Tocantins</string>
 </resources>
