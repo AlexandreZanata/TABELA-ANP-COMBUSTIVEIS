@@ -37,6 +37,15 @@ android {
     buildFeatures {
         compose = true
     }
+
+    packaging {
+        resources {
+            excludes += setOf(
+                "META-INF/LICENSE.md",
+                "META-INF/LICENSE-notice.md",
+            )
+        }
+    }
 }
 
 dependencies {
@@ -62,10 +71,33 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test:runner:1.6.2")
     androidTestImplementation("androidx.test:rules:1.6.1")
+    androidTestImplementation(libs.kotlinx.coroutines.android)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.work)
     ksp(libs.hilt.work.compiler)
     implementation(libs.work.runtime.ktx)
+}
+
+private val maxReleaseApkBytes = 15L * 1024 * 1024
+
+tasks.register("verifyReleaseApkSize") {
+    group = "verification"
+    description = "Builds release APK and fails when uncompressed size exceeds 15 MB (Phase 9.2.2)"
+    dependsOn("assembleRelease")
+    doLast {
+        val apkDir = layout.buildDirectory.dir("outputs/apk/release").get().asFile
+        val apk = apkDir.listFiles()
+            ?.firstOrNull { it.isFile && it.extension == "apk" }
+            ?: throw GradleException("Release APK not found in ${apkDir.absolutePath}")
+        val sizeBytes = apk.length()
+        val sizeMb = sizeBytes / (1024.0 * 1024.0)
+        logger.lifecycle("Release APK: ${apk.name} — ${"%.2f".format(sizeMb)} MB ($sizeBytes bytes)")
+        if (sizeBytes > maxReleaseApkBytes) {
+            throw GradleException(
+                "Release APK exceeds 15 MB limit: ${"%.2f".format(sizeMb)} MB",
+            )
+        }
+    }
 }

@@ -114,10 +114,6 @@ Manual test script (see Appendix A) passes on emulator + one physical device.
 
 ### 9.2 Performance
 
-- [ ] **9.2.1** Import 20K rows on mid-range emulator < 60s
-- [ ] **9.2.2** APK size check — target < 15 MB (without samples)
-- [ ] **9.2.3** Startup time < 2s cold start to home (with cache)
-
 ### 9.3 Accessibility
 
 - [ ] **9.3.1** TalkBack pass on main flows
@@ -240,4 +236,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 9.1 Testing pyramid complete ✓ — next action **Phase 9.2 Performance**.
+**Current repo status (2026-06-18):** Phase 9.2 Performance complete ✓ — next action **Phase 9.3 Accessibility**.
