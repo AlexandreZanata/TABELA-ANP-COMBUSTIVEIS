@@ -146,19 +146,6 @@ Run on **emulator** and **one physical device**:
 
 ---
 
-## Appendix B — POC results folder
-
-Create as POCs complete:
-
-```
-.local/poc-results/
-├── parser-poc.md      # row counts, memory, timing
-├── database-poc.md    # FTS latency, DB size
-└── network-poc.md     # live scrape date, URL count
-```
-
----
-
 ## Appendix C — Risk register
 
 | Risk | Mitigation | Phase |
@@ -216,4 +203,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** All planned phases complete ✓ — Gate 0.1 validated; MVP v1.0.0 tagged locally; publish GitHub Release when ready.
+**Current repo status (2026-06-18):** All planned phases complete ✓ — POC results documented (Appendix B); MVP v1.0.0 tagged locally; publish GitHub Release when ready.

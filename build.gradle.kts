@@ -22,6 +22,13 @@ tasks.register<Exec>("validateRepoBaseline") {
     isIgnoreExitValue = false
 }
 
+tasks.register<Exec>("validatePocResults") {
+    group = "verification"
+    description = "Validates POC results documentation in .local/poc-results/ (Appendix B)"
+    commandLine("bash", "scripts/validate-poc-results.sh")
+    isIgnoreExitValue = false
+}
+
 tasks.register("securityCheck") {
     group = "verification"
     description = "Runs security verification tasks (Phase 9.4)"
