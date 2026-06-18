@@ -15,7 +15,7 @@ import com.anpfuel.app.ui.location.LocationPickerScreen
 import com.anpfuel.app.ui.history.HistoryScreen
 import com.anpfuel.app.ui.prices.PricesScreen
 import com.anpfuel.app.ui.placeholder.SettingsPlaceholderScreen
-import com.anpfuel.app.ui.placeholder.StationsPlaceholderScreen
+import com.anpfuel.app.ui.stations.StationsScreen
 import com.anpfuel.app.ui.search.SearchScreen
 import com.anpfuel.app.viewmodel.AppStartViewModel
 
@@ -107,7 +107,7 @@ fun AnpNavGraph(
             HistoryScreen()
         }
         composable(Routes.STATIONS) {
-            StationsPlaceholderScreen()
+            StationsScreen()
         }
         composable(Routes.SETTINGS) {
             SettingsPlaceholderScreen()

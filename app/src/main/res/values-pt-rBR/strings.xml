@@ -89,6 +89,16 @@
     <string name="history_disabled">O histórico de preços está desativado nas configurações.</string>
     <string name="history_fuel_product_label">Combustível</string>
 
+    <!-- UC-007 Stations -->
+    <string name="stations_title">Postos</string>
+    <string name="stations_sort_by_price">Ordenado por preço (menor primeiro)</string>
+    <string name="stations_download_prompt">Os preços por posto ainda não estão neste dispositivo. Baixe o arquivo de postos da ANP desta semana para comparar preços por estabelecimento.</string>
+    <string name="stations_download_action">Baixar preços por posto</string>
+    <string name="stations_empty">Nenhum posto informou este combustível na cidade selecionada nesta semana.</string>
+    <string name="stations_brand_label">Bandeira: %1$s</string>
+    <string name="stations_collected_at_label">Coleta: %1$s</string>
+    <string name="prices_view_stations">Ver preços por posto</string>
+
     <!-- FuelProduct labels -->
     <string name="fuel_product_ethanol">Etanol</string>
     <string name="fuel_product_gasoline_regular">Gasolina comum</string>

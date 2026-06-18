@@ -148,6 +148,12 @@ private fun PricesContent(
                     ) {
                         Text(text = stringResource(R.string.prices_view_history))
                     }
+                    TextButton(
+                        onClick = { onNavigate(Routes.STATIONS) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(text = stringResource(R.string.prices_view_stations))
+                    }
                 }
             }
         }

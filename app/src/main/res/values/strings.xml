@@ -89,6 +89,16 @@
     <string name="history_disabled">Price history is turned off in settings.</string>
     <string name="history_fuel_product_label">Fuel product</string>
 
+    <!-- UC-007 Stations -->
+    <string name="stations_title">Stations</string>
+    <string name="stations_sort_by_price">Sorted by price (lowest first)</string>
+    <string name="stations_download_prompt">Station-level prices are not on this device yet. Download the ANP station file for this week to compare prices by station.</string>
+    <string name="stations_download_action">Download station prices</string>
+    <string name="stations_empty">No stations reported this fuel in the selected city for this week.</string>
+    <string name="stations_brand_label">Brand: %1$s</string>
+    <string name="stations_collected_at_label">Collected: %1$s</string>
+    <string name="prices_view_stations">View station prices</string>
+
     <!-- FuelProduct labels -->
     <string name="fuel_product_ethanol">Ethanol</string>
     <string name="fuel_product_gasoline_regular">Regular gasoline</string>

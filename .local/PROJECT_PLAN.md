@@ -97,13 +97,6 @@ All UC-001…UC-008 have at least happy-path + one failure test.
 
 Implement in user journey order:
 
-### 8.5 UC-007 Stations (on-demand)
-
-- [ ] **8.5.1** `StationsScreen` — sorted list, download prompt
-- [ ] **8.5.2** One-time station file download flow
-
-**✅ Gate 8.5:** Station list loads after on-demand download; shows brand, address, price.
-
 ### 8.6 UC-008 Settings
 
 - [ ] **8.6.1** `SettingsScreen` — toggles, storage stats, clear cache, sync now
@@ -256,4 +249,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 8.4 UC-006 History complete ✓ — next action **Phase 8.5 Stations (on-demand)**.
+**Current repo status (2026-06-18):** Phase 8.5 UC-007 Stations complete ✓ — next action **Phase 8.6 Settings**.
