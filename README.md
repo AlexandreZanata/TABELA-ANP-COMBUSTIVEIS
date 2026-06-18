@@ -73,6 +73,8 @@ See [docs/data-sources.md](docs/data-sources.md) for column schemas and download
 | [docs/commit-conventions.md](docs/commit-conventions.md) | Git commit and PR standards |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute — TDD, layers, i18n, PRs |
 | [docs/license.md](docs/license.md) | MIT license — free use, attribution required |
+| [docs/play-store-listing.md](docs/play-store-listing.md) | Play Store listing draft (en + pt-BR) |
+| [docs/privacy-policy.md](docs/privacy-policy.md) | Privacy policy — no personal data collected |
 | [.local/PROJECT_PLAN.md](.local/PROJECT_PLAN.md) | Micro-step execution plan (POCs & gates) |
 
 ## Development

@@ -128,7 +128,6 @@ Manual test script (see Appendix A) passes on emulator + one physical device.
 **Duration:** ~2–3 days ⏱
 
 - [x] **10.1** Choose license (MIT or Apache 2.0) — `LICENSE` file
-- [ ] **10.4** Play Store listing draft (optional sideload first)
 - [ ] **10.5** Signed release APK/AAB
 - [ ] **10.6** GitHub Release v1.0.0 notes — ANP attribution, offline disclaimer
 - [ ] **10.7** Tag `v1.0.0`
@@ -226,4 +225,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 10.3 README badges complete ✓ — next action **Phase 10.4 Play Store listing draft**.
+**Current repo status (2026-06-18):** Phase 10.4 Play Store listing draft complete ✓ — next action **Phase 10.5 signed release APK/AAB**.

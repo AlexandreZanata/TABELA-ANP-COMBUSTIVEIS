@@ -24,3 +24,10 @@ tasks.register("securityCheck") {
         ":data:testDebugUnitTest",
     )
 }
+
+tasks.register<Exec>("validatePlayStoreListing") {
+    group = "verification"
+    description = "Validates Play Store listing draft limits and disclaimers (Phase 10.4)"
+    commandLine("bash", "scripts/validate-play-store-listing.sh")
+    isIgnoreExitValue = false
+}
