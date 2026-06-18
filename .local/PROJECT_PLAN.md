@@ -78,11 +78,6 @@ Document live test date in `.local/poc-results/network-poc.md`.
 
 Implement **one use case at a time** — test before wiring UI.
 
-### 5.1 Error model
-
-- [ ] **5.1.1** `AppError` sealed class per `docs/user-business-logic.md` error table
-- [ ] **5.1.2** Map domain exceptions → `AppError` in use cases
-
 ### 5.2 UC-001 — SyncPriceTablesUseCase
 
 - [ ] **5.2.1** Test (MockK): discover → download → parse → import — happy path
@@ -396,4 +391,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 4 Network layer complete ✓ — next action **Phase 5.1 SyncPriceTablesUseCase**.
+**Current repo status (2026-06-18):** Phase 5.1 Error model complete ✓ — next action **Phase 5.2 UC-001 SyncPriceTablesUseCase**.
