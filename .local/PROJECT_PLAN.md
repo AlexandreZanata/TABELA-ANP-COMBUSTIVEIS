@@ -80,11 +80,6 @@ Implement **one use case at a time** — test before wiring UI.
 
 **✅ Gate 5.2:** UC-001 tests green with mocked ports.
 
-### 5.3 UC-002 — Onboarding
-
-- [ ] **5.3.1** `CompleteOnboardingUseCase` — flag only after first successful summary import
-- [ ] **5.3.2** Tests for A1/A2 alternative flows
-
 ### 5.4 UC-003 — SelectLocationUseCase
 
 - [ ] **5.4.1** List states with data for latest week (BR-006)
@@ -382,4 +377,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 5.2 UC-001 SyncPriceTablesUseCase complete ✓ — next action **Phase 5.3 UC-002 Onboarding**.
+**Current repo status (2026-06-18):** Phase 5.3 UC-002 Onboarding complete ✓ — next action **Phase 5.4 UC-003 SelectLocationUseCase**.

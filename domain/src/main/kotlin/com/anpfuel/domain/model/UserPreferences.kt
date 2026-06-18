@@ -15,6 +15,7 @@ data class UserPreferences(
     val stationDetailRetentionWeeks: Int = DEFAULT_RETENTION_WEEKS,
     val autoSyncOnWifi: Boolean = true,
     val showPriceHistory: Boolean = true,
+    val onboardingCompleted: Boolean = false,
 ) {
     companion object {
         const val DEFAULT_RETENTION_WEEKS = 12
