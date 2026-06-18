@@ -1,9 +1,34 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
+}
+
+fun loadSigningProperties(): Properties? {
+    val signingFile = rootProject.file("signing.properties")
+    if (!signingFile.exists()) {
+        return null
+    }
+    return Properties().apply {
+        signingFile.inputStream().use { load(it) }
+    }
+}
+
+fun signingProperty(name: String, envVar: String): String? {
+    val fromFile = loadSigningProperties()?.getProperty(name)?.takeIf { it.isNotBlank() }
+    if (fromFile != null) {
+        return fromFile
+    }
+    return System.getenv(envVar)?.takeIf { it.isNotBlank() }
+}
+
+fun hasReleaseSigningConfig(): Boolean {
+    val storeFilePath = signingProperty("storeFile", "ANPFUEL_KEYSTORE_PATH")
+    return storeFilePath != null
 }
 
 android {
@@ -15,8 +40,19 @@ android {
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
-        versionName = "0.1.0"
+        versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        create("release") {
+            val storeFilePath = signingProperty("storeFile", "ANPFUEL_KEYSTORE_PATH")
+                ?: return@create
+            storeFile = rootProject.file(storeFilePath)
+            storePassword = signingProperty("storePassword", "ANPFUEL_KEYSTORE_PASSWORD")
+            keyAlias = signingProperty("keyAlias", "ANPFUEL_KEY_ALIAS")
+            keyPassword = signingProperty("keyPassword", "ANPFUEL_KEY_PASSWORD")
+        }
     }
 
     buildTypes {
@@ -27,6 +63,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            if (hasReleaseSigningConfig()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 

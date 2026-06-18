@@ -1,0 +1,13 @@
+# Copy to signing.properties and fill in real values.
+# Never commit signing.properties or keystores to git.
+#
+# Alternative: set environment variables instead of this file:
+#   ANPFUEL_KEYSTORE_PATH
+#   ANPFUEL_KEYSTORE_PASSWORD
+#   ANPFUEL_KEY_ALIAS
+#   ANPFUEL_KEY_PASSWORD
+
+storeFile=.local/anpfuel-release.keystore
+storePassword=change-me
+keyAlias=anpfuel
+keyPassword=change-me

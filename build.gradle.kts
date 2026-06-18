@@ -31,3 +31,10 @@ tasks.register<Exec>("validatePlayStoreListing") {
     commandLine("bash", "scripts/validate-play-store-listing.sh")
     isIgnoreExitValue = false
 }
+
+tasks.register<Exec>("validateReleaseBuild") {
+    group = "verification"
+    description = "Builds and validates signed release APK/AAB (Phase 10.5)"
+    commandLine("bash", "scripts/validate-release-build.sh")
+    isIgnoreExitValue = false
+}

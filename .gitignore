@@ -43,6 +43,7 @@ lint-report.html
 *.jks
 google-services.json
 secrets.properties
+signing.properties
 .env
 .env.*
 

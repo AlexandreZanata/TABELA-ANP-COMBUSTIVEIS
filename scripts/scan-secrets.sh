@@ -8,6 +8,7 @@ cd "$ROOT"
 TRACKED_SECRET_FILES=(
     "local.properties"
     "secrets.properties"
+    "signing.properties"
     ".env"
     "google-services.json"
 )
