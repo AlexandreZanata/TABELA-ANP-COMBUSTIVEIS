@@ -97,14 +97,6 @@ All UC-001…UC-008 have at least happy-path + one failure test.
 
 Implement in user journey order:
 
-### 8.3 UC-005 Home & prices
-
-- [ ] **8.3.1** `HomeScreen` — selected city, week range, fuel price cards
-- [ ] **8.3.2** `PricesScreen` — min/avg/max, station count
-- [ ] **8.3.3** Empty/error/offline states
-
-**✅ Gate 8.3:** Full offline read after sync (BR-004) — airplane mode test.
-
 ### 8.4 UC-006 History (v1.1 optional)
 
 - [ ] **8.4.1** `HistoryScreen` — list/chart if ≥2 weeks
@@ -271,4 +263,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 8.2 UC-003/UC-004 Location & search complete ✓ — next action **Phase 8.3 Home & prices**.
+**Current repo status (2026-06-18):** Phase 8.3 UC-005 Home & prices complete ✓ — next action **Phase 8.4 History (optional)** or **Phase 8.5 Stations**.

@@ -2,7 +2,9 @@ package com.anpfuel.data.di
 
 import com.anpfuel.application.usecase.location.SearchMunicipalityUseCase
 import com.anpfuel.application.usecase.location.SelectLocationUseCase
+import com.anpfuel.application.usecase.network.ObserveNetworkConnectivityUseCase
 import com.anpfuel.application.usecase.onboarding.CompleteOnboardingUseCase
+import com.anpfuel.application.usecase.readiness.GetDataReadinessUseCase
 import com.anpfuel.application.usecase.price.GetMunicipalityPricesUseCase
 import com.anpfuel.application.usecase.price.GetPriceHistoryUseCase
 import com.anpfuel.application.usecase.price.GetStationPricesUseCase
@@ -16,6 +18,7 @@ import com.anpfuel.domain.repository.AveragePriceRepository
 import com.anpfuel.domain.repository.CacheRepository
 import com.anpfuel.domain.repository.DomainEventPublisher
 import com.anpfuel.domain.repository.MunicipalitySearchRepository
+import com.anpfuel.application.port.NetworkConnectivityGateway
 import com.anpfuel.domain.repository.PriceTableRepository
 import com.anpfuel.domain.repository.PriceTableSyncGateway
 import com.anpfuel.domain.repository.StationPriceRepository
@@ -73,6 +76,24 @@ object UseCaseModule {
         priceTableSyncGateway = priceTableSyncGateway,
         averagePriceRepository = averagePriceRepository,
         eventPublisher = eventPublisher,
+    )
+
+    @Provides
+    @Singleton
+    fun provideGetDataReadinessUseCase(
+        priceTableRepository: PriceTableRepository,
+        syncJobRepository: SyncJobRepository,
+    ): GetDataReadinessUseCase = GetDataReadinessUseCase(
+        priceTableRepository = priceTableRepository,
+        syncJobRepository = syncJobRepository,
+    )
+
+    @Provides
+    @Singleton
+    fun provideObserveNetworkConnectivityUseCase(
+        networkConnectivityGateway: NetworkConnectivityGateway,
+    ): ObserveNetworkConnectivityUseCase = ObserveNetworkConnectivityUseCase(
+        networkConnectivityGateway = networkConnectivityGateway,
     )
 
     @Provides

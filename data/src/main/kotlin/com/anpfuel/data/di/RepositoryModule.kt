@@ -14,6 +14,7 @@ import com.anpfuel.data.local.preferences.PriceTableMetadataStore
 import com.anpfuel.data.repository.AveragePriceRepositoryImpl
 import com.anpfuel.data.repository.CacheRepositoryImpl
 import com.anpfuel.data.repository.MunicipalitySearchRepositoryImpl
+import com.anpfuel.data.repository.NetworkConnectivityRepositoryImpl
 import com.anpfuel.data.repository.NoOpDomainEventPublisher
 import com.anpfuel.data.repository.PriceTableRepositoryImpl
 import com.anpfuel.data.repository.PriceTableSyncGatewayImpl
@@ -24,6 +25,7 @@ import com.anpfuel.domain.repository.AveragePriceRepository
 import com.anpfuel.domain.repository.CacheRepository
 import com.anpfuel.domain.repository.DomainEventPublisher
 import com.anpfuel.domain.repository.MunicipalitySearchRepository
+import com.anpfuel.application.port.NetworkConnectivityGateway
 import com.anpfuel.domain.repository.PriceTableRepository
 import com.anpfuel.domain.repository.PriceTableSyncGateway
 import com.anpfuel.domain.repository.StationPriceRepository
@@ -87,6 +89,12 @@ abstract class RepositoryModule {
     abstract fun bindPriceTableSyncGateway(
         impl: PriceTableSyncGatewayImpl,
     ): PriceTableSyncGateway
+
+    @Binds
+    @Singleton
+    abstract fun bindNetworkConnectivityGateway(
+        impl: NetworkConnectivityRepositoryImpl,
+    ): NetworkConnectivityGateway
 
     @Binds
     @Singleton

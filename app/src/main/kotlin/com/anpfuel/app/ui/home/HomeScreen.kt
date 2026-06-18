@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
@@ -17,29 +19,72 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anpfuel.app.R
+import com.anpfuel.app.mapper.AppErrorMapper
+import com.anpfuel.app.mapper.SurveyWeekFormatter
 import com.anpfuel.app.navigation.Routes
 import com.anpfuel.app.ui.components.AnpAttributionFooter
 import com.anpfuel.app.ui.components.EmptyState
-import com.anpfuel.app.ui.components.FuelProductLabel
+import com.anpfuel.app.ui.components.ErrorState
+import com.anpfuel.app.ui.components.FuelPriceCard
+import com.anpfuel.app.ui.components.LoadingState
 import com.anpfuel.app.ui.components.OfflineBanner
 import com.anpfuel.app.ui.components.SyncStatusBanner
+import com.anpfuel.app.ui.model.AveragePriceUiModel
 import com.anpfuel.app.ui.theme.AnpFuelTheme
 import com.anpfuel.domain.state.DataReadinessState
+import com.anpfuel.domain.valueobject.BrazilianState
 import com.anpfuel.domain.valueobject.FuelProduct
+import com.anpfuel.domain.valueobject.SurveyWeek
+import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun HomeScreen(
     darkTheme: Boolean,
     onToggleTheme: () -> Unit,
     onNavigate: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = hiltViewModel(),
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val locale = LocalConfiguration.current.locales[0]
+
+    LaunchedEffect(locale) {
+        viewModel.load(locale)
+    }
+
+    HomeContent(
+        uiState = uiState,
+        darkTheme = darkTheme,
+        onToggleTheme = onToggleTheme,
+        onNavigate = onNavigate,
+        onRefresh = { viewModel.refresh(locale) },
+        onRetry = { viewModel.load(locale) },
+        modifier = modifier,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@Composable
+private fun HomeContent(
+    uiState: HomeUiState,
+    darkTheme: Boolean,
+    onToggleTheme: () -> Unit,
+    onNavigate: (String) -> Unit,
+    onRefresh: () -> Unit,
+    onRetry: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -66,88 +111,172 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            SyncStatusBanner(readiness = DataReadinessState.EMPTY)
-            OfflineBanner()
+            SyncStatusBanner(readiness = uiState.readiness)
 
-            EmptyState(
-                message = stringResource(R.string.home_empty_message),
-                hint = stringResource(R.string.home_empty_hint),
-            )
-
-            Text(
-                text = stringResource(R.string.home_fuel_products_preview),
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-            for (product in FuelProduct.entries) {
-                AssistChip(
-                    onClick = {},
-                    label = { FuelProductLabel(product = product) },
-                )
-            }
+            if (uiState.isOffline && uiState.hasCachedData) {
+                OfflineBanner()
             }
 
-            Text(
-                text = stringResource(R.string.home_navigation_preview),
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 8.dp),
-            )
-            FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+            if (uiState.readiness == DataReadinessState.STALE ||
+                uiState.readiness == DataReadinessState.ERROR
             ) {
-                NavigationChip(labelRes = R.string.nav_search, route = Routes.SEARCH, onNavigate = onNavigate)
-                NavigationChip(labelRes = R.string.nav_location, route = Routes.LOCATION, onNavigate = onNavigate)
-                NavigationChip(labelRes = R.string.nav_prices, route = Routes.PRICES, onNavigate = onNavigate)
-                NavigationChip(labelRes = R.string.nav_history, route = Routes.HISTORY, onNavigate = onNavigate)
-                NavigationChip(labelRes = R.string.nav_stations, route = Routes.STATIONS, onNavigate = onNavigate)
-                NavigationChip(labelRes = R.string.nav_settings, route = Routes.SETTINGS, onNavigate = onNavigate)
+                TextButton(
+                    onClick = onRefresh,
+                    enabled = !uiState.isRefreshing,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        text = stringResource(
+                            if (uiState.isRefreshing) {
+                                R.string.banner_syncing
+                            } else {
+                                R.string.onboarding_action_sync_now
+                            },
+                        ),
+                    )
+                }
+            }
+
+            when {
+                uiState.isLoading -> LoadingState(modifier = Modifier.fillMaxWidth())
+
+                uiState.error != null -> {
+                    ErrorState(
+                        message = stringResource(AppErrorMapper.toStringRes(uiState.error)),
+                        modifier = Modifier.fillMaxWidth(),
+                        onRetry = onRetry,
+                    )
+                }
+
+                !uiState.hasCachedData -> {
+                    EmptyState(
+                        message = stringResource(R.string.home_empty_message),
+                        hint = stringResource(R.string.home_empty_hint),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+
+                !uiState.hasLocation -> {
+                    EmptyState(
+                        message = stringResource(R.string.home_no_location_message),
+                        hint = stringResource(R.string.home_no_location_hint),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    RowActions(onNavigate = onNavigate)
+                }
+
+                uiState.isEmptyMunicipality -> {
+                    LocationHeader(uiState = uiState)
+                    EmptyState(
+                        message = stringResource(R.string.prices_empty_municipality),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    RowActions(onNavigate = onNavigate)
+                }
+
+                else -> {
+                    LocationHeader(uiState = uiState)
+                    PriceMetadata(uiState = uiState)
+                    uiState.prices.forEach { price ->
+                        FuelPriceCard(
+                            price = price,
+                            onClick = { onNavigate(Routes.PRICES) },
+                        )
+                    }
+                    TextButton(
+                        onClick = { onNavigate(Routes.PRICES) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(text = stringResource(R.string.home_view_price_details))
+                    }
+                    RowActions(onNavigate = onNavigate)
+                }
             }
         }
     }
 }
 
 @Composable
-private fun NavigationChip(
-    labelRes: Int,
-    route: String,
-    onNavigate: (String) -> Unit,
-) {
-    AssistChip(
-        onClick = { onNavigate(route) },
-        label = { Text(text = stringResource(labelRes)) },
+private fun LocationHeader(uiState: HomeUiState) {
+    val municipality = uiState.municipality ?: return
+    val state = uiState.state ?: return
+    Text(
+        text = stringResource(R.string.home_location_format, municipality, state.abbreviation),
+        style = MaterialTheme.typography.headlineSmall,
+        color = MaterialTheme.colorScheme.onBackground,
     )
 }
 
-@Preview(showBackground = true, name = "Home EN")
 @Composable
-private fun HomeScreenLightPreview() {
-    AnpFuelTheme(darkTheme = false) {
-        HomeScreen(
-            darkTheme = false,
-            onToggleTheme = {},
-            onNavigate = {},
+private fun PriceMetadata(uiState: HomeUiState) {
+    uiState.surveyWeek?.let { week ->
+        val locale = LocalConfiguration.current.locales[0]
+        Text(
+            text = stringResource(
+                R.string.prices_survey_week_label,
+                SurveyWeekFormatter.formatRange(week, locale),
+            ),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
 
-@Preview(showBackground = true, name = "Home PT", locale = "pt-rBR")
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun HomeScreenPtPreview() {
-    AnpFuelTheme(darkTheme = false) {
-        HomeScreen(
+private fun RowActions(onNavigate: (String) -> Unit) {
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        AssistChip(
+            onClick = { onNavigate(Routes.SEARCH) },
+            label = { Text(text = stringResource(R.string.nav_search)) },
+        )
+        AssistChip(
+            onClick = { onNavigate(Routes.LOCATION) },
+            label = { Text(text = stringResource(R.string.nav_location)) },
+        )
+        AssistChip(
+            onClick = { onNavigate(Routes.SETTINGS) },
+            label = { Text(text = stringResource(R.string.nav_settings)) },
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Home with prices")
+@Composable
+private fun HomeWithPricesPreview() {
+    AnpFuelTheme {
+        HomeContent(
+            uiState = HomeUiState(
+                isLoading = false,
+                readiness = DataReadinessState.READY,
+                hasCachedData = true,
+                hasLocation = true,
+                municipality = "Curitiba",
+                state = BrazilianState.PARANA,
+                surveyWeek = SurveyWeek.fromIsoDates("2026-06-07", "2026-06-13"),
+                prices = listOf(
+                    AveragePriceUiModel(
+                        fuelProduct = FuelProduct.ETHANOL,
+                        averageFormatted = "R$ 3,42",
+                        minimumFormatted = "R$ 3,10",
+                        maximumFormatted = "R$ 3,80",
+                        stationCount = 42,
+                    ),
+                ),
+            ),
             darkTheme = false,
             onToggleTheme = {},
             onNavigate = {},
+            onRefresh = {},
+            onRetry = {},
         )
     }
 }

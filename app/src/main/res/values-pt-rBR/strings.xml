@@ -12,8 +12,13 @@
     <string name="nav_stations">Postos</string>
     <string name="nav_settings">Configurações</string>
 
-    <!-- Home -->
+    <!-- Home (UC-005) -->
     <string name="home_title">Preços ANP Combustíveis</string>
+    <string name="home_location_format">%1$s, %2$s</string>
+    <string name="home_no_location_message">Nenhuma cidade selecionada.</string>
+    <string name="home_no_location_hint">Busque ou navegue por estado para ver os preços.</string>
+    <string name="home_view_price_details">Ver detalhes completos dos preços</string>
+
     <string name="home_empty_message">Nenhum dado de preço sincronizado ainda.</string>
     <string name="home_empty_hint">Conclua a introdução ou sincronize para carregar as tabelas semanais da ANP.</string>
     <string name="home_fuel_products_preview">Combustíveis (prévia i18n)</string>
@@ -67,8 +72,11 @@
 
     <!-- Prices (UC-005) -->
     <string name="prices_title">Preços de combustíveis</string>
-    <string name="prices_survey_week_label">Semana de pesquisa</string>
-    <string name="prices_last_sync_label">Última sincronização</string>
+    <string name="prices_survey_week_label">Semana de pesquisa: %1$s</string>
+    <string name="prices_last_sync_label">Última sincronização: %1$s</string>
+    <string name="prices_average_label">Média: %1$s</string>
+    <string name="prices_min_max_range">Mín %1$s · Máx %2$s</string>
+    <string name="prices_not_available">—</string>
     <string name="prices_station_count">%1$d postos</string>
     <string name="prices_anp_attribution">Fonte: ANP — Agência Nacional do Petróleo, Gás Natural e Biocombustíveis</string>
     <string name="prices_empty_municipality">Nenhum preço encontrado para este município.</string>

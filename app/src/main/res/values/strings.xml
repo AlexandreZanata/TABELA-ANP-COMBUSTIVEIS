@@ -12,8 +12,13 @@
     <string name="nav_stations">Stations</string>
     <string name="nav_settings">Settings</string>
 
-    <!-- Home -->
+    <!-- Home (UC-005) -->
     <string name="home_title">ANP Fuel Prices</string>
+    <string name="home_location_format">%1$s, %2$s</string>
+    <string name="home_no_location_message">No city selected yet.</string>
+    <string name="home_no_location_hint">Search or browse by state to view fuel prices.</string>
+    <string name="home_view_price_details">View full price details</string>
+
     <string name="home_empty_message">No fuel price data synced yet.</string>
     <string name="home_empty_hint">Complete onboarding or sync to load ANP weekly tables.</string>
     <string name="home_fuel_products_preview">Fuel products (i18n preview)</string>
@@ -67,8 +72,11 @@
 
     <!-- Prices (UC-005) -->
     <string name="prices_title">Fuel prices</string>
-    <string name="prices_survey_week_label">Survey week</string>
-    <string name="prices_last_sync_label">Last sync</string>
+    <string name="prices_survey_week_label">Survey week: %1$s</string>
+    <string name="prices_last_sync_label">Last sync: %1$s</string>
+    <string name="prices_average_label">Average: %1$s</string>
+    <string name="prices_min_max_range">Min %1$s · Max %2$s</string>
+    <string name="prices_not_available">—</string>
     <string name="prices_station_count">%1$d stations</string>
     <string name="prices_anp_attribution">Source: ANP — Agência Nacional do Petróleo, Gás Natural e Biocombustíveis</string>
     <string name="prices_empty_municipality">No prices found for this municipality.</string>
