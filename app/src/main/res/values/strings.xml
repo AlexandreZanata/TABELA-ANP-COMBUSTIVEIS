@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ANP Fuel Prices</string>
+    <string name="home_placeholder_title">ANP Fuel Prices</string>
+    <string name="home_placeholder_subtitle">Loading fuel price data will be available after sync.</string>
+</resources>

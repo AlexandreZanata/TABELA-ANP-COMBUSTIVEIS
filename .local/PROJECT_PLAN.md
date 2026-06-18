@@ -32,16 +32,6 @@ Each item is a **micro-step**. Mark `[x]` when done. Do not skip **Validation ga
 
 **✅ Gate 0.1:** Repo clones clean; no secrets tracked; cursor rules load in IDE.
 
-### 0.3 Module skeletons
-
-- [ ] **0.3.1** `:domain` — `kotlin` JVM plugin, Java 17, package `com.anpfuel.domain`
-- [ ] **0.3.2** `:application` — JVM module, `implementation(project(":domain"))`
-- [ ] **0.3.3** `:data` — Android library, minSdk 26, depends on `:domain`
-- [ ] **0.3.4** `:app` — Android application, depends on `:application` + `:data`, `applicationId com.anpfuel.app`
-- [ ] **0.3.5** Verify dependency graph matches `docs/tech-stack.md` (no `:domain` → Android)
-
-**✅ Gate 0.3:** `./gradlew :app:assembleDebug` produces APK (empty Compose screen OK).
-
 ### 0.4 Test infrastructure
 
 - [ ] **0.4.1** Enable JUnit 5 on `:domain` and `:application` (`useJUnitPlatform()`)
@@ -578,10 +568,10 @@ A step is **done** only when:
 **If starting from zero today:**
 
 ```
-Phase 0.3 → 0.4 → Phase 1.1 → 1.2 → … → Gate 1.6
+Phase 0.4 → Phase 1.1 → 1.2 → … → Gate 1.6
          → Phase 2 (Parser POC) → Gate 2
          → Phase 3 (DB POC) → Gate 3
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 0.2 complete ✓ — next action **Phase 0.3 Module skeletons**.
+**Current repo status (2026-06-18):** Phase 0.3 complete ✓ — next action **Phase 0.4 Test infrastructure**.

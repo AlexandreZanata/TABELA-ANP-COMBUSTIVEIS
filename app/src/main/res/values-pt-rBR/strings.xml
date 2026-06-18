@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Preços ANP Combustíveis</string>
+    <string name="home_placeholder_title">Preços ANP Combustíveis</string>
+    <string name="home_placeholder_subtitle">A consulta de preços ficará disponível após a sincronização.</string>
+</resources>
