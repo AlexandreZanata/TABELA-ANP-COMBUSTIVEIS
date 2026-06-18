@@ -49,6 +49,8 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
+    implementation(libs.datastore.preferences)
+
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.kxml2)
     testImplementation(libs.poi.ooxml)
@@ -58,6 +60,7 @@ dependencies {
     androidTestImplementation(libs.room.testing)
     androidTestImplementation("androidx.test:runner:1.6.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation(project(":application"))
 }
 
 tasks.withType<Test> {

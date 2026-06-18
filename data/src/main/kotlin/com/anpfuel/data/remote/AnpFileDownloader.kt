@@ -29,6 +29,11 @@ class AnpFileDownloader private constructor(
     suspend fun download(priceTable: PriceTable): AnpDownloadResult =
         download(priceTable.sourceUrl)
 
+    fun resolveDownloadedFile(sourceUrl: String): File {
+        val fileName = resolveFileName(sourceUrl)
+        return File(downloadDirectory, fileName)
+    }
+
     suspend fun download(sourceUrl: String): AnpDownloadResult = withContext(Dispatchers.IO) {
         require(AnpPriceTableUrlParser.isPriceTableUrl(sourceUrl)) {
             "URL is not a supported ANP price table: $sourceUrl"

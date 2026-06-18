@@ -20,4 +20,7 @@ interface ImportAuditLogDao {
 
     @Query("SELECT * FROM import_audit_log WHERE survey_week_id = :surveyWeekId ORDER BY occurred_at ASC")
     suspend fun findBySurveyWeek(surveyWeekId: String): List<ImportAuditLogEntity>
+
+    @Query("DELETE FROM import_audit_log")
+    suspend fun deleteAll()
 }

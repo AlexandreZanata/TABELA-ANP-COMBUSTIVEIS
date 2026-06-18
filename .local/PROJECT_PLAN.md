@@ -80,12 +80,6 @@ Implement **one use case at a time** — test before wiring UI.
 
 **✅ Gate 5.2:** UC-001 tests green with mocked ports.
 
-### 5.10 Repository implementations
-
-- [ ] **5.10.1** Wire all `*RepositoryImpl` in `:data`
-- [ ] **5.10.2** Hilt `RepositoryModule` binds interfaces → impls
-- [ ] **5.10.3** Integration test: end-to-end import sample file → query via use case
-
 **✅ Gate 5 — Application complete:**
 
 ```bash
@@ -341,4 +335,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 5.9 UC-008 Settings use cases complete ✓ — next action **Phase 5.10 Repository implementations**.
+**Current repo status (2026-06-18):** Phase 5.10 Repository implementations complete ✓ — next action **Phase 6 Background sync (WorkManager)**.

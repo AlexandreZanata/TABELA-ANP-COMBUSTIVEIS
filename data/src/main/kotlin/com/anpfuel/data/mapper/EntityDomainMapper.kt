@@ -125,6 +125,47 @@ object EntityDomainMapper {
         )
     }
 
+    fun toAveragePriceEntity(price: AveragePrice): AveragePriceEntity =
+        AveragePriceEntity(
+            id = price.id.value,
+            surveyWeekId = price.priceSurveyId.value,
+            state = price.state.abbreviation,
+            municipality = price.municipality,
+            fuelProduct = price.fuelProduct.name,
+            stationCount = price.stationCount,
+            unit = price.unit,
+            avgPrice = price.average?.value?.toDouble(),
+            minPrice = price.minimum?.value?.toDouble(),
+            maxPrice = price.maximum?.value?.toDouble(),
+            stdDev = price.standardDeviation?.value?.toDouble(),
+        )
+
+    fun toStationPriceEntity(price: StationPrice): StationPriceEntity =
+        StationPriceEntity(
+            id = price.id.value,
+            surveyWeekId = price.priceSurveyId.value,
+            cnpj = price.station.cnpj.digits,
+            legalName = price.station.legalName,
+            tradeName = price.station.tradeName,
+            address = price.station.address,
+            municipality = price.station.municipality,
+            state = price.station.state.abbreviation,
+            brand = price.station.brand,
+            fuelProduct = price.fuelProduct.name,
+            price = price.price.value.toDouble(),
+            collectedAt = price.collectedAt?.toString(),
+        )
+
+    fun toSurveyWeekEntity(priceSurvey: PriceSurvey): SurveyWeekEntity =
+        SurveyWeekEntity(
+            id = priceSurvey.id.value,
+            startDate = priceSurvey.surveyWeek.startDate.toString(),
+            endDate = priceSurvey.surveyWeek.endDate.toString(),
+            summaryImportedAt = priceSurvey.summaryImportedAt?.toEpochMilli()
+                ?: error("PriceSurvey summaryImportedAt is required"),
+            stationImportedAt = priceSurvey.stationImportedAt?.toEpochMilli(),
+        )
+
     fun formatStationAddress(row: StationPriceRow): String {
         val parts = buildList {
             add(row.address.trim())

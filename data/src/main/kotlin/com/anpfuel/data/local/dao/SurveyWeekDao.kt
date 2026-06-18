@@ -23,4 +23,31 @@ interface SurveyWeekDao {
 
     @Query("UPDATE survey_week SET station_imported_at = :stationImportedAt WHERE id = :id")
     suspend fun updateStationImportedAt(id: String, stationImportedAt: Long)
+
+    @Query("UPDATE survey_week SET station_imported_at = NULL WHERE id = :id")
+    suspend fun clearStationImportedAt(id: String)
+
+    @Query("SELECT * FROM survey_week ORDER BY end_date DESC")
+    suspend fun findAllOrderedByEndDateDesc(): List<SurveyWeekEntity>
+
+    @Query(
+        """
+        SELECT * FROM survey_week
+        WHERE start_date = :startDate AND end_date = :endDate
+        LIMIT 1
+        """,
+    )
+    suspend fun findByDates(startDate: String, endDate: String): SurveyWeekEntity?
+
+    @Query(
+        """
+        SELECT * FROM survey_week
+        WHERE station_imported_at IS NOT NULL
+        ORDER BY end_date DESC
+        """,
+    )
+    suspend fun findAllWithStationDataOrderedByEndDateDesc(): List<SurveyWeekEntity>
+
+    @Query("DELETE FROM survey_week")
+    suspend fun deleteAll()
 }

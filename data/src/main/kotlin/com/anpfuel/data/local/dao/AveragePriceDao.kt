@@ -31,4 +31,44 @@ interface AveragePriceDao {
 
     @Query("SELECT * FROM average_price WHERE survey_week_id = :surveyWeekId LIMIT 1")
     suspend fun findAnyBySurveyWeek(surveyWeekId: String): AveragePriceEntity?
+
+    @Query(
+        """
+        SELECT ap.* FROM average_price ap
+        INNER JOIN survey_week sw ON ap.survey_week_id = sw.id
+        WHERE ap.state = :state
+          AND ap.municipality = :municipality
+          AND ap.fuel_product = :fuelProduct
+        ORDER BY sw.end_date ASC
+        """,
+    )
+    suspend fun findPriceHistory(
+        state: String,
+        municipality: String,
+        fuelProduct: String,
+    ): List<AveragePriceEntity>
+
+    @Query(
+        """
+        SELECT DISTINCT state FROM average_price
+        WHERE survey_week_id = :surveyWeekId
+        ORDER BY state ASC
+        """,
+    )
+    suspend fun findDistinctStates(surveyWeekId: String): List<String>
+
+    @Query(
+        """
+        SELECT DISTINCT municipality FROM average_price
+        WHERE survey_week_id = :surveyWeekId AND state = :state
+        ORDER BY municipality COLLATE NOCASE ASC
+        """,
+    )
+    suspend fun findDistinctMunicipalities(
+        surveyWeekId: String,
+        state: String,
+    ): List<String>
+
+    @Query("DELETE FROM average_price")
+    suspend fun deleteAll()
 }

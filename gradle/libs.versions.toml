@@ -19,6 +19,7 @@ mockk = "1.13.13"
 turbine = "1.2.0"
 poi = "5.3.0"
 kxml2 = "2.3.0"
+datastore = "1.1.1"
 compileSdk = "35"
 minSdk = "26"
 targetSdk = "35"
@@ -62,6 +63,7 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 poi-ooxml = { group = "org.apache.poi", name = "poi-ooxml", version.ref = "poi" }
 kxml2 = { group = "net.sf.kxml", name = "kxml2", version.ref = "kxml2" }
+datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
