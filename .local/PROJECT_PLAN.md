@@ -58,12 +58,6 @@ Each item is a **micro-step**. Mark `[x]` when done. Do not skip **Validation ga
 **Duration:** ~2 days ⏱  
 📎 UC-001, `docs/data-sources.md`
 
-### 4.3 Downloader
-
-- [ ] **4.3.1** `AnpFileDownloader` — stream to `context.cacheDir/anp/` 
-- [ ] **4.3.2** Verify file size > 0 and MIME/extension check
-- [ ] **4.3.3** Optional: SHA-256 checksum for re-import detection
-
 **✅ Gate 4 — Network POC passed:**
 
 | Criterion | Target |
@@ -402,4 +396,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 4.2 Scraper complete ✓ — next action **Phase 4.3 Downloader**.
+**Current repo status (2026-06-18):** Phase 4 Network layer complete ✓ — next action **Phase 5.1 SyncPriceTablesUseCase**.
