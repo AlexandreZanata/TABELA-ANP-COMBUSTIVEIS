@@ -7,7 +7,7 @@ Open-source Android app to browse Brazilian ANP (National Petroleum Agency) week
 
 **100% open source and free to use** under the [MIT License](LICENSE). The only requirement when reusing or redistributing this project is to **reference the original source** — see [docs/license.md](docs/license.md).
 
-## Features (planned)
+## Features
 
 - Automatic download of latest ANP price tables from [gov.br/anp](https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas)
 - Browse average prices by fuel type, state, and city
@@ -91,6 +91,17 @@ Before implementing a feature:
 6. Follow [commit conventions](docs/commit-conventions.md) (English, Conventional Commits)
 
 See **[CONTRIBUTING.md](CONTRIBUTING.md)** for the full contributor guide.
+
+## Releases
+
+**Latest:** [v1.0.0](docs/releases/v1.0.0.md) — MVP with UC-001…UC-008. Sideload the signed APK from GitHub Releases (see [release build guide](docs/release-build.md)).
+
+Validate a release locally:
+
+```bash
+./gradlew validateReleaseTag      # Gate 10 readiness (no build)
+./gradlew createReleaseTag        # signed build + annotated tag v1.0.0
+```
 
 ## License
 

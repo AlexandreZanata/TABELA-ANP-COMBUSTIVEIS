@@ -45,3 +45,17 @@ tasks.register<Exec>("validateGithubReleaseNotes") {
     commandLine("bash", "scripts/validate-github-release-notes.sh")
     isIgnoreExitValue = false
 }
+
+tasks.register<Exec>("validateReleaseTag") {
+    group = "verification"
+    description = "Validates v1.0.0 tag readiness — version, license, disclaimers (Phase 10.7)"
+    commandLine("bash", "scripts/validate-release-tag.sh")
+    isIgnoreExitValue = false
+}
+
+tasks.register<Exec>("createReleaseTag") {
+    group = "release"
+    description = "Runs Gate 10 checks, signed release build, and creates annotated tag v1.0.0 (Phase 10.7)"
+    commandLine("bash", "scripts/create-release-tag.sh")
+    isIgnoreExitValue = false
+}
