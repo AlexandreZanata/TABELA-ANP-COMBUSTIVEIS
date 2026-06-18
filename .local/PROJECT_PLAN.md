@@ -40,14 +40,6 @@ Each item is a **micro-step**. Mark `[x]` when done. Do not skip **Validation ga
 **Duration:** ~3–4 days ⏱  
 📎 UC-004, UC-005, architecture schema
 
-### 3.2 FTS5 municipality search
-
-- [ ] **3.2.1** 🔬 Create `municipality_fts` virtual table per architecture.md
-- [ ] **3.2.2** 🔬 After batch insert, rebuild/sync FTS index
-- [ ] **3.2.3** 🔬 Query: `"SAO PAULO"` returns São Paulo city rows
-- [ ] **3.2.4** 🔬 Query: partial `"CAMP"` returns Campinas, Campo Grande, etc.
-- [ ] **3.2.5** 🔬 Diacritics: `"SAO"` matches `SÃO` (unicode61 tokenizer)
-
 ### 3.3 Import pipeline POC
 
 - [ ] **3.3.1** 🔬 Script/test: parser stream → batches of 1000 → Room transaction
@@ -436,4 +428,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 3.1 Room setup complete ✓ — next action **Phase 3.2 FTS5 municipality search**.
+**Current repo status (2026-06-18):** Phase 3.2 FTS municipality search complete ✓ — next action **Phase 3.3 Import pipeline POC**.
