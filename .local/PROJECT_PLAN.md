@@ -40,11 +40,6 @@ Each item is a **micro-step**. Mark `[x]` when done. Do not skip **Validation ga
 **Duration:** ~3–4 days ⏱  
 📎 UC-004, UC-005, architecture schema
 
-### 3.4 Immutable history (BR-003)
-
-- [ ] **3.4.1** Test: re-import same week creates new audit entries, does not DELETE old prices
-- [ ] **3.4.2** Define strategy: upsert by `(survey_week_id, state, municipality, fuel_product)` vs append-only — document choice in ADR if needed
-
 **✅ Gate 3 — Database POC passed:**
 
 | Criterion | Target |
@@ -419,4 +414,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 3.3 Import pipeline POC complete ✓ — next action **Phase 3.4 Immutable history (BR-003)**.
+**Current repo status (2026-06-18):** Phase 3 Database POC complete ✓ (Gate 3) — next action **Phase 4.1 HTTP layer**.
