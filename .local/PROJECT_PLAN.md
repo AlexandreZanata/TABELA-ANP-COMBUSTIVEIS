@@ -80,12 +80,6 @@ Implement **one use case at a time** — test before wiring UI.
 
 **✅ Gate 5.2:** UC-001 tests green with mocked ports.
 
-### 5.6 UC-005 — GetMunicipalityPricesUseCase
-
-- [ ] **5.6.1** Latest week default (BR-006)
-- [ ] **5.6.2** Empty municipality → empty list, not error (BR-010)
-- [ ] **5.6.3** Offline → returns cache (BR-004)
-
 ### 5.7 UC-006 — GetPriceHistoryUseCase
 
 - [ ] **5.7.1** Requires ≥2 weeks or return insufficient data
@@ -364,4 +358,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 5.5 UC-004 SearchMunicipalityUseCase complete ✓ — next action **Phase 5.6 UC-005 GetMunicipalityPricesUseCase**.
+**Current repo status (2026-06-18):** Phase 5.6 UC-005 GetMunicipalityPricesUseCase complete ✓ — next action **Phase 5.7 UC-006 GetPriceHistoryUseCase**.
