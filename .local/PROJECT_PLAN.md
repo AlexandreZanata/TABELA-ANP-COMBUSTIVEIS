@@ -90,25 +90,6 @@ All UC-001…UC-008 have at least happy-path + one failure test.
 
 ---
 
-## Phase 6 — Background sync (WorkManager)
-
-**Goal:** UC-001 runs on schedule and manually.  
-**Duration:** ~2 days ⏱  
-📎 BR-014, BR-015
-
-- [ ] **6.1** `SyncWorker` extends `CoroutineWorker`, `@HiltWorker`
-- [ ] **6.2** Delegates to `SyncPriceTablesUseCase`
-- [ ] **6.3** Periodic work: 7-day interval
-- [ ] **6.4** Constraints: network connected; unmetered when `autoSyncOnWifi` (BR-014)
-- [ ] **6.5** Manual sync: `OneTimeWorkRequest` from UI
-- [ ] **6.6** `RetentionCleanupWorker` after station import (BR-013)
-- [ ] **6.7** Notification channel for sync progress (optional v1)
-- [ ] **6.8** Test: WorkManager integration with `TestListenableWorkerBuilder`
-
-**✅ Gate 6:** Manual + periodic sync import latest week on real device/emulator with network.
-
----
-
 ## Phase 7 — UI foundation (Compose + Material 3)
 
 **Goal:** Theme, navigation, i18n baseline before feature screens.  
@@ -335,4 +316,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 5.10 Repository implementations complete ✓ — next action **Phase 6 Background sync (WorkManager)**.
+**Current repo status (2026-06-18):** Phase 6 Background sync (WorkManager) complete ✓ — next action **Phase 7 UI foundation (Compose + Material 3)**.

@@ -36,6 +36,7 @@ ksp {
 
 dependencies {
     implementation(project(":domain"))
+    implementation(project(":application"))
 
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
@@ -51,6 +52,10 @@ dependencies {
 
     implementation(libs.datastore.preferences)
 
+    implementation(libs.work.runtime.ktx)
+    implementation(libs.hilt.work)
+    ksp(libs.hilt.work.compiler)
+
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.kxml2)
     testImplementation(libs.poi.ooxml)
@@ -60,6 +65,8 @@ dependencies {
     androidTestImplementation(libs.room.testing)
     androidTestImplementation("androidx.test:runner:1.6.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.work:work-testing:${libs.versions.work.get()}")
+    androidTestImplementation(libs.mockk)
     androidTestImplementation(project(":application"))
 }
 
