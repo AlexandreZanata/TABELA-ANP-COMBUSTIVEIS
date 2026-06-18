@@ -5,11 +5,13 @@ import com.anpfuel.domain.exception.DomainException
 import com.anpfuel.domain.model.UserPreferences
 import com.anpfuel.domain.repository.AveragePriceRepository
 import com.anpfuel.domain.repository.DomainEventPublisher
+import com.anpfuel.domain.repository.MunicipalityCatalogRepository
 import com.anpfuel.domain.repository.PriceTableRepository
 import com.anpfuel.domain.repository.UserPreferencesRepository
 import com.anpfuel.domain.rule.EmptyMunicipalityResultRule
 import com.anpfuel.domain.rule.SearchRequiresImportedDataRule
 import com.anpfuel.domain.valueobject.BrazilianState
+import com.anpfuel.domain.valueobject.DataAvailability
 import com.anpfuel.domain.valueobject.DomainId
 import com.anpfuel.domain.valueobject.SurveyWeek
 
@@ -18,10 +20,15 @@ data class LocationStatesResult(
     val states: List<BrazilianState>,
 )
 
+data class CatalogMunicipalityItem(
+    val municipality: String,
+    val dataAvailability: DataAvailability,
+)
+
 data class LocationMunicipalitiesResult(
     val surveyWeek: SurveyWeek,
     val state: BrazilianState,
-    val municipalities: List<String>,
+    val municipalities: List<CatalogMunicipalityItem>,
 ) {
     val isEmpty: Boolean
         get() = EmptyMunicipalityResultRule.shouldReturnEmptyList(municipalities.size)
@@ -38,6 +45,7 @@ data class SelectLocationResult(
 )
 
 class SelectLocationUseCase(
+    private val municipalityCatalogRepository: MunicipalityCatalogRepository,
     private val averagePriceRepository: AveragePriceRepository,
     private val priceTableRepository: PriceTableRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
@@ -47,7 +55,7 @@ class SelectLocationUseCase(
     suspend fun getStatesWithData(): LocationStatesResult {
         requireImportedData()
         val surveyWeek = requireLatestSurveyWeek()
-        val states = averagePriceRepository.getStatesWithData(surveyWeek)
+        val states = municipalityCatalogRepository.getCatalogStates()
 
         return LocationStatesResult(
             surveyWeek = surveyWeek,
@@ -58,10 +66,17 @@ class SelectLocationUseCase(
     suspend fun getMunicipalities(state: BrazilianState): LocationMunicipalitiesResult {
         requireImportedData()
         val surveyWeek = requireLatestSurveyWeek()
-        val municipalities = averagePriceRepository.getMunicipalitiesWithData(
-            state = state,
-            surveyWeek = surveyWeek,
-        )
+        val municipalities = municipalityCatalogRepository.getCatalogMunicipalities(state)
+            .map { entry ->
+                CatalogMunicipalityItem(
+                    municipality = entry.municipality,
+                    dataAvailability = municipalityCatalogRepository.resolveDataAvailability(
+                        state = entry.state,
+                        municipality = entry.municipality,
+                        surveyWeek = surveyWeek,
+                    ),
+                )
+            }
 
         return LocationMunicipalitiesResult(
             surveyWeek = surveyWeek,
@@ -90,19 +105,19 @@ class SelectLocationUseCase(
         validateMunicipalitySelection(
             state = state,
             municipality = municipality,
-            surveyWeek = surveyWeek,
         )
 
         val currentPreferences = userPreferencesRepository.getPreferences()
+        val normalizedMunicipality = municipality.trim()
         val updatedPreferences = currentPreferences.copy(
             preferredState = state,
-            preferredMunicipality = municipality.trim(),
+            preferredMunicipality = normalizedMunicipality,
         )
         userPreferencesRepository.savePreferences(updatedPreferences)
 
         val event = CitySelected.create(
             payload = CitySelected.Payload(
-                municipality = municipality.trim(),
+                municipality = normalizedMunicipality,
                 state = state,
                 surveyWeekId = DomainId.forSurveyWeek(surveyWeek),
             ),
@@ -128,20 +143,19 @@ class SelectLocationUseCase(
     private suspend fun validateMunicipalitySelection(
         state: BrazilianState,
         municipality: String,
-        surveyWeek: SurveyWeek,
     ) {
         val normalizedMunicipality = municipality.trim()
         if (normalizedMunicipality.isBlank()) {
             throw DomainException("Municipality must not be blank")
         }
 
-        val availableMunicipalities = averagePriceRepository.getMunicipalitiesWithData(
+        val catalogEntry = municipalityCatalogRepository.findCatalogEntry(
             state = state,
-            surveyWeek = surveyWeek,
+            municipality = normalizedMunicipality,
         )
-        if (normalizedMunicipality !in availableMunicipalities) {
+        if (catalogEntry == null) {
             throw DomainException(
-                "Selected municipality is not available for ${state.name} in survey week ${surveyWeek.endDate}",
+                "Selected municipality is not in the national catalog for ${state.abbreviation}",
             )
         }
     }

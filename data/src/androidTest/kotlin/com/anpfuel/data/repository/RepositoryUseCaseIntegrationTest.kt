@@ -11,9 +11,11 @@ import com.anpfuel.data.local.importing.ImportTestAssets
 import com.anpfuel.data.local.importing.PriceTableBatchImporter
 import com.anpfuel.data.local.importing.ImportTestCatalogSupport
 import com.anpfuel.data.local.fts.MunicipalityFtsIndexer
+import com.anpfuel.domain.valueobject.DataAvailability
 import com.anpfuel.domain.valueobject.BrazilianState
 import kotlinx.coroutines.runBlocking
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -54,15 +56,19 @@ class RepositoryUseCaseIntegrationTest {
             averagePriceDao = database.averagePriceDao(),
             surveyWeekDao = database.surveyWeekDao(),
         )
+        val municipalityCatalogRepository = ImportTestCatalogSupport.createCatalogRepository(context, database)
         municipalitySearchRepository = ImportTestCatalogSupport.createSearchRepository(context, database)
 
         getMunicipalityPricesUseCase = GetMunicipalityPricesUseCase(
             averagePriceRepository = averagePriceRepository,
+            municipalityCatalogRepository = municipalityCatalogRepository,
             priceTableRepository = priceTableRepository,
             userPreferencesRepository = InMemoryUserPreferencesRepository(),
         )
         searchMunicipalityUseCase = SearchMunicipalityUseCase(
             municipalitySearchRepository = municipalitySearchRepository,
+            municipalityCatalogRepository = municipalityCatalogRepository,
+            averagePriceRepository = averagePriceRepository,
             priceTableRepository = priceTableRepository,
         )
 
@@ -96,6 +102,7 @@ class RepositoryUseCaseIntegrationTest {
         )
 
         assertFalse(result.isEmpty)
+        assertEquals(DataAvailability.HAS_DATA, result.dataAvailability)
         assertTrue(result.prices.isNotEmpty())
         assertTrue(result.prices.all { it.matchesLocation(state, sampleRow.municipality) })
     }

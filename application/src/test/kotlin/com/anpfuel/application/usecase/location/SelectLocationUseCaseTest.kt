@@ -5,10 +5,13 @@ import com.anpfuel.domain.exception.DomainException
 import com.anpfuel.domain.model.UserPreferences
 import com.anpfuel.domain.repository.AveragePriceRepository
 import com.anpfuel.domain.repository.DomainEventPublisher
+import com.anpfuel.domain.repository.MunicipalityCatalogRepository
 import com.anpfuel.domain.repository.PriceTableRepository
 import com.anpfuel.domain.repository.UserPreferencesRepository
 import com.anpfuel.domain.valueobject.BrazilianState
+import com.anpfuel.domain.valueobject.DataAvailability
 import com.anpfuel.domain.valueobject.DomainId
+import com.anpfuel.domain.valueobject.MunicipalityCatalogEntry
 import com.anpfuel.domain.valueobject.SurveyWeek
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -24,6 +27,7 @@ import org.junit.jupiter.api.assertThrows
 
 class SelectLocationUseCaseTest {
 
+    private val municipalityCatalogRepository = mockk<MunicipalityCatalogRepository>()
     private val averagePriceRepository = mockk<AveragePriceRepository>()
     private val priceTableRepository = mockk<PriceTableRepository>()
     private val userPreferencesRepository = mockk<UserPreferencesRepository>()
@@ -33,11 +37,17 @@ class SelectLocationUseCaseTest {
 
     private val surveyWeek = SurveyWeek.fromIsoDates("2026-06-07", "2026-06-13")
     private val state = BrazilianState.SAO_PAULO
-    private val municipality = "São Paulo"
+    private val municipality = "SÃO PAULO"
+    private val catalogEntry = MunicipalityCatalogEntry(
+        state = state,
+        municipality = municipality,
+        ibgeCode = "3550308",
+    )
 
     @BeforeEach
     fun setUp() {
         useCase = SelectLocationUseCase(
+            municipalityCatalogRepository = municipalityCatalogRepository,
             averagePriceRepository = averagePriceRepository,
             priceTableRepository = priceTableRepository,
             userPreferencesRepository = userPreferencesRepository,
@@ -50,8 +60,8 @@ class SelectLocationUseCaseTest {
     }
 
     @Test
-    fun listsStatesWithDataForLatestSurveyWeek() = runTest {
-        coEvery { averagePriceRepository.getStatesWithData(surveyWeek) } returns listOf(
+    fun listsAllCatalogStatesForLatestSurveyWeek() = runTest {
+        coEvery { municipalityCatalogRepository.getCatalogStates() } returns listOf(
             BrazilianState.SAO_PAULO,
             BrazilianState.RIO_DE_JANEIRO,
         )
@@ -60,27 +70,42 @@ class SelectLocationUseCaseTest {
 
         assertEquals(surveyWeek, result.surveyWeek)
         assertEquals(2, result.states.size)
-        coVerify(exactly = 1) { averagePriceRepository.getLatestImportedSurveyWeek() }
+        coVerify(exactly = 1) { municipalityCatalogRepository.getCatalogStates() }
     }
 
     @Test
-    fun listsMunicipalitiesByStateForLatestSurveyWeek() = runTest {
+    fun listsCatalogMunicipalitiesWithDataAvailability() = runTest {
+        coEvery { municipalityCatalogRepository.getCatalogMunicipalities(state) } returns listOf(
+            catalogEntry,
+            MunicipalityCatalogEntry(
+                state = state,
+                municipality = "CAMPINAS",
+                ibgeCode = "3509502",
+            ),
+        )
         coEvery {
-            averagePriceRepository.getMunicipalitiesWithData(state, surveyWeek)
-        } returns listOf("São Paulo", "Campinas")
+            municipalityCatalogRepository.resolveDataAvailability(state, municipality, surveyWeek)
+        } returns DataAvailability.HAS_DATA
+        coEvery {
+            municipalityCatalogRepository.resolveDataAvailability(state, "CAMPINAS", surveyWeek)
+        } returns DataAvailability.NO_DATA_THIS_WEEK
 
         val result = useCase.getMunicipalities(state)
 
         assertEquals(surveyWeek, result.surveyWeek)
         assertEquals(state, result.state)
-        assertEquals(listOf("São Paulo", "Campinas"), result.municipalities)
+        assertEquals(
+            listOf(
+                CatalogMunicipalityItem(municipality, DataAvailability.HAS_DATA),
+                CatalogMunicipalityItem("CAMPINAS", DataAvailability.NO_DATA_THIS_WEEK),
+            ),
+            result.municipalities,
+        )
     }
 
     @Test
     fun emptyMunicipalityListIsNotAnError() = runTest {
-        coEvery {
-            averagePriceRepository.getMunicipalitiesWithData(state, surveyWeek)
-        } returns emptyList()
+        coEvery { municipalityCatalogRepository.getCatalogMunicipalities(state) } returns emptyList()
 
         val result = useCase.getMunicipalities(state)
 
@@ -94,8 +119,8 @@ class SelectLocationUseCaseTest {
         coEvery { userPreferencesRepository.getPreferences() } returns UserPreferences()
         coEvery { userPreferencesRepository.savePreferences(capture(savedPreferences)) } returns Unit
         coEvery {
-            averagePriceRepository.getMunicipalitiesWithData(state, surveyWeek)
-        } returns listOf(municipality)
+            municipalityCatalogRepository.findCatalogEntry(state, municipality)
+        } returns catalogEntry
 
         val result = useCase.selectLocation(state, municipality)
 
@@ -108,6 +133,24 @@ class SelectLocationUseCaseTest {
     }
 
     @Test
+    fun allowsCatalogMunicipalityWithoutCurrentWeekData() = runTest {
+        coEvery { userPreferencesRepository.getPreferences() } returns UserPreferences()
+        coEvery { userPreferencesRepository.savePreferences(any()) } returns Unit
+        coEvery {
+            municipalityCatalogRepository.findCatalogEntry(BrazilianState.ACRE, "ACRELÂNDIA")
+        } returns MunicipalityCatalogEntry(
+            state = BrazilianState.ACRE,
+            municipality = "ACRELÂNDIA",
+            ibgeCode = "1200013",
+        )
+
+        val result = useCase.selectLocation(BrazilianState.ACRE, "ACRELÂNDIA")
+
+        assertEquals("ACRELÂNDIA", result.preferences.preferredMunicipality)
+        coVerify(exactly = 1) { userPreferencesRepository.savePreferences(any()) }
+    }
+
+    @Test
     fun rejectsSelectionWhenNoImportedData() = runTest {
         coEvery { priceTableRepository.countImportedSurveyWeeks() } returns 0
 
@@ -117,11 +160,11 @@ class SelectLocationUseCaseTest {
     }
 
     @Test
-    fun rejectsUnknownMunicipalitySelection() = runTest {
+    fun rejectsMunicipalityNotInCatalog() = runTest {
         coEvery { userPreferencesRepository.getPreferences() } returns UserPreferences()
         coEvery {
-            averagePriceRepository.getMunicipalitiesWithData(state, surveyWeek)
-        } returns listOf("Campinas")
+            municipalityCatalogRepository.findCatalogEntry(state, municipality)
+        } returns null
 
         assertThrows<DomainException> {
             useCase.selectLocation(state, municipality)

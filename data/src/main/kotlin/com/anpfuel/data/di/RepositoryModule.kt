@@ -15,6 +15,7 @@ import com.anpfuel.data.local.preferences.DataStorePriceTableMetadataStore
 import com.anpfuel.data.local.preferences.PriceTableMetadataStore
 import com.anpfuel.data.repository.AveragePriceRepositoryImpl
 import com.anpfuel.data.repository.CacheRepositoryImpl
+import com.anpfuel.data.repository.MunicipalityCatalogRepositoryImpl
 import com.anpfuel.data.repository.MunicipalitySearchRepositoryImpl
 import com.anpfuel.data.repository.NetworkConnectivityRepositoryImpl
 import com.anpfuel.data.repository.NoOpDomainEventPublisher
@@ -27,6 +28,7 @@ import com.anpfuel.data.repository.UserPreferencesRepositoryImpl
 import com.anpfuel.domain.repository.AveragePriceRepository
 import com.anpfuel.domain.repository.CacheRepository
 import com.anpfuel.domain.repository.DomainEventPublisher
+import com.anpfuel.domain.repository.MunicipalityCatalogRepository
 import com.anpfuel.domain.repository.MunicipalitySearchRepository
 import com.anpfuel.application.port.NetworkConnectivityGateway
 import com.anpfuel.domain.repository.PriceTableRepository
@@ -63,6 +65,12 @@ abstract class RepositoryModule {
     abstract fun bindStationPriceRepository(
         impl: StationPriceRepositoryImpl,
     ): StationPriceRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindMunicipalityCatalogRepository(
+        impl: MunicipalityCatalogRepositoryImpl,
+    ): MunicipalityCatalogRepository
 
     @Binds
     @Singleton

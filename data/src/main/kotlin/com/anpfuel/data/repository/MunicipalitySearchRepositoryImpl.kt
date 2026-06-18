@@ -9,6 +9,7 @@ import com.anpfuel.domain.model.MunicipalitySearchResult
 import com.anpfuel.domain.repository.MunicipalitySearchRepository
 import com.anpfuel.domain.rule.IntelligentSearchRankingRule
 import com.anpfuel.domain.valueobject.BrazilianState
+import com.anpfuel.domain.valueobject.DataAvailability
 import com.anpfuel.domain.valueobject.MunicipalityCatalogEntry
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -33,6 +34,7 @@ class MunicipalitySearchRepositoryImpl @Inject constructor(
             MunicipalitySearchResult(
                 municipality = candidate.entry.municipality,
                 state = candidate.entry.state,
+                dataAvailability = DataAvailability.HAS_DATA,
             )
         }
     }

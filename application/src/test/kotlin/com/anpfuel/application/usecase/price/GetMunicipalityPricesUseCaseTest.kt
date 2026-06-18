@@ -4,10 +4,12 @@ import com.anpfuel.domain.exception.DomainException
 import com.anpfuel.domain.model.AveragePrice
 import com.anpfuel.domain.model.UserPreferences
 import com.anpfuel.domain.repository.AveragePriceRepository
+import com.anpfuel.domain.repository.MunicipalityCatalogRepository
 import com.anpfuel.domain.repository.PriceTableRepository
 import com.anpfuel.domain.repository.UserPreferencesRepository
 import com.anpfuel.domain.rule.EmptyMunicipalityResultRule
 import com.anpfuel.domain.valueobject.BrazilianState
+import com.anpfuel.domain.valueobject.DataAvailability
 import com.anpfuel.domain.valueobject.DomainId
 import com.anpfuel.domain.valueobject.FuelProduct
 import com.anpfuel.domain.valueobject.PriceAmount
@@ -18,6 +20,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -26,6 +29,7 @@ import org.junit.jupiter.api.assertThrows
 class GetMunicipalityPricesUseCaseTest {
 
     private val averagePriceRepository = mockk<AveragePriceRepository>()
+    private val municipalityCatalogRepository = mockk<MunicipalityCatalogRepository>()
     private val priceTableRepository = mockk<PriceTableRepository>()
     private val userPreferencesRepository = mockk<UserPreferencesRepository>()
 
@@ -39,6 +43,7 @@ class GetMunicipalityPricesUseCaseTest {
     fun setUp() {
         useCase = GetMunicipalityPricesUseCase(
             averagePriceRepository = averagePriceRepository,
+            municipalityCatalogRepository = municipalityCatalogRepository,
             priceTableRepository = priceTableRepository,
             userPreferencesRepository = userPreferencesRepository,
         )
@@ -49,6 +54,7 @@ class GetMunicipalityPricesUseCaseTest {
             preferredState = state,
             preferredMunicipality = municipality,
         )
+        coEvery { municipalityCatalogRepository.getOperationalNote(any()) } returns null
     }
 
     @Test
@@ -62,6 +68,7 @@ class GetMunicipalityPricesUseCaseTest {
 
         assertEquals(surveyWeek, result.surveyWeek)
         assertEquals(prices, result.prices)
+        assertEquals(DataAvailability.HAS_DATA, result.dataAvailability)
         coVerify(exactly = 1) { averagePriceRepository.getLatestImportedSurveyWeek() }
     }
 
@@ -70,12 +77,43 @@ class GetMunicipalityPricesUseCaseTest {
         coEvery {
             averagePriceRepository.getPricesByMunicipality(state, municipality, surveyWeek)
         } returns emptyList()
+        coEvery {
+            municipalityCatalogRepository.resolveDataAvailability(state, municipality, surveyWeek)
+        } returns DataAvailability.NO_DATA_THIS_WEEK
 
         val result = useCase.invoke()
 
         assertTrue(result.isEmpty)
         assertTrue(result.prices.isEmpty())
+        assertEquals(DataAvailability.NO_DATA_THIS_WEEK, result.dataAvailability)
         assertFalse(EmptyMunicipalityResultRule.isError(result.prices.size))
+    }
+
+    @Test
+    fun br010DistinguishesNeverInAnpFromNoDataThisWeek() = runTest {
+        coEvery {
+            averagePriceRepository.getPricesByMunicipality(
+                BrazilianState.ACRE,
+                "ACRELÂNDIA",
+                surveyWeek,
+            )
+        } returns emptyList()
+        coEvery {
+            municipalityCatalogRepository.resolveDataAvailability(
+                BrazilianState.ACRE,
+                "ACRELÂNDIA",
+                surveyWeek,
+            )
+        } returns DataAvailability.NEVER_IN_ANP
+
+        val result = useCase.invoke(
+            state = BrazilianState.ACRE,
+            municipality = "ACRELÂNDIA",
+        )
+
+        assertTrue(result.isEmpty)
+        assertEquals(DataAvailability.NEVER_IN_ANP, result.dataAvailability)
+        assertNull(result.operationalNote)
     }
 
     @Test
@@ -116,6 +154,7 @@ class GetMunicipalityPricesUseCaseTest {
 
         assertEquals(olderWeek, result.surveyWeek)
         assertEquals(explicitPrices, result.prices)
+        assertEquals(DataAvailability.HAS_DATA, result.dataAvailability)
         coVerify(exactly = 0) { averagePriceRepository.getLatestImportedSurveyWeek() }
     }
 

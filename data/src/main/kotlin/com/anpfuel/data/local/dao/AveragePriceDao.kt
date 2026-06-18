@@ -78,6 +78,13 @@ interface AveragePriceDao {
     )
     suspend fun findDistinctLocationsBySurveyWeek(surveyWeekId: String): List<MunicipalityLocationRow>
 
+    @Query(
+        """
+        SELECT DISTINCT state, municipality FROM average_price
+        """,
+    )
+    suspend fun findDistinctLocationsEverImported(): List<MunicipalityLocationRow>
+
     @Query("DELETE FROM average_price")
     suspend fun deleteAll()
 }

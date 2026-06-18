@@ -5,6 +5,7 @@ import com.anpfuel.data.local.AnpFuelDatabase
 import com.anpfuel.data.local.catalog.MunicipalityAnpAliasMerger
 import com.anpfuel.data.local.catalog.MunicipalityCatalogResolver
 import com.anpfuel.data.local.catalog.MunicipalityCatalogSeeder
+import com.anpfuel.data.repository.MunicipalityCatalogRepositoryImpl
 import com.anpfuel.data.local.fts.MunicipalityFtsIndexer
 import com.anpfuel.data.repository.MunicipalitySearchRepositoryImpl
 
@@ -43,6 +44,16 @@ internal object ImportTestCatalogSupport {
             aliasMerger = aliasMerger,
         )
     }
+
+    fun createCatalogRepository(
+        context: Context,
+        database: AnpFuelDatabase,
+    ): MunicipalityCatalogRepositoryImpl =
+        MunicipalityCatalogRepositoryImpl(
+            municipalityCatalogDao = database.municipalityCatalogDao(),
+            averagePriceDao = database.averagePriceDao(),
+            catalogSeeder = createCatalogSeeder(context, database),
+        )
 
     fun createSearchRepository(
         context: Context,

@@ -18,6 +18,7 @@ import com.anpfuel.application.usecase.sync.SyncPriceTablesUseCase
 import com.anpfuel.domain.repository.AveragePriceRepository
 import com.anpfuel.domain.repository.CacheRepository
 import com.anpfuel.domain.repository.DomainEventPublisher
+import com.anpfuel.domain.repository.MunicipalityCatalogRepository
 import com.anpfuel.domain.repository.MunicipalitySearchRepository
 import com.anpfuel.application.port.NetworkConnectivityGateway
 import com.anpfuel.domain.repository.PriceTableRepository
@@ -112,20 +113,26 @@ object UseCaseModule {
     @Singleton
     fun provideSearchMunicipalityUseCase(
         municipalitySearchRepository: MunicipalitySearchRepository,
+        municipalityCatalogRepository: MunicipalityCatalogRepository,
+        averagePriceRepository: AveragePriceRepository,
         priceTableRepository: PriceTableRepository,
     ): SearchMunicipalityUseCase = SearchMunicipalityUseCase(
         municipalitySearchRepository = municipalitySearchRepository,
+        municipalityCatalogRepository = municipalityCatalogRepository,
+        averagePriceRepository = averagePriceRepository,
         priceTableRepository = priceTableRepository,
     )
 
     @Provides
     @Singleton
     fun provideSelectLocationUseCase(
+        municipalityCatalogRepository: MunicipalityCatalogRepository,
         averagePriceRepository: AveragePriceRepository,
         priceTableRepository: PriceTableRepository,
         userPreferencesRepository: UserPreferencesRepository,
         eventPublisher: DomainEventPublisher,
     ): SelectLocationUseCase = SelectLocationUseCase(
+        municipalityCatalogRepository = municipalityCatalogRepository,
         averagePriceRepository = averagePriceRepository,
         priceTableRepository = priceTableRepository,
         userPreferencesRepository = userPreferencesRepository,
@@ -136,10 +143,12 @@ object UseCaseModule {
     @Singleton
     fun provideGetMunicipalityPricesUseCase(
         averagePriceRepository: AveragePriceRepository,
+        municipalityCatalogRepository: MunicipalityCatalogRepository,
         priceTableRepository: PriceTableRepository,
         userPreferencesRepository: UserPreferencesRepository,
     ): GetMunicipalityPricesUseCase = GetMunicipalityPricesUseCase(
         averagePriceRepository = averagePriceRepository,
+        municipalityCatalogRepository = municipalityCatalogRepository,
         priceTableRepository = priceTableRepository,
         userPreferencesRepository = userPreferencesRepository,
     )

@@ -37,7 +37,10 @@ Display average, min, and max prices for all available `FuelProduct` values in t
 ### A1 — No fuels for municipality
 
 - **WHEN** zero rows for municipality in selected week  
-- **THEN** empty state (BR-010): "No ANP data for this city this week"
+- **THEN** empty state (BR-010) using `dataAvailability`:
+  - `NO_DATA_THIS_WEEK` → `prices_empty_no_data_this_week`
+  - `NEVER_IN_ANP` → `prices_empty_never_in_anp`
+- **AND** show `operationalNote` banner when non-null (Phase 12 week catalog)
 
 ### A2 — User switches survey week
 
@@ -75,3 +78,5 @@ Display average, min, and max prices for all available `FuelProduct` values in t
 - `prices_anp_attribution`
 - `fuel_product_ethanol` (etc. per `FuelProduct`)
 - `prices_empty_municipality`
+- `prices_empty_no_data_this_week`
+- `prices_empty_never_in_anp`

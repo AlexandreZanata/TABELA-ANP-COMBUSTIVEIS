@@ -32,4 +32,21 @@ interface MunicipalityCatalogDao {
 
     @Query("SELECT * FROM municipality_catalog")
     suspend fun findAll(): List<MunicipalityCatalogEntity>
+
+    @Query(
+        """
+        SELECT DISTINCT state FROM municipality_catalog
+        ORDER BY state ASC
+        """,
+    )
+    suspend fun findDistinctStates(): List<String>
+
+    @Query(
+        """
+        SELECT * FROM municipality_catalog
+        WHERE state = :state
+        ORDER BY municipality COLLATE NOCASE ASC
+        """,
+    )
+    suspend fun findByState(state: String): List<MunicipalityCatalogEntity>
 }

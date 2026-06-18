@@ -154,12 +154,6 @@ Manual test script (see Appendix A) passes on emulator + one physical device.
 
 **Context (v1 gap):** Summary import indexes only municipalities present in the imported `SurveyWeek` (~380 cities/week). v2 adds a persistent **MunicipalityCatalog** (IBGE 2024 baseline ~5 570 cities) merged with ANP-published names so search never misses a city the government has ever reported.
 
-### 11.3 Application layer
-
-- [ ] **11.3.1** Extend `SearchMunicipalityUseCase`: search catalog first; annotate results with `DataAvailability` (`HAS_DATA`, `NO_DATA_THIS_WEEK`, `NEVER_IN_ANP`)
-- [ ] **11.3.2** Extend `SelectLocationUseCase`: state browser lists **all** catalog municipalities per state (not only those with current-week prices); badge when no data for active `SurveyWeek`
-- [ ] **11.3.3** Extend `GetMunicipalityPricesUseCase`: BR-010 empty state distinguishes "city not in ANP" vs "city in ANP but not surveyed this week" (surface gov.br operational notes when known)
-
 ### 11.4 UI
 
 - [ ] **11.4.1** Search results row: municipality + state + optional "no data this week" subtitle (i18n)
@@ -498,7 +492,7 @@ The live page lists weeks back to **31/07/2022–06/08/2022** and growing. The a
 **v2 (start here):**
 
 ```
-Phase 11.3–11.4 (use cases + UI) → Gate 11
+Phase 11.4 (use cases + UI) → Gate 11
     → Phase 12.1–12.2 (UC-009 + week catalog POC) → Gate 12.2
     → Phase 12.3–12.4 (sync + WeekPickerScreen) → Gate 12
     → Phase 13 (AnpScaffold + screen audit) → Gate 13   ← can parallelize from 11.4
@@ -506,4 +500,4 @@ Phase 11.3–11.4 (use cases + UI) → Gate 11
     → Phase 15 (hardening + v2.0.0) → Gate 15
 ```
 
-**Current repo status (2026-06-18):** v1 complete (Phases 0–10). **v2 in progress** — Phase 11.2 complete (Gate 11.2); next micro-step: **11.3.1** extend `SearchMunicipalityUseCase` with `DataAvailability`.
+**Current repo status (2026-06-18):** v1 complete (Phases 0–10). **v2 in progress** — Phase 11.3 complete; next micro-step: **11.4.1** search results row with `DataAvailability` subtitle.

@@ -1,6 +1,7 @@
 package com.anpfuel.domain.model
 
 import com.anpfuel.domain.exception.DomainException
+import com.anpfuel.domain.valueobject.DataAvailability
 import com.anpfuel.domain.valueobject.BrazilianState
 import com.anpfuel.domain.valueobject.Cnpj
 import com.anpfuel.domain.valueobject.DomainId
@@ -26,6 +27,7 @@ class DomainModelCoverageTest {
         val result = MunicipalitySearchResult(
             municipality = "Curitiba",
             state = BrazilianState.PARANA,
+            dataAvailability = DataAvailability.HAS_DATA,
         )
 
         assertEquals("Curitiba", result.municipality)

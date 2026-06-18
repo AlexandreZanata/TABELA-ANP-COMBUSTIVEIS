@@ -3,11 +3,13 @@ package com.anpfuel.application.usecase.price
 import com.anpfuel.domain.exception.DomainException
 import com.anpfuel.domain.model.AveragePrice
 import com.anpfuel.domain.repository.AveragePriceRepository
+import com.anpfuel.domain.repository.MunicipalityCatalogRepository
 import com.anpfuel.domain.repository.PriceTableRepository
 import com.anpfuel.domain.repository.UserPreferencesRepository
 import com.anpfuel.domain.rule.EmptyMunicipalityResultRule
 import com.anpfuel.domain.rule.SearchRequiresImportedDataRule
 import com.anpfuel.domain.valueobject.BrazilianState
+import com.anpfuel.domain.valueobject.DataAvailability
 import com.anpfuel.domain.valueobject.SurveyWeek
 
 /**
@@ -18,6 +20,8 @@ data class MunicipalityPricesResult(
     val state: BrazilianState,
     val municipality: String,
     val prices: List<AveragePrice>,
+    val dataAvailability: DataAvailability,
+    val operationalNote: String? = null,
 ) {
     val isEmpty: Boolean
         get() = EmptyMunicipalityResultRule.shouldReturnEmptyList(prices.size)
@@ -25,6 +29,7 @@ data class MunicipalityPricesResult(
 
 class GetMunicipalityPricesUseCase(
     private val averagePriceRepository: AveragePriceRepository,
+    private val municipalityCatalogRepository: MunicipalityCatalogRepository,
     private val priceTableRepository: PriceTableRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
 ) {
@@ -49,11 +54,23 @@ class GetMunicipalityPricesUseCase(
             surveyWeek = resolvedSurveyWeek,
         )
 
+        val dataAvailability = if (prices.isNotEmpty()) {
+            DataAvailability.HAS_DATA
+        } else {
+            municipalityCatalogRepository.resolveDataAvailability(
+                state = resolvedState,
+                municipality = resolvedMunicipality,
+                surveyWeek = resolvedSurveyWeek,
+            )
+        }
+
         return MunicipalityPricesResult(
             surveyWeek = resolvedSurveyWeek,
             state = resolvedState,
             municipality = resolvedMunicipality,
             prices = prices,
+            dataAvailability = dataAvailability,
+            operationalNote = municipalityCatalogRepository.getOperationalNote(resolvedSurveyWeek),
         )
     }
 
