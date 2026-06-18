@@ -7,3 +7,20 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.ksp) apply false
 }
+
+tasks.register<Exec>("scanSecrets") {
+    group = "verification"
+    description = "Scans tracked files for accidental secrets (Phase 9.4.2)"
+    commandLine("bash", "scripts/scan-secrets.sh")
+    isIgnoreExitValue = false
+}
+
+tasks.register("securityCheck") {
+    group = "verification"
+    description = "Runs security verification tasks (Phase 9.4)"
+    dependsOn(
+        "scanSecrets",
+        ":app:testDebugUnitTest",
+        ":data:testDebugUnitTest",
+    )
+}

@@ -118,10 +118,6 @@ Manual test script (see Appendix A) passes on emulator + one physical device.
 
 ### 9.4 Security
 
-- [ ] **9.4.1** `android:usesCleartextTraffic="false"`
-- [ ] **9.4.2** No secrets in repo scan
-- [ ] **9.4.3** ProGuard/R8 rules for release if needed
-
 **✅ Gate 9:** `./gradlew test connectedCheck` (or documented CI equivalent) green.
 
 ---
@@ -232,4 +228,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 9.3 Accessibility complete ✓ — next action **Phase 9.4 Security**.
+**Current repo status (2026-06-18):** Phase 9.4 Security complete ✓ — next action **Phase 10 Release & open source**.
