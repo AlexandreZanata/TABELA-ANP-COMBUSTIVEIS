@@ -128,7 +128,6 @@ Manual test script (see Appendix A) passes on emulator + one physical device.
 **Duration:** ~2–3 days ⏱
 
 - [x] **10.1** Choose license (MIT or Apache 2.0) — `LICENSE` file
-- [ ] **10.2** `CONTRIBUTING.md` — points to docs, commit conventions, TDD
 - [x] **10.3** README badges (build, license) — license badge added; build badge pending
 - [ ] **10.4** Play Store listing draft (optional sideload first)
 - [ ] **10.5** Signed release APK/AAB
@@ -228,4 +227,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 9.4 Security complete ✓ — next action **Phase 10 Release & open source**.
+**Current repo status (2026-06-18):** Phase 10.2 CONTRIBUTING.md complete ✓ — next action **Phase 10.3 build badge** (then 10.4–10.7 release).

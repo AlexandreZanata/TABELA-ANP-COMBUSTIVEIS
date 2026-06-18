@@ -70,6 +70,7 @@ See [docs/data-sources.md](docs/data-sources.md) for column schemas and download
 | [docs/adr/001-kotlin-compose-stack.md](docs/adr/001-kotlin-compose-stack.md) | Architecture decision record |
 | [docs/data-sources.md](docs/data-sources.md) | ANP file formats and URL patterns |
 | [docs/commit-conventions.md](docs/commit-conventions.md) | Git commit and PR standards |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute — TDD, layers, i18n, PRs |
 | [docs/license.md](docs/license.md) | MIT license — free use, attribution required |
 | [.local/PROJECT_PLAN.md](.local/PROJECT_PLAN.md) | Micro-step execution plan (POCs & gates) |
 
@@ -83,6 +84,8 @@ Before implementing a feature:
 4. Write domain tests first (TDD, GIVEN/WHEN/THEN)
 5. Add i18n keys for all user-visible strings
 6. Follow [commit conventions](docs/commit-conventions.md) (English, Conventional Commits)
+
+See **[CONTRIBUTING.md](CONTRIBUTING.md)** for the full contributor guide.
 
 ## License
 
