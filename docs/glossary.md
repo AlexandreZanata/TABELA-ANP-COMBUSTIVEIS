@@ -17,6 +17,11 @@
 | **PriceTable** | The downloadable XLSX file published by ANP for a SurveyWeek. |
 | **PriceTableType** | Either `WEEKLY_SUMMARY` or `STATION_DETAIL`. |
 | **SyncJob** | A background task that discovers, downloads, and imports new PriceTables. |
+| **MunicipalityCatalog** | Persistent IBGE baseline (~5 570 municipalities) merged with ANP-published aliases for national search (v2). |
+| **MunicipalityCatalogEntry** | A single municipality in the catalog: `state`, `municipality`, optional `ibgeCode`. ANP week availability is derived at query time, not stored. |
+| **MunicipalityLocationKey** | Stable identity pair (`state` + `municipality`) for catalog matching and availability checks. |
+| **DataAvailability** | Query-time annotation: `HAS_DATA`, `NO_DATA_THIS_WEEK`, or `NEVER_IN_ANP`. |
+| **SearchMatchType** | FTS match quality tier for ranking: `EXACT_PREFIX`, `ACCENT_NORMALIZED`, `TYPO_TOLERANT`, `SUBSTRING`. |
 
 ## FuelProduct Enum
 
@@ -146,11 +151,24 @@
 **THEN** reject or queue the second request  
 **AND** never run two imports concurrently
 
+### BR-016 — Municipality Catalog Completeness
+**GIVEN** IBGE catalog loaded  
+**WHEN** user searches  
+**THEN** every federative unit municipality appears in the index regardless of current week data  
+**AND** catalog must contain at least 5 570 entries
+
+### BR-017 — Intelligent Search Ranking
+**GIVEN** query ≥ 2 characters  
+**WHEN** FTS runs  
+**THEN** rank matches as: exact prefix > accent-normalized prefix > typo-tolerant token prefix > substring  
+**AND** always tie-break by state abbreviation (alphabetical)
+
 ## Acronyms
 
 | Acronym | Meaning |
 |---------|---------|
 | ANP | Agência Nacional do Petróleo, Gás Natural e Biocombustíveis |
+| IBGE | Instituto Brasileiro de Geografia e Estatística |
 | LPC | Levantamento de Preços de Combustíveis (Fuel Price Survey) |
 | CNPJ | Cadastro Nacional da Pessoa Jurídica (Brazilian company tax ID) |
 | CNG | Compressed Natural Gas (GNV in Brazil) |

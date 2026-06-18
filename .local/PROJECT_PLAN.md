@@ -1,7 +1,7 @@
 # ANP Fuel Prices — Master Execution Plan
 
 > **Location:** `.local/PROJECT_PLAN.md`  
-> **Status:** Living document  
+> **Status:** Living document — **v1 complete; v2 in planning**  
 > **Stack:** [docs/tech-stack.md](../docs/tech-stack.md)  
 > **Architecture:** [docs/architecture.md](../docs/architecture.md)  
 > **Product:** [docs/user-business-logic.md](../docs/user-business-logic.md)
@@ -127,7 +127,246 @@ Manual test script (see Appendix A) passes on emulator + one physical device.
 
 ---
 
-## Appendix A — Manual test script (MVP)
+# v2 — National coverage, week picker, safe areas & fuel icons
+
+> **Started:** 2026-06-18  
+> **Goal:** Match and exceed the gov.br ANP listing experience on device — every municipality the government publishes, intelligent search, user-chosen survey week, correct safe areas on all screens, and recognizable fuel icons.  
+> **Reference page:** [Levantamento de Preços — últimas semanas pesquisadas](https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas)  
+> **Data source doc:** [docs/data-sources.md](../docs/data-sources.md)
+
+## v2 product pillars
+
+| # | Pillar | User-visible outcome |
+|---|--------|----------------------|
+| 1 | **All published municipalities** | Every city that appears in ANP spreadsheets is searchable; IBGE catalog fills gaps so users can find any Brazilian municipality and see whether ANP data exists for the selected week |
+| 2 | **Intelligent search** | Accent-insensitive, typo-tolerant FTS across ~5 570 municipalities; state always shown; relevance-ranked results in &lt; 100 ms |
+| 3 | **Survey week picker** | On every app entry (first launch and returning), user chooses **latest week** or a **specific historical week** before download — mirroring the gov.br week blocks |
+| 4 | **Safe areas** | No content clipped under status bar, notch, or gesture navigation bar on **every** screen |
+| 5 | **Fuel SVG icons** | Each `FuelProduct` shows a vector icon (OSS-licensed); no text-only fuel rows in price lists |
+
+---
+
+## Phase 11 — Municipality master catalog & intelligent search 🔬
+
+**Goal:** User can find **any** municipality published by ANP (and any IBGE municipality for discovery), with search quality matching or beating gov.br usability.  
+**Duration:** ~5–7 days ⏱  
+📎 UC-004 (extend), UC-003, BR-010, BR-012, `docs/glossary.md`
+
+**Context (v1 gap):** Summary import indexes only municipalities present in the imported `SurveyWeek` (~380 cities/week). v2 adds a persistent **MunicipalityCatalog** (IBGE 2024 baseline ~5 570 cities) merged with ANP-published names so search never misses a city the government has ever reported.
+
+### 11.2 Data layer — IBGE seed + FTS rebuild 🔬
+
+- [ ] **11.2.1** Add bundled asset `assets/ibge_municipalities.json` (official IBGE open data, 5 570 rows, UTF-8, normalized uppercase without accents for matching)
+- [ ] **11.2.2** Room table `municipality_catalog` + migration; seed on first launch or app upgrade
+- [ ] **11.2.3** Extend `municipality_fts` to index catalog rows; sync trigger after catalog seed and after each summary import (merge ANP aliases)
+- [ ] **11.2.4** POC spike: import latest `resumo_semanal_lpc` and assert **100%** of MUNICIPIOS sheet rows resolve to a catalog entry
+
+**✅ Gate 11.2 — Catalog POC passed:**
+
+| Criterion | Target |
+|-----------|--------|
+| IBGE seed count | ≥ 5 570 municipalities |
+| ANP week 2026-06-07→13 match rate | 100% of ~380 published cities map to catalog |
+| FTS search "sao paulo" | Returns city + state + homonyms with state visible |
+| FTS search with typo "san paolo" | Returns São Paulo (SP) in top 3 (BR-017) |
+| Query latency (3 chars, cold) | &lt; 100 ms on mid-range device |
+
+### 11.3 Application layer
+
+- [ ] **11.3.1** Extend `SearchMunicipalityUseCase`: search catalog first; annotate results with `DataAvailability` (`HAS_DATA`, `NO_DATA_THIS_WEEK`, `NEVER_IN_ANP`)
+- [ ] **11.3.2** Extend `SelectLocationUseCase`: state browser lists **all** catalog municipalities per state (not only those with current-week prices); badge when no data for active `SurveyWeek`
+- [ ] **11.3.3** Extend `GetMunicipalityPricesUseCase`: BR-010 empty state distinguishes "city not in ANP" vs "city in ANP but not surveyed this week" (surface gov.br operational notes when known)
+
+### 11.4 UI
+
+- [ ] **11.4.1** Search results row: municipality + state + optional "no data this week" subtitle (i18n)
+- [ ] **11.4.2** State/municipality picker: full list with sticky section headers by letter
+- [ ] **11.4.3** Empty state illustrations for BR-010 variants
+
+**✅ Gate 11 — National search complete:**
+
+```bash
+./gradlew :domain:test :application:test :data:testDebugUnitTest
+```
+
+Manual: search 10 cities including homonyms (e.g. "Bom Jesus" in multiple states) — all resolve correctly; cities without weekly data show informative empty state, not crash.
+
+---
+
+## Phase 12 — Survey week selection (gov.br parity)
+
+**Goal:** User always chooses **which week** to download or consult — defaulting to latest — matching the ANP listing page structure.  
+**Duration:** ~4–6 days ⏱  
+📎 UC-001 (extend), UC-002 (extend), new **UC-009**, BR-001, BR-006, `docs/data-sources.md`
+
+**Gov.br reference model (each block on listing page):**
+
+```
+{start_date} a {end_date}                    ← SurveyWeek label (pt-BR locale)
+  • Preços médios semanais: Brasil, regiões, estados e municípios   ← WEEKLY_SUMMARY
+  • Preços por posto revendedor (combustíveis automotivos e GLP P13) ← STATION_DETAIL
+    (Atualizado em {publish_date})           ← optional, parse from HTML when present
+  [NOTA / Aviso …]                           ← optional operational warning (e.g. Belo Horizonte gap)
+```
+
+The listing exposes **~200+ weeks** (Jul/2022 → present, Jun/2026). v2 does **not** bulk-download all weeks on first launch; user picks one week (or "latest") and may add more later.
+
+### 12.1 Domain & use case
+
+- [ ] **12.1.1** Create `docs/use-cases/uc-009-select-survey-week.md` — actor, preconditions, main/alternative flows
+- [ ] **12.1.2** Add `SurveyWeekCatalogEntry` model: `surveyWeek`, `summaryUrl`, `stationUrl`, `publishedAt` (nullable), `operationalNote` (nullable)
+- [ ] **12.1.3** Add domain event `SurveyWeekSelected(surveyWeek, selectionMode: LATEST | SPECIFIC)`
+- [ ] **12.1.4** Document **BR-018 — Week selection before sync**: GIVEN user opens app WHEN no active week preference THEN show week picker before download starts
+- [ ] **12.1.5** Document **BR-019 — Active survey week**: GIVEN user selects week W WHEN browsing prices THEN all screens use W until user changes it (overrides BR-006 default-latest for display)
+- [ ] **12.1.6** Add `activeSurveyWeek` to user preferences (DataStore)
+
+### 12.2 Data layer — listing scraper enrichment 🔬
+
+- [ ] **12.2.1** Extend `AnpListingScraper` to parse week **section headers** (`dd/MM/yyyy a dd/MM/yyyy`) and group URLs under each week
+- [ ] **12.2.2** Parse optional `(Atualizado em d/M/yyyy)` suffix per link; store in metadata
+- [ ] **12.2.3** Parse optional `NOTA:` / `Aviso:` paragraphs attached to a week block; store as `operationalNote`
+- [ ] **12.2.4** Fixture test: HTML snapshot from gov.br listing (Jun/2026) yields ≥ 30 `SurveyWeekCatalogEntry` with both file types for latest week
+- [ ] **12.2.5** Live test: discovered catalog count matches visible week count on listing page (document in `.local/poc-results/week-catalog-poc.md`)
+
+**✅ Gate 12.2 — Week catalog POC passed:**
+
+| Criterion | Target |
+|-----------|--------|
+| Latest week | Both `WEEKLY_SUMMARY` + `STATION_DETAIL` URLs |
+| Week label | Matches gov.br pt-BR date range formatting |
+| Historical depth | ≥ 50 weeks discoverable from single HTML fetch |
+| BH May/2026 note | Operational warning captured when present in fixture |
+
+### 12.3 Application layer
+
+- [ ] **12.3.1** `DiscoverSurveyWeekCatalogUseCase` — returns ordered list (newest first)
+- [ ] **12.3.2** `SelectSurveyWeekUseCase` — persists choice, emits `SurveyWeekSelected`
+- [ ] **12.3.3** Extend `SyncPriceTablesUseCase`: accept optional target `SurveyWeek`; download **only** that week's files (summary mandatory; station per existing preference)
+- [ ] **12.3.4** Extend UC-002 onboarding: after intro slides → **week picker** → sync selected week → location/home
+
+### 12.4 UI — Week picker screen
+
+- [ ] **12.4.1** **WeekPickerScreen** (Compose): scrollable list grouped like gov.br — each row shows date range, "Latest" chip on first entry, updated-at subtitle
+- [ ] **12.4.2** Primary CTA: **Use latest week** (one tap, selects index 0)
+- [ ] **12.4.3** Secondary: tap any historical week → confirm → start sync for that week only
+- [ ] **12.4.4** Show operational note banner when `operationalNote` non-null (collapsible)
+- [ ] **12.4.5** Returning users: show week picker on launch **when** user taps "Change week" OR on fresh install OR when `activeSurveyWeek` not imported locally; otherwise home opens with active week chip in app bar
+- [ ] **12.4.6** App bar **SurveyWeekChip** on home, prices, stations, history — tap opens week picker sheet
+- [ ] **12.4.7** i18n keys: `week_picker_title`, `week_picker_latest`, `week_picker_updated_at`, `week_picker_operational_note`, `week_picker_download_week`, `active_week_label`
+
+**✅ Gate 12 — Week selection complete:**
+
+Manual script (Appendix A2) passes; user can install fresh → pick week `31/05–06/06/2026` → see prices for that week → switch to latest → re-sync.
+
+---
+
+## Phase 13 — Safe area compliance (edge-to-edge)
+
+**Goal:** `enableEdgeToEdge()` is already called in `MainActivity`; every screen must respect system bar insets so content is never clipped.  
+**Duration:** ~2–3 days ⏱  
+📎 Material 3 Compose guidelines, WCAG 2.5.5 touch targets
+
+**Known gap:** No `WindowInsets` / `safeDrawing` padding in current Compose tree — content can render under status bar and gesture navigation bar.
+
+### 13.1 Foundation
+
+- [ ] **13.1.1** Create `AnpScaffold` composable: wraps Material3 `Scaffold` with `contentWindowInsets = WindowInsets.safeDrawing`; exposes `innerPadding` to content lambda
+- [ ] **13.1.2** Create `AnpTopAppBar` wrapper applying `WindowInsets.statusBars` only where full-bleed hero is not used
+- [ ] **13.1.3** Audit `MainActivity`: keep `enableEdgeToEdge()`; set `WindowCompat.setDecorFitsSystemWindows(window, false)` if not implicit
+- [ ] **13.1.4** Document pattern in `docs/architecture.md` § UI — all new screens must use `AnpScaffold`
+
+### 13.2 Screen-by-screen migration
+
+- [ ] **13.2.1** Onboarding flow — top title and bottom CTA clear of system bars
+- [ ] **13.2.2** Week picker (Phase 12) — list padding bottom ≥ nav bar inset
+- [ ] **13.2.3** Home / search — search field and ANP footer attribution above nav bar
+- [ ] **13.2.4** Location picker (state + municipality lists)
+- [ ] **13.2.5** Municipality prices + fuel detail
+- [ ] **13.2.6** Station list + station detail
+- [ ] **13.2.7** Price history chart/list
+- [ ] **13.2.8** Settings + dialogs / bottom sheets
+
+### 13.3 Validation
+
+- [ ] **13.3.1** Compose UI test: assert `AnpScaffold` applies non-zero top/bottom padding when insets mocked
+- [ ] **13.3.2** Screenshot test matrix: phone with notch + gesture nav + tablet (if supported)
+
+**✅ Gate 13 — Safe areas passed:**
+
+| Criterion | Target |
+|-----------|--------|
+| Screens audited | 100% of navigation destinations |
+| Manual check | No text/buttons under status or nav bar on emulator API 34 + one physical device |
+| ANP footer | Fully visible above bottom inset |
+| Bottom sheets | Handle nav bar inset; drag handle not obscured |
+
+---
+
+## Phase 14 — Fuel product SVG icons
+
+**Goal:** Replace text-only `FuelProductLabel` with recognizable per-fuel vector icons using **open-source** assets (Petrobras trademark logos are **not** acceptable for OSS redistribution).  
+**Duration:** ~2–3 days ⏱  
+📎 `FuelProduct` enum (7 values), `FuelProductLabel.kt`
+
+### 14.1 Asset sourcing & license
+
+- [ ] **14.1.1** Evaluate icon sets — pick one primary library for consistency:
+
+| Library | License | Notes |
+|---------|---------|-------|
+| [Material Design Icons (Pictogrammers)](https://pictogrammers.com/library/mdi/) | Apache 2.0 | `gas-station`, `fuel`, `propane-tank`; generic but consistent |
+| [Phosphor Icons](https://phosphoricons.com/) | MIT | `GasPump`, `Drop`, `Flame`; good weight variants |
+| [Tabler Icons](https://tabler.io/icons) | MIT | `gas-station`, `flame`; stroke style |
+
+- [ ] **14.1.2** **Do not use** Petrobras, Ipiranga, or brand-specific pump artwork — trademark restriction
+- [ ] **14.1.3** Create `docs/attribution.md` (or extend `NOTICE`) listing icon sources and licenses
+- [ ] **14.1.4** Download SVG sources; convert to Android Vector Drawable (`app/src/main/res/drawable/ic_fuel_*.xml`)
+
+### 14.2 Icon mapping (`FuelProduct` → drawable)
+
+| `FuelProduct` | Icon concept | Suggested MDI name |
+|---------------|--------------|-------------------|
+| `ETHANOL` | Green drop / leaf fuel | `mdi-barrel` or custom ethanol drop |
+| `GASOLINE_REGULAR` | Pump nozzle | `mdi-gas-station` |
+| `GASOLINE_PREMIUM` | Pump + star badge | `mdi-gas-station` + overlay |
+| `DIESEL_S500` | Pump / barrel (amber) | `mdi-oil` |
+| `DIESEL_S10` | Pump / barrel (variant tint) | `mdi-oil` |
+| `CNG` | Gas cylinder | `mdi-gas-cylinder` |
+| `LPG_P13` | Propane tank | `mdi-propane-tank` |
+
+- [ ] **14.2.1** Add tint tokens in `Color.kt` per fuel (reuse existing contrast-safe palette)
+- [ ] **14.2.2** Create `FuelProductIcon` composable: icon + accessible label (`contentDescription` from i18n)
+- [ ] **14.2.3** Replace text-only rows in price lists, home cards, station detail headers
+- [ ] **14.2.4** Preview composables + screenshot tests for light/dark theme
+
+**✅ Gate 14 — Fuel icons complete:**
+
+All 7 fuels render vector icon in list rows; TalkBack reads localized fuel name; attribution file committed; `./gradlew :app:assembleRelease` succeeds with vector drawables.
+
+---
+
+## Phase 15 — v2 integration, hardening & release
+
+**Goal:** Ship v2.0.0 with all gates green.  
+**Duration:** ~3–4 days ⏱
+
+### 15.1 Documentation
+
+- [ ] **15.1.1** Update `docs/user-business-logic.md` — week picker journey, national search
+- [ ] **15.1.2** Update `README.md` screenshots showing week picker + fuel icons
+- [ ] **15.1.3** CHANGELOG v2.0.0
+
+### 15.2 Quality
+
+- [ ] **15.2.1** Full test suite green
+- [ ] **15.2.2** Manual scripts Appendix A + A2 on emulator + physical device
+- [ ] **15.2.3** DB migration test from v1.0.0 user data
+
+**✅ Gate 15 — v2 release:** Signed APK/AAB; tag `v2.0.0`; GitHub Release notes mention week picker, national search, safe areas, fuel icons.
+
+---
+
+## Appendix A — Manual test script (MVP v1)
 
 Run on **emulator** and **one physical device**:
 
@@ -146,6 +385,25 @@ Run on **emulator** and **one physical device**:
 
 ---
 
+## Appendix A2 — Manual test script (v2)
+
+Run on **emulator (API 34, gesture nav)** and **one physical device with notch**:
+
+| # | Step | Expected |
+|---|------|----------|
+| 1 | Fresh install | Onboarding → **week picker** shown before sync |
+| 2 | Tap **Use latest week** | Sync starts; progress visible; completes |
+| 3 | Search `"san paolo"` (typo) | São Paulo (SP) in top results |
+| 4 | Search `"Bom Jesus"` | Multiple states listed, disambiguated |
+| 5 | Pick catalog city with no ANP data this week | Empty state explains no survey data (BR-010) |
+| 6 | Open week picker → select `31/05–06/06/2026` | Re-sync; prices reflect that week |
+| 7 | Operational note week (if available) | Banner shows gov.br warning text |
+| 8 | Rotate device on home + prices | No content under status or nav bars |
+| 9 | All price screens | Fuel icon + label per product; TalkBack reads name |
+| 10 | Settings → change week | Active week chip updates globally |
+
+---
+
 ## Appendix C — Risk register
 
 | Risk | Mitigation | Phase |
@@ -156,10 +414,18 @@ Run on **emulator** and **one physical device**:
 | DB too large (years of stations) | BR-013 rolling window; summary always kept | 3, 5 |
 | gov.br downtime | Offline-first BR-004; stale banner | 8 |
 | Duplicate municipality names | Always show state in search results | 8 |
+| IBGE ↔ ANP name mismatch | Normalization layer + alias table from import | 11 |
+| Week catalog HTML structure change | Fixture tests + graceful fallback to URL-only discovery | 12 |
+| 200+ weeks list UX | Virtualized list; show last 52 weeks expanded, "load more" | 12 |
+| Large IBGE FTS index size | External-content FTS; benchmark on 2 GB RAM device | 11 |
+| Petrobras logo license | Use OSS icon sets only; document in attribution | 14 |
+| Edge-to-edge regression | `AnpScaffold` mandatory; lint check or arch unit test | 13 |
 
 ---
 
 ## Appendix D — Suggested timeline (solo dev)
+
+### v1 (complete)
 
 | Phase | Duration | Cumulative |
 |-------|----------|------------|
@@ -175,7 +441,17 @@ Run on **emulator** and **one physical device**:
 | 9 — Hardening | 4–5 days | ~44 days |
 | 10 — Release | 2–3 days | **~47 days (~9 weeks)** |
 
-Parallelization (if 2 devs): Phase 2/3/4 POCs can overlap after Phase 1; UI Phase 7 can start during Phase 5.
+### v2 (in progress)
+
+| Phase | Duration | Cumulative |
+|-------|----------|------------|
+| 11 — National search | 5–7 days | ~54 days |
+| 12 — Week picker | 4–6 days | ~60 days |
+| 13 — Safe areas | 2–3 days | ~63 days |
+| 14 — Fuel icons | 2–3 days | ~66 days |
+| 15 — v2 release | 3–4 days | **~70 days (~14 weeks total)** |
+
+Parallelization: Phase 13 (safe areas) can start alongside Phase 11 UI; Phase 14 (icons) independent of Phase 12.
 
 ---
 
@@ -192,15 +468,60 @@ A step is **done** only when:
 
 ---
 
+## Appendix F — Gov.br listing page spec (week picker reference)
+
+Source: [ANP — Levantamento de Preços (últimas semanas pesquisadas)](https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas)  
+Last verified: 2026-06-12 (page updated 12/06/2026 14h24)
+
+### Page structure (what the app must mirror)
+
+Each **SurveyWeek block** on the page contains:
+
+1. **Heading** — date range in pt-BR: `07/06/2026 a 13/06/2026` (maps to `SurveyWeek`)
+2. **Link A** — `Preços médios semanais: Brasil, regiões, estados e municípios` → `WEEKLY_SUMMARY` XLSX
+3. **Link B** — `Preços por posto revendedor (combustíveis automotivos e GLP P13)` → `STATION_DETAIL` XLSX
+4. **Updated timestamp** — `(Atualizado em 12/6/2026)` per link when present
+5. **Operational note** — optional paragraph (e.g. Belo Horizonte missing 26/04–16/05/2026; Goiatuba correction 21–27/05/2023)
+
+### URL patterns (already implemented in v1)
+
+| Type | Pattern |
+|------|---------|
+| Summary | `…/arquivos-lpc/{YEAR}/resumo_semanal_lpc_{start}_{end}.xlsx` |
+| Stations | `…/arquivos-lpc/{YEAR}/revendas_lpc_{start}_{end}.xlsx` |
+
+Dates in URLs use ISO `YYYY-MM-DD`; headings use pt-BR `dd/MM/yyyy`.
+
+### v2 UX mapping
+
+| Gov.br element | App component |
+|----------------|---------------|
+| Week heading | `WeekPickerScreen` list row primary text |
+| Link A + B | Single row selection downloads both (summary always; station per setting) |
+| "Atualizado em …" | Row subtitle `week_picker_updated_at` |
+| NOTA / Aviso | Collapsible `OperationalNoteBanner` |
+| First block (newest) | **Use latest week** CTA — equivalent to clicking most recent block |
+
+### Discovery depth
+
+The live page lists weeks back to **31/07/2022–06/08/2022** and growing. The app stores discovered metadata locally; it does **not** pre-download historical files until the user selects a week.
+
+---
+
 ## Quick reference — what to build next
 
-**If starting from zero today:**
+**v1 (complete):** Phases 0–10 ✓ — MVP v1.0.0 tagged locally.
+
+**v2 (start here):**
 
 ```
-Phase 2.1 (Parser POC) → Gate 2
-         → Phase 2 (Parser POC) → Gate 2
-         → Phase 3 (DB POC) → Gate 3
-         → …
+Phase 11.2 (IBGE catalog POC) → Gate 11.2
+    → Phase 11.3–11.4 (use cases + UI) → Gate 11
+    → Phase 12.1–12.2 (UC-009 + week catalog POC) → Gate 12.2
+    → Phase 12.3–12.4 (sync + WeekPickerScreen) → Gate 12
+    → Phase 13 (AnpScaffold + screen audit) → Gate 13   ← can parallelize from 11.4
+    → Phase 14 (fuel SVG icons) → Gate 14             ← can parallelize from 12
+    → Phase 15 (hardening + v2.0.0) → Gate 15
 ```
 
-**Current repo status (2026-06-18):** All planned phases complete ✓ — POC results documented (Appendix B); MVP v1.0.0 tagged locally; publish GitHub Release when ready.
+**Current repo status (2026-06-18):** v1 complete (Phases 0–10). **v2 in progress** — Phase 11.1 complete; next micro-step: **11.2.1** IBGE municipalities asset + Room catalog table.
