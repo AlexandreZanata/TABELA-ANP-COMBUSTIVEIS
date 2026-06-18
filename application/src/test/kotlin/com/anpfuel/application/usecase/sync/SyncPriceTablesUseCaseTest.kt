@@ -1,6 +1,7 @@
 package com.anpfuel.application.usecase.sync
 
 import com.anpfuel.application.error.AppError
+import com.anpfuel.application.usecase.settings.ApplyStationDetailRetentionUseCase
 import com.anpfuel.domain.event.DomainEvent
 import com.anpfuel.domain.event.PriceTableDiscovered
 import com.anpfuel.domain.event.PriceTableDownloaded
@@ -41,6 +42,7 @@ class SyncPriceTablesUseCaseTest {
     private val priceTableSyncGateway = mockk<PriceTableSyncGateway>()
     private val userPreferencesRepository = mockk<UserPreferencesRepository>()
     private val eventPublisher = mockk<DomainEventPublisher>()
+    private val applyStationDetailRetentionUseCase = mockk<ApplyStationDetailRetentionUseCase>()
 
     private lateinit var useCase: SyncPriceTablesUseCase
     private lateinit var syncState: SyncJobState
@@ -66,6 +68,7 @@ class SyncPriceTablesUseCaseTest {
         coEvery { eventPublisher.publish(any()) } answers {
             publishedEvents += firstArg<DomainEvent>()
         }
+        coEvery { applyStationDetailRetentionUseCase.invoke() } returns Unit
 
         useCase = SyncPriceTablesUseCase(
             syncJobRepository = syncJobRepository,
@@ -73,6 +76,7 @@ class SyncPriceTablesUseCaseTest {
             priceTableSyncGateway = priceTableSyncGateway,
             userPreferencesRepository = userPreferencesRepository,
             eventPublisher = eventPublisher,
+            applyStationDetailRetentionUseCase = applyStationDetailRetentionUseCase,
         )
     }
 
@@ -104,6 +108,7 @@ class SyncPriceTablesUseCaseTest {
         coVerify(exactly = 1) { priceTableSyncGateway.importWeeklySummary(downloadedSummary) }
         coVerify(exactly = 1) { priceTableSyncGateway.importStationDetail(downloadedStation) }
         coVerify(exactly = 2) { priceTableRepository.saveDiscoveredPriceTable(any()) }
+        coVerify(exactly = 1) { applyStationDetailRetentionUseCase.invoke() }
     }
 
     @Test

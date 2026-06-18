@@ -17,6 +17,7 @@ class RepositoryPortsTest {
             SyncJobRepository::class.java,
             PriceTableSyncGateway::class.java,
             DomainEventPublisher::class.java,
+            CacheRepository::class.java,
         ).map { it.simpleName }
 
         assertEquals(
@@ -29,6 +30,7 @@ class RepositoryPortsTest {
                 "SyncJobRepository",
                 "PriceTableSyncGateway",
                 "DomainEventPublisher",
+                "CacheRepository",
             ),
             portNames.toSet(),
         )
@@ -43,6 +45,7 @@ class RepositoryPortsTest {
                 SyncJobRepository::class.java,
                 PriceTableSyncGateway::class.java,
                 DomainEventPublisher::class.java,
+                CacheRepository::class.java,
             ).all { it.isInterface },
         )
     }

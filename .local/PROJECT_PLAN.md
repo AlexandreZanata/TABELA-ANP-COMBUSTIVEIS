@@ -80,12 +80,6 @@ Implement **one use case at a time** — test before wiring UI.
 
 **✅ Gate 5.2:** UC-001 tests green with mocked ports.
 
-### 5.9 UC-008 — Settings use cases
-
-- [ ] **5.9.1** `GetSettingsUseCase`, `UpdatePreferencesUseCase`
-- [ ] **5.9.2** `ClearCacheUseCase` — ALL vs STATION_DETAIL_ONLY
-- [ ] **5.9.3** BR-013 retention trigger after import
-
 ### 5.10 Repository implementations
 
 - [ ] **5.10.1** Wire all `*RepositoryImpl` in `:data`
@@ -347,4 +341,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 5.8 UC-007 Station prices complete ✓ — next action **Phase 5.9 UC-008 Settings use cases**.
+**Current repo status (2026-06-18):** Phase 5.9 UC-008 Settings use cases complete ✓ — next action **Phase 5.10 Repository implementations**.

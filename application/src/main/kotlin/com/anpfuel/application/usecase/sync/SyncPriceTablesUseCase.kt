@@ -2,6 +2,7 @@ package com.anpfuel.application.usecase.sync
 
 import com.anpfuel.application.error.AppError
 import com.anpfuel.application.error.AppErrorResolver
+import com.anpfuel.application.usecase.settings.ApplyStationDetailRetentionUseCase
 import com.anpfuel.domain.event.DomainEvent
 import com.anpfuel.domain.event.PriceTableDiscovered
 import com.anpfuel.domain.event.PriceTableDownloaded
@@ -37,6 +38,7 @@ class SyncPriceTablesUseCase(
     private val priceTableSyncGateway: PriceTableSyncGateway,
     private val userPreferencesRepository: UserPreferencesRepository,
     private val eventPublisher: DomainEventPublisher,
+    private val applyStationDetailRetentionUseCase: ApplyStationDetailRetentionUseCase,
 ) {
 
     suspend operator fun invoke(source: SyncRequestSource): SyncPriceTablesResult {
@@ -138,6 +140,10 @@ class SyncPriceTablesUseCase(
                 lastError = AppErrorResolver.fromThrowable(error)
                 publishImportFailed(table, error, events)
             }
+        }
+
+        if (stationImported) {
+            applyStationDetailRetentionUseCase()
         }
 
         val outcome = when {
