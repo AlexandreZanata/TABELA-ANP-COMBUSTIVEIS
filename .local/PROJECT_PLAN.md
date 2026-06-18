@@ -32,16 +32,6 @@ Each item is a **micro-step**. Mark `[x]` when done. Do not skip **Validation ga
 
 **✅ Gate 0.1:** Repo clones clean; no secrets tracked; cursor rules load in IDE.
 
-### 0.2 Gradle root project
-
-- [ ] **0.2.1** Create root `settings.gradle.kts` — include `:app`, `:domain`, `:application`, `:data`
-- [ ] **0.2.2** Create root `build.gradle.kts` with plugins (Android, Kotlin, Hilt, KSP) in `plugins {}` block
-- [ ] **0.2.3** Create `gradle/libs.versions.toml` — pin Kotlin 2.0+, AGP 8.x, Compose BOM, Room, Hilt, JUnit5
-- [ ] **0.2.4** Add `gradle.properties` — `android.useAndroidX=true`, JVM 17, parallel build
-- [ ] **0.2.5** Add GitHub Actions or local script placeholder for `./gradlew test` (optional in 0.2)
-
-**✅ Gate 0.2:** `./gradlew projects` lists 4 modules without error.
-
 ### 0.3 Module skeletons
 
 - [ ] **0.3.1** `:domain` — `kotlin` JVM plugin, Java 17, package `com.anpfuel.domain`
@@ -588,10 +578,10 @@ A step is **done** only when:
 **If starting from zero today:**
 
 ```
-Phase 0.2 → 0.3 → 0.4 → Phase 1.1 → 1.2 → … → Gate 1.6
+Phase 0.3 → 0.4 → Phase 1.1 → 1.2 → … → Gate 1.6
          → Phase 2 (Parser POC) → Gate 2
          → Phase 3 (DB POC) → Gate 3
          → …
 ```
 
-**Current repo status (2026-06-18):** Docs complete ✓ — next action **Phase 0.2 Gradle root project**.
+**Current repo status (2026-06-18):** Phase 0.2 complete ✓ — next action **Phase 0.3 Module skeletons**.
