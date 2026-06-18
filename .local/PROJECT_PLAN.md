@@ -40,16 +40,6 @@ Each item is a **micro-step**. Mark `[x]` when done. Do not skip **Validation ga
 **Duration:** ~3–5 days ⏱  
 📎 BR-001…BR-015, glossary, agent core §2
 
-### 1.3 Entities & aggregates
-
-- [ ] **1.3.1** `AveragePrice` entity — links `SurveyWeek`, state, municipality, `FuelProduct`
-- [ ] **1.3.2** `StationPrice` entity
-- [ ] **1.3.3** `RetailStation` (if separate from StationPrice)
-- [ ] **1.3.4** `PriceSurvey` aggregate root — owns `SurveyWeek` + import metadata
-- [ ] **1.3.5** Domain generates IDs (UUID or deterministic) — not DB autoincrement 📎 agent core §7
-
-**✅ Gate 1.3:** Entities are rich objects (behavior), not anemic data classes only.
-
 ### 1.4 State machines
 
 - [ ] **1.4.1** `SyncJobState` — IDLE, DISCOVERING, DOWNLOADING, PARSING, IMPORTING, COMPLETED, FAILED
@@ -536,10 +526,10 @@ A step is **done** only when:
 **If starting from zero today:**
 
 ```
-Phase 1.3 → … → Gate 1.6
+Phase 1.4 → … → Gate 1.6
          → Phase 2 (Parser POC) → Gate 2
          → Phase 3 (DB POC) → Gate 3
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 1.2 complete ✓ — next action **Phase 1.3 Entities & aggregates**.
+**Current repo status (2026-06-18):** Phase 1.3 complete ✓ — next action **Phase 1.4 State machines**.
