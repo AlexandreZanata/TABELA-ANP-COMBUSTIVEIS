@@ -65,7 +65,7 @@ fun SearchScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SearchContent(
+internal fun SearchContent(
     uiState: SearchUiState,
     onQueryChange: (String) -> Unit,
     onResultSelected: (MunicipalitySearchResult) -> Unit,

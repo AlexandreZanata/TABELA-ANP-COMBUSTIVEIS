@@ -36,4 +36,11 @@ class PriceAmountTest {
         assertEquals(2, amount.value.scale())
         assertEquals(BigDecimal("1.23"), amount.value)
     }
+
+    @Test
+    fun zeroValueIsAccepted() {
+        val amount = PriceAmount.of(BigDecimal.ZERO)
+
+        assertEquals(BigDecimal("0.00"), amount.value)
+    }
 }

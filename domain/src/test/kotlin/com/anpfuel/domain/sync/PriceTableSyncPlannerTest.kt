@@ -4,6 +4,7 @@ import com.anpfuel.domain.model.PriceTable
 import com.anpfuel.domain.valueobject.PriceTableType
 import com.anpfuel.domain.valueobject.SurveyWeek
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class PriceTableSyncPlannerTest {
@@ -55,6 +56,40 @@ class PriceTableSyncPlannerTest {
         )
 
         assertEquals(2, resolved.size)
+    }
+
+    @Test
+    fun resolvesSummaryOnlyWhenStationFileMissing() {
+        val latestWeekTables = listOf(
+            table(weekA, PriceTableType.WEEKLY_SUMMARY, "summary"),
+        )
+
+        val resolved = PriceTableSyncPlanner.resolveTablesForSync(
+            latestWeekTables = latestWeekTables,
+            syncStationDetail = true,
+        )
+
+        assertEquals(1, resolved.size)
+        assertEquals(PriceTableType.WEEKLY_SUMMARY, resolved.single().tableType)
+    }
+
+    @Test
+    fun selectLatestWeekTablesReturnsEmptyForEmptyDiscovery() {
+        assertTrue(PriceTableSyncPlanner.selectLatestWeekTables(emptyList()).isEmpty())
+    }
+
+    @Test
+    fun resolveTablesForSyncReturnsEmptyWhenSummaryMissing() {
+        val latestWeekTables = listOf(
+            table(weekA, PriceTableType.STATION_DETAIL, "station"),
+        )
+
+        val resolved = PriceTableSyncPlanner.resolveTablesForSync(
+            latestWeekTables = latestWeekTables,
+            syncStationDetail = true,
+        )
+
+        assertTrue(resolved.isEmpty())
     }
 
     private fun table(

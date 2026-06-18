@@ -112,11 +112,6 @@ Manual test script (see Appendix A) passes on emulator + one physical device.
 
 ### 9.1 Testing pyramid
 
-- [ ] **9.1.1** Domain coverage ≥ 90%
-- [ ] **9.1.2** Application: all use cases have tests
-- [ ] **9.1.3** Data: parser + repository integration tests
-- [ ] **9.1.4** UI: 2–3 critical Compose tests (search, home prices)
-
 ### 9.2 Performance
 
 - [ ] **9.2.1** Import 20K rows on mid-range emulator < 60s
@@ -245,4 +240,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 8.6 UC-008 Settings complete ✓ — next action **Phase 9 Hardening** or **Gate 8 manual test**.
+**Current repo status (2026-06-18):** Phase 9.1 Testing pyramid complete ✓ — next action **Phase 9.2 Performance**.

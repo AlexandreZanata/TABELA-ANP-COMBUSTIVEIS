@@ -78,7 +78,7 @@ fun HomeScreen(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-private fun HomeContent(
+internal fun HomeContent(
     uiState: HomeUiState,
     darkTheme: Boolean,
     onToggleTheme: () -> Unit,
