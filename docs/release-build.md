@@ -74,6 +74,22 @@ Validation checks:
 - AAB signature verified with `jarsigner`
 - Uncompressed APK size ≤ 15 MB (Phase 9.2.2)
 
+## 5. Tag v1.0.0 (local)
+
+Validates Gate 10 (license, README, release notes, clean tree) and creates an annotated git tag:
+
+```bash
+./gradlew createReleaseTag
+```
+
+Validate only (no build, no tag):
+
+```bash
+./gradlew validateReleaseTag
+```
+
+Tag is local only until you push: `git push origin v1.0.0` (maintainer action).
+
 ## CI note
 
 GitHub Actions CI runs unit tests only. Signed release builds are **maintainer-local** or run in a protected workflow with secrets — never commit keystores or passwords.

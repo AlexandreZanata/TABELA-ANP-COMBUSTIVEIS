@@ -26,11 +26,18 @@ assert_file "$GRADLE" "app/build.gradle.kts"
 assert_file "$README" "README.md"
 assert_file "$RELEASE_NOTES" "release notes"
 
-if [[ "$README" != *"LICENSE"* ]]; then
-    echo "ERROR: README must reference LICENSE (Gate 10)"
+README_TEXT="$(cat "$README")"
+if [[ "$README_TEXT" != *"MIT License"* ]]; then
+    echo "ERROR: README must reference MIT License (Gate 10)"
     exit 1
 fi
-echo "OK: README references LICENSE"
+echo "OK: README references MIT License"
+
+if [[ "$README_TEXT" != *"docs/releases/v1.0.0.md"* ]]; then
+    echo "ERROR: README must link to release notes (Gate 10)"
+    exit 1
+fi
+echo "OK: README links to v1.0.0 release notes"
 
 VERSION_NAME="$(grep 'versionName' "$GRADLE" | head -n 1 | sed -E 's/.*"([^"]+)".*/\1/')"
 VERSION_CODE="$(grep 'versionCode' "$GRADLE" | head -n 1 | sed -E 's/.*= ([0-9]+).*/\1/')"

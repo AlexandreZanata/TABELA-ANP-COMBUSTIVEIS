@@ -129,7 +129,7 @@ Manual test script (see Appendix A) passes on emulator + one physical device.
 
 - [x] **10.1** Choose license (MIT or Apache 2.0) — `LICENSE` file
 
-**✅ Gate 10 — Release:** Installable signed build; README accurate; license present.
+**✅ Gate 10 — Release:** Installable signed build; README accurate; license present. **Phase 10 complete.**
 
 ---
 
