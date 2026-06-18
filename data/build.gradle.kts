@@ -43,12 +43,15 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines.android)
 
+    implementation(libs.okhttp)
+
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.kxml2)
     testImplementation(libs.poi.ooxml)
+    testImplementation("com.squareup.okhttp3:mockwebserver:${libs.versions.okhttp.get()}")
 
     androidTestImplementation("androidx.test:core:1.6.1")
     androidTestImplementation(libs.room.testing)

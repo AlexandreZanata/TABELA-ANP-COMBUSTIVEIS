@@ -58,11 +58,6 @@ Each item is a **micro-step**. Mark `[x]` when done. Do not skip **Validation ga
 **Duration:** ~2 days ⏱  
 📎 UC-001, `docs/data-sources.md`
 
-### 4.1 HTTP layer
-
-- [ ] **4.1.1** `NetworkModule` — OkHttp with timeouts, retry (max 3), HTTPS only
-- [ ] **4.1.2** Test: GET ANP listing page returns 200 (integration test — optional `@Ignore` offline)
-
 ### 4.2 Scraper
 
 - [ ] **4.2.1** `AnpListingScraper` — Jsoup parse listing page
@@ -414,4 +409,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 3 Database POC complete ✓ (Gate 3) — next action **Phase 4.1 HTTP layer**.
+**Current repo status (2026-06-18):** Phase 4.1 HTTP layer complete ✓ — next action **Phase 4.2 Scraper**.
