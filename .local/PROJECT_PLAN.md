@@ -40,14 +40,6 @@ Each item is a **micro-step**. Mark `[x]` when done. Do not skip **Validation ga
 **Duration:** ~3–5 days ⏱  
 📎 BR-001…BR-015, glossary, agent core §2
 
-### 1.5 Domain events
-
-- [ ] **1.5.1** Sealed hierarchy / data classes: past tense names per glossary
-- [ ] **1.5.2** Each event: `id`, `timestamp`, `payload`
-- [ ] **1.5.3** Events immutable (data class + val only)
-
-**✅ Gate 1.5:** Event catalog matches glossary exactly.
-
 ### 1.6 Repository ports (interfaces)
 
 - [ ] **1.6.1** `PriceTableRepository`
@@ -515,10 +507,10 @@ A step is **done** only when:
 **If starting from zero today:**
 
 ```
-Phase 1.5 → … → Gate 1.6
+Phase 1.6 → Gate 1.6
          → Phase 2 (Parser POC) → Gate 2
          → Phase 3 (DB POC) → Gate 3
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 1.4 complete ✓ — next action **Phase 1.5 Domain events**.
+**Current repo status (2026-06-18):** Phase 1.5 complete ✓ — next action **Phase 1.6 Repository ports**.
