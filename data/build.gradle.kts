@@ -32,3 +32,21 @@ dependencies {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+
+afterEvaluate {
+    tasks.register<Test>("parserMemoryTest") {
+        description = "Runs parser memory POC with a 64MB heap"
+        group = "verification"
+
+        val unitTest = tasks.named<Test>("testDebugUnitTest").get()
+        testClassesDirs = unitTest.testClassesDirs
+        classpath = unitTest.classpath
+
+        useJUnitPlatform {
+            includeTags("parser-memory")
+        }
+
+        maxHeapSize = "64m"
+        jvmArgs("-XX:+HeapDumpOnOutOfMemoryError")
+    }
+}

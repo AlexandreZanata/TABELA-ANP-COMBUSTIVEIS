@@ -34,31 +34,6 @@ Each item is a **micro-step**. Mark `[x]` when done. Do not skip **Validation ga
 
 ---
 
-## Phase 2 — POC: XLSX streaming parser 🔬
-
-**Goal:** Prove we can parse ANP samples on-device without OOM.  
-**Duration:** ~3–4 days ⏱  
-📎 `data/samples/`, BR-001, BR-002
-
-### 2.3 Memory & performance POC
-
-- [ ] **2.3.1** 🔬 JVM test: parse full station file with `-Xmx64m` heap — must not OOM
-- [ ] **2.3.2** 🔬 Measure parse time on dev machine — target < 30s for 20K rows (informational)
-- [ ] **2.3.3** Document results in `.local/poc-results/parser-poc.md`
-
-**✅ Gate 2 — Parser POC passed:**
-
-| Criterion | Target |
-|-----------|--------|
-| Row count vs POI | 100% match |
-| BR-002 mapping on samples | 100% mapped |
-| Heap 64MB test | No OOM |
-| Header/metadata rows skipped | Correct columns |
-
-**If gate fails:** evaluate fast-xml-reader library or chunked POI — document in new ADR before continuing.
-
----
-
 ## Phase 3 — POC: Room + FTS + batch import 🔬
 
 **Goal:** Prove local DB handles import volume and city search.  
