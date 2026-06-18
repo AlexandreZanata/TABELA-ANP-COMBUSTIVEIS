@@ -78,15 +78,6 @@ Document live test date in `.local/poc-results/network-poc.md`.
 
 Implement **one use case at a time** — test before wiring UI.
 
-### 5.2 UC-001 — SyncPriceTablesUseCase
-
-- [ ] **5.2.1** Test (MockK): discover → download → parse → import — happy path
-- [ ] **5.2.2** Test: no new URLs → `SYNC_NO_NEW_DATA`
-- [ ] **5.2.3** Test: network fail → cache preserved (BR-011)
-- [ ] **5.2.4** Test: concurrent sync rejected (BR-015)
-- [ ] **5.2.5** Implement use case
-- [ ] **5.2.6** Emit domain events / audit log calls
-
 **✅ Gate 5.2:** UC-001 tests green with mocked ports.
 
 ### 5.3 UC-002 — Onboarding
@@ -391,4 +382,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 5.1 Error model complete ✓ — next action **Phase 5.2 UC-001 SyncPriceTablesUseCase**.
+**Current repo status (2026-06-18):** Phase 5.2 UC-001 SyncPriceTablesUseCase complete ✓ — next action **Phase 5.3 UC-002 Onboarding**.
