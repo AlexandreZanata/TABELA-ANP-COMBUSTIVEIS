@@ -38,3 +38,10 @@ tasks.register<Exec>("validateReleaseBuild") {
     commandLine("bash", "scripts/validate-release-build.sh")
     isIgnoreExitValue = false
 }
+
+tasks.register<Exec>("validateGithubReleaseNotes") {
+    group = "verification"
+    description = "Validates GitHub Release v1.0.0 draft notes and disclaimers (Phase 10.6)"
+    commandLine("bash", "scripts/validate-github-release-notes.sh")
+    isIgnoreExitValue = false
+}

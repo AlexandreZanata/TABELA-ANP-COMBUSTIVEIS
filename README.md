@@ -76,6 +76,7 @@ See [docs/data-sources.md](docs/data-sources.md) for column schemas and download
 | [docs/play-store-listing.md](docs/play-store-listing.md) | Play Store listing draft (en + pt-BR) |
 | [docs/privacy-policy.md](docs/privacy-policy.md) | Privacy policy — no personal data collected |
 | [docs/release-build.md](docs/release-build.md) | Signed release APK/AAB build instructions |
+| [docs/releases/v1.0.0.md](docs/releases/v1.0.0.md) | GitHub Release v1.0.0 draft notes |
 | [.local/PROJECT_PLAN.md](.local/PROJECT_PLAN.md) | Micro-step execution plan (POCs & gates) |
 
 ## Development

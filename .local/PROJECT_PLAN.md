@@ -128,7 +128,6 @@ Manual test script (see Appendix A) passes on emulator + one physical device.
 **Duration:** ~2–3 days ⏱
 
 - [x] **10.1** Choose license (MIT or Apache 2.0) — `LICENSE` file
-- [ ] **10.6** GitHub Release v1.0.0 notes — ANP attribution, offline disclaimer
 - [ ] **10.7** Tag `v1.0.0`
 
 **✅ Gate 10 — Release:** Installable signed build; README accurate; license present.
@@ -224,4 +223,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 10.5 signed release APK/AAB complete ✓ — next action **Phase 10.6 GitHub Release v1.0.0 notes**.
+**Current repo status (2026-06-18):** Phase 10.6 GitHub Release v1.0.0 notes complete ✓ — next action **Phase 10.7 tag `v1.0.0`**.

@@ -82,4 +82,5 @@ GitHub Actions CI runs unit tests only. Signed release builds are **maintainer-l
 
 - [play-store-listing.md](play-store-listing.md) — store copy draft (Phase 10.4)
 - [privacy-policy.md](privacy-policy.md) — required for Play Store
+- [releases/v1.0.0.md](releases/v1.0.0.md) — GitHub Release v1.0.0 draft notes (Phase 10.6)
 - [CONTRIBUTING.md](../CONTRIBUTING.md) — secrets policy
