@@ -1,5 +1,6 @@
 package com.anpfuel.data.di
 
+import com.anpfuel.data.remote.AnpListingScraper
 import com.anpfuel.data.remote.OkHttpClientFactory
 import dagger.Module
 import dagger.Provides
@@ -15,4 +16,9 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient = OkHttpClientFactory.create()
+
+    @Provides
+    @Singleton
+    fun provideAnpListingScraper(okHttpClient: OkHttpClient): AnpListingScraper =
+        AnpListingScraper(okHttpClient)
 }

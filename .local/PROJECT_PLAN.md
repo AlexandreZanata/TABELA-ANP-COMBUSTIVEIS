@@ -58,13 +58,6 @@ Each item is a **micro-step**. Mark `[x]` when done. Do not skip **Validation ga
 **Duration:** ~2 days ⏱  
 📎 UC-001, `docs/data-sources.md`
 
-### 4.2 Scraper
-
-- [ ] **4.2.1** `AnpListingScraper` — Jsoup parse listing page
-- [ ] **4.2.2** Extract links matching `arquivos-lpc/{year}/(resumo_semanal|revendas)_lpc_*.xlsx`
-- [ ] **4.2.3** Map to domain `PriceTable` metadata (type, survey week from filename)
-- [ ] **4.2.4** Test with saved HTML fixture (commit `data/fixtures/anp-listing.html`) — no network in unit tests
-
 ### 4.3 Downloader
 
 - [ ] **4.3.1** `AnpFileDownloader` — stream to `context.cacheDir/anp/` 
@@ -409,4 +402,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 4.1 HTTP layer complete ✓ — next action **Phase 4.2 Scraper**.
+**Current repo status (2026-06-18):** Phase 4.2 Scraper complete ✓ — next action **Phase 4.3 Downloader**.
