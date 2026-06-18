@@ -40,15 +40,6 @@ Each item is a **micro-step**. Mark `[x]` when done. Do not skip **Validation ga
 **Duration:** ~3–5 days ⏱  
 📎 BR-001…BR-015, glossary, agent core §2
 
-### 1.2 Fuel product normalization (BR-002)
-
-- [ ] **1.2.1** `FuelProductNormalizationRule` — map ANP Portuguese labels (summary + station variants)
-- [ ] **1.2.2** Test: every label in `docs/data-sources.md` mapping table
-- [ ] **1.2.3** Test: unknown label returns `null` / `Result.failure` (never crash)
-- [ ] **1.2.4** Test: `ETANOL HIDRATADO` and `ETANOL` → same `FuelProduct.ETHANOL`
-
-**✅ Gate 1.2:** BR-002 fully tested with glossary mapping table.
-
 ### 1.3 Entities & aggregates
 
 - [ ] **1.3.1** `AveragePrice` entity — links `SurveyWeek`, state, municipality, `FuelProduct`
@@ -545,10 +536,10 @@ A step is **done** only when:
 **If starting from zero today:**
 
 ```
-Phase 1.2 → … → Gate 1.6
+Phase 1.3 → … → Gate 1.6
          → Phase 2 (Parser POC) → Gate 2
          → Phase 3 (DB POC) → Gate 3
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 1.1 complete ✓ — next action **Phase 1.2 Fuel product normalization (BR-002)**.
+**Current repo status (2026-06-18):** Phase 1.2 complete ✓ — next action **Phase 1.3 Entities & aggregates**.
