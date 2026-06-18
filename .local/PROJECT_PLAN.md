@@ -80,13 +80,6 @@ Implement **one use case at a time** — test before wiring UI.
 
 **✅ Gate 5.2:** UC-001 tests green with mocked ports.
 
-### 5.4 UC-003 — SelectLocationUseCase
-
-- [ ] **5.4.1** List states with data for latest week (BR-006)
-- [ ] **5.4.2** List municipalities by state
-- [ ] **5.4.3** Persist preference (BR-012)
-- [ ] **5.4.4** Emit `CitySelected`
-
 ### 5.5 UC-004 — SearchMunicipalityUseCase
 
 - [ ] **5.5.1** BR-007: query < 2 chars → empty without FTS call
@@ -377,4 +370,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 5.3 UC-002 Onboarding complete ✓ — next action **Phase 5.4 UC-003 SelectLocationUseCase**.
+**Current repo status (2026-06-18):** Phase 5.4 UC-003 SelectLocationUseCase complete ✓ — next action **Phase 5.5 UC-004 SearchMunicipalityUseCase**.
