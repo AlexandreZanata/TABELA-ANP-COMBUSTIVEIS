@@ -10,7 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.compose.rememberNavController
-import com.anpfuel.app.navigation.AnpNavGraph
+import com.anpfuel.app.navigation.AnpAppNavHost
 import com.anpfuel.app.ui.theme.AnpFuelTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
                 darkTheme = darkTheme,
                 dynamicColor = true,
             ) {
-                AnpNavGraph(
+                AnpAppNavHost(
                     navController = navController,
                     darkTheme = darkTheme,
                     onToggleTheme = {

@@ -27,8 +27,21 @@
 
     <!-- Actions -->
     <string name="action_retry">Retry</string>
+    <string name="action_next">Next</string>
+    <string name="action_back">Back</string>
     <string name="action_switch_dark_theme">Switch to dark theme</string>
     <string name="action_switch_light_theme">Switch to light theme</string>
+
+    <!-- UC-002 Onboarding -->
+    <string name="onboarding_title_welcome">Welcome</string>
+    <string name="onboarding_body_anp_source">Official weekly fuel prices from ANP (Brazilian National Agency of Petroleum, Natural Gas and Biofuels).</string>
+    <string name="onboarding_title_offline">Works offline</string>
+    <string name="onboarding_body_offline">After the first sync, browse average prices without an internet connection.</string>
+    <string name="onboarding_title_ready">Ready to sync</string>
+    <string name="onboarding_body_ready">Download the latest ANP tables to your device. You can skip and sync later from home.</string>
+    <string name="onboarding_action_get_started">Get started</string>
+    <string name="onboarding_action_sync_now">Sync now</string>
+    <string name="onboarding_action_skip">Skip for now</string>
 
     <!-- Sync banners (BR-004, freshness) -->
     <string name="banner_offline">Offline — showing cached data.</string>

@@ -47,7 +47,9 @@ dependencies {
     implementation(libs.bundles.compose)
     implementation(libs.activity.compose)
     implementation(libs.lifecycle.runtime.compose)
+    implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.navigation.compose)
+    implementation(libs.hilt.navigation.compose)
     implementation(libs.compose.material.icons.extended)
 
     debugImplementation(libs.compose.ui.tooling)

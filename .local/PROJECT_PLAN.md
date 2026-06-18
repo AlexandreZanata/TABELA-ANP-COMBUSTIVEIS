@@ -97,14 +97,6 @@ All UC-001…UC-008 have at least happy-path + one failure test.
 
 Implement in user journey order:
 
-### 8.1 UC-002 Onboarding
-
-- [ ] **8.1.1** `OnboardingScreen` + `OnboardingViewModel`
-- [ ] **8.1.2** Trigger first sync; block complete until success (or explicit skip UX)
-- [ ] **8.1.3** Navigate to location or home
-
-**✅ Gate 8.1:** Fresh install → onboarding → sync → next screen.
-
 ### 8.2 UC-003 + UC-004 Location & search
 
 - [ ] **8.2.1** `LocationPickerScreen` — state list → municipality list
@@ -287,4 +279,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 7 UI foundation complete ✓ — next action **Phase 8 Feature screens (MVP v1)**.
+**Current repo status (2026-06-18):** Phase 8.1 UC-002 Onboarding complete ✓ — next action **Phase 8.2 Location & search**.
