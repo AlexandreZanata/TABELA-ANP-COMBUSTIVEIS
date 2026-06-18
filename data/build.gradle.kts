@@ -23,4 +23,11 @@ android {
 
 dependencies {
     implementation(project(":domain"))
+
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.kxml2)
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

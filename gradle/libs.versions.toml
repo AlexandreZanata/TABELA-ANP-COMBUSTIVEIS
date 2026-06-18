@@ -18,6 +18,7 @@ junit5 = "5.11.4"
 mockk = "1.13.13"
 turbine = "1.2.0"
 poi = "5.3.0"
+kxml2 = "2.3.0"
 compileSdk = "35"
 minSdk = "26"
 targetSdk = "35"
@@ -60,6 +61,7 @@ junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.r
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 poi-ooxml = { group = "org.apache.poi", name = "poi-ooxml", version.ref = "poi" }
+kxml2 = { group = "net.sf.kxml", name = "kxml2", version.ref = "kxml2" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

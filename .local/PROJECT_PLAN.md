@@ -40,15 +40,6 @@ Each item is a **micro-step**. Mark `[x]` when done. Do not skip **Validation ga
 **Duration:** ~3–4 days ⏱  
 📎 `data/samples/`, BR-001, BR-002
 
-### 2.1 Parser spike (isolated)
-
-- [ ] **2.1.1** 🔬 Create `data/src/test/.../parser/` only — no Room yet
-- [ ] **2.1.2** 🔬 Implement `StreamingXlsxParser` — open XLSX as ZIP, stream `sheet*.xml` rows
-- [ ] **2.1.3** 🔬 Skip rows 0–6 (summary) / 0–7 (stations) — configurable header row index
-- [ ] **2.1.4** 🔬 Map Excel serial dates → `LocalDate` (`AnpDateMapper`)
-- [ ] **2.1.5** 🔬 `WeeklySummarySheetParser` → stream `AveragePriceRow` DTOs
-- [ ] **2.1.6** 🔬 `StationDetailSheetParser` → stream `StationPriceRow` DTOs
-
 ### 2.2 Cross-validation with Apache POI (test-only)
 
 - [ ] **2.2.1** Add POI to `testImplementation` only (per tech-stack)
