@@ -1,6 +1,10 @@
 # ANP Fuel Prices
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 Open-source Android app to browse Brazilian ANP (National Petroleum Agency) weekly fuel price surveys — fully offline-capable, no backend required.
+
+**100% open source and free to use** under the [MIT License](LICENSE). The only requirement when reusing or redistributing this project is to **reference the original source** — see [docs/license.md](docs/license.md).
 
 ## Features (planned)
 
@@ -66,6 +70,7 @@ See [docs/data-sources.md](docs/data-sources.md) for column schemas and download
 | [docs/adr/001-kotlin-compose-stack.md](docs/adr/001-kotlin-compose-stack.md) | Architecture decision record |
 | [docs/data-sources.md](docs/data-sources.md) | ANP file formats and URL patterns |
 | [docs/commit-conventions.md](docs/commit-conventions.md) | Git commit and PR standards |
+| [docs/license.md](docs/license.md) | MIT license — free use, attribution required |
 | [.local/PROJECT_PLAN.md](.local/PROJECT_PLAN.md) | Micro-step execution plan (POCs & gates) |
 
 ## Development
@@ -81,7 +86,9 @@ Before implementing a feature:
 
 ## License
 
-TBD (open source — suggest MIT or Apache 2.0)
+This project is released under the **[MIT License](LICENSE)** — free for any use (personal, commercial, modification, distribution). The only obligation is **attribution**: keep the copyright notice and reference the [project origin](https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS).
+
+Full details, examples, and FAQ: **[docs/license.md](docs/license.md)**.
 
 ## Data attribution
 

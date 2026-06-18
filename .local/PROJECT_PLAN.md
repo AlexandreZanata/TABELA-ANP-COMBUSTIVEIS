@@ -40,21 +40,6 @@ Each item is a **micro-step**. Mark `[x]` when done. Do not skip **Validation ga
 **Duration:** ~3–5 days ⏱  
 📎 BR-001…BR-015, glossary, agent core §2
 
-### 1.1 Value Objects
-
-- [ ] **1.1.1** `SurveyWeek` — start/end `LocalDate`, factory from ISO strings 📎 BR-001
-- [ ] **1.1.2** Test: valid week (≤7 days) passes
-- [ ] **1.1.3** Test: start > end throws `DomainException`
-- [ ] **1.1.4** Test: range > 7 days throws
-- [ ] **1.1.5** `FuelProduct` enum — 7 values per glossary
-- [ ] **1.1.6** `BrazilianState` enum — 27 states + abbreviation
-- [ ] **1.1.7** `BrazilianRegion` enum — 5 regions
-- [ ] **1.1.8** `GeographicScope` enum
-- [ ] **1.1.9** `PriceAmount` — non-negative, scale 2 decimal validation
-- [ ] **1.1.10** `Cnpj` — format validation (optional normalization)
-
-**✅ Gate 1.1:** `./gradlew :domain:test` — all VO tests green; zero Android imports in `:domain`.
-
 ### 1.2 Fuel product normalization (BR-002)
 
 - [ ] **1.2.1** `FuelProductNormalizationRule` — map ANP Portuguese labels (summary + station variants)
@@ -465,9 +450,9 @@ Manual test script (see Appendix A) passes on emulator + one physical device.
 **Goal:** Publishable OSS Android app.  
 **Duration:** ~2–3 days ⏱
 
-- [ ] **10.1** Choose license (MIT or Apache 2.0) — `LICENSE` file
+- [x] **10.1** Choose license (MIT or Apache 2.0) — `LICENSE` file
 - [ ] **10.2** `CONTRIBUTING.md` — points to docs, commit conventions, TDD
-- [ ] **10.3** README badges (build, license)
+- [x] **10.3** README badges (build, license) — license badge added; build badge pending
 - [ ] **10.4** Play Store listing draft (optional sideload first)
 - [ ] **10.5** Signed release APK/AAB
 - [ ] **10.6** GitHub Release v1.0.0 notes — ANP attribution, offline disclaimer
@@ -560,10 +545,10 @@ A step is **done** only when:
 **If starting from zero today:**
 
 ```
-Phase 1.1 → 1.2 → … → Gate 1.6
+Phase 1.2 → … → Gate 1.6
          → Phase 2 (Parser POC) → Gate 2
          → Phase 3 (DB POC) → Gate 3
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 0 complete ✓ — next action **Phase 1.1 Value Objects**.
+**Current repo status (2026-06-18):** Phase 1.1 complete ✓ — next action **Phase 1.2 Fuel product normalization (BR-002)**.
