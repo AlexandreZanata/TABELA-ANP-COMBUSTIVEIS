@@ -80,11 +80,6 @@ Implement **one use case at a time** — test before wiring UI.
 
 **✅ Gate 5.2:** UC-001 tests green with mocked ports.
 
-### 5.7 UC-006 — GetPriceHistoryUseCase
-
-- [ ] **5.7.1** Requires ≥2 weeks or return insufficient data
-- [ ] **5.7.2** BR-003 immutable ordering by week
-
 ### 5.8 UC-007 — GetStationPricesUseCase + DownloadStationDetailUseCase
 
 - [ ] **5.8.1** BR-008: no local data → typed error for on-demand download
@@ -358,4 +353,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 5.6 UC-005 GetMunicipalityPricesUseCase complete ✓ — next action **Phase 5.7 UC-006 GetPriceHistoryUseCase**.
+**Current repo status (2026-06-18):** Phase 5.7 UC-006 GetPriceHistoryUseCase complete ✓ — next action **Phase 5.8 UC-007 GetStationPricesUseCase**.
