@@ -99,10 +99,6 @@ Implement in user journey order:
 
 ### 8.6 UC-008 Settings
 
-- [ ] **8.6.1** `SettingsScreen` — toggles, storage stats, clear cache, sync now
-- [ ] **8.6.2** Language switch
-- [ ] **8.6.3** ANP link (BR-009)
-
 **✅ Gate 8 — MVP feature complete:**
 
 Manual test script (see Appendix A) passes on emulator + one physical device.
@@ -249,4 +245,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 8.5 UC-007 Stations complete ✓ — next action **Phase 8.6 Settings**.
+**Current repo status (2026-06-18):** Phase 8.6 UC-008 Settings complete ✓ — next action **Phase 9 Hardening** or **Gate 8 manual test**.

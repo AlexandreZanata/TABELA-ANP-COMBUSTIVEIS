@@ -11,6 +11,7 @@ import com.anpfuel.application.usecase.price.GetStationPricesUseCase
 import com.anpfuel.application.usecase.settings.ApplyStationDetailRetentionUseCase
 import com.anpfuel.application.usecase.settings.ClearCacheUseCase
 import com.anpfuel.application.usecase.settings.GetSettingsUseCase
+import com.anpfuel.application.usecase.settings.GetStorageUsageUseCase
 import com.anpfuel.application.usecase.settings.UpdatePreferencesUseCase
 import com.anpfuel.application.usecase.sync.DownloadStationDetailUseCase
 import com.anpfuel.application.usecase.sync.SyncPriceTablesUseCase
@@ -22,6 +23,7 @@ import com.anpfuel.application.port.NetworkConnectivityGateway
 import com.anpfuel.domain.repository.PriceTableRepository
 import com.anpfuel.domain.repository.PriceTableSyncGateway
 import com.anpfuel.domain.repository.StationPriceRepository
+import com.anpfuel.domain.repository.StorageStatsRepository
 import com.anpfuel.domain.repository.SyncJobRepository
 import com.anpfuel.domain.repository.UserPreferencesRepository
 import dagger.Module
@@ -174,6 +176,14 @@ object UseCaseModule {
         userPreferencesRepository: UserPreferencesRepository,
     ): GetSettingsUseCase = GetSettingsUseCase(
         userPreferencesRepository = userPreferencesRepository,
+    )
+
+    @Provides
+    @Singleton
+    fun provideGetStorageUsageUseCase(
+        storageStatsRepository: StorageStatsRepository,
+    ): GetStorageUsageUseCase = GetStorageUsageUseCase(
+        storageStatsRepository = storageStatsRepository,
     )
 
     @Provides

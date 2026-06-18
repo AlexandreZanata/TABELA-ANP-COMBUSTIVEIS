@@ -149,4 +149,28 @@
     <string name="state_name_sao_paulo">São Paulo</string>
     <string name="state_name_sergipe">Sergipe</string>
     <string name="state_name_tocantins">Tocantins</string>
+
+    <!-- UC-008 Settings -->
+    <string name="settings_title">Configurações</string>
+    <string name="settings_language">Idioma</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_portuguese">Português (Brasil)</string>
+    <string name="settings_preferences_section">Preferências</string>
+    <string name="settings_sync_station_detail">Sincronizar detalhe de postos em segundo plano</string>
+    <string name="settings_sync_wifi_only">Sincronização automática apenas no Wi‑Fi</string>
+    <string name="settings_show_price_history">Exibir histórico de preços</string>
+    <string name="settings_retention_weeks">Retenção de dados de postos</string>
+    <string name="settings_retention_weeks_option">%1$d semanas</string>
+    <string name="settings_storage_usage">Uso de armazenamento</string>
+    <string name="settings_storage_summary_rows">Linhas de resumo: %1$s</string>
+    <string name="settings_storage_station_rows">Linhas de postos: %1$s</string>
+    <string name="settings_storage_week_count">Semanas importadas: %1$s</string>
+    <string name="settings_sync_section">Sincronização</string>
+    <string name="settings_clear_cache">Limpar cache</string>
+    <string name="settings_clear_station_cache">Limpar cache de postos</string>
+    <string name="settings_clear_all_cache">Limpar todos os dados importados</string>
+    <string name="settings_clear_cache_confirm">Isso remove todos os dados ANP importados e reinicia a introdução. Continuar?</string>
+    <string name="settings_clear_cache_confirm_action">Limpar tudo</string>
+    <string name="settings_attribution_section">Fonte dos dados</string>
+    <string name="settings_anp_attribution_link">Abrir página oficial da ANP</string>
 </resources>

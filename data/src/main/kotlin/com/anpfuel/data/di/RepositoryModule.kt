@@ -19,6 +19,7 @@ import com.anpfuel.data.repository.NoOpDomainEventPublisher
 import com.anpfuel.data.repository.PriceTableRepositoryImpl
 import com.anpfuel.data.repository.PriceTableSyncGatewayImpl
 import com.anpfuel.data.repository.StationPriceRepositoryImpl
+import com.anpfuel.data.repository.StorageStatsRepositoryImpl
 import com.anpfuel.data.repository.SyncJobRepositoryImpl
 import com.anpfuel.data.repository.UserPreferencesRepositoryImpl
 import com.anpfuel.domain.repository.AveragePriceRepository
@@ -29,6 +30,7 @@ import com.anpfuel.application.port.NetworkConnectivityGateway
 import com.anpfuel.domain.repository.PriceTableRepository
 import com.anpfuel.domain.repository.PriceTableSyncGateway
 import com.anpfuel.domain.repository.StationPriceRepository
+import com.anpfuel.domain.repository.StorageStatsRepository
 import com.anpfuel.domain.repository.SyncJobRepository
 import com.anpfuel.domain.repository.UserPreferencesRepository
 import dagger.Binds
@@ -83,6 +85,12 @@ abstract class RepositoryModule {
     abstract fun bindCacheRepository(
         impl: CacheRepositoryImpl,
     ): CacheRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindStorageStatsRepository(
+        impl: StorageStatsRepositoryImpl,
+    ): StorageStatsRepository
 
     @Binds
     @Singleton

@@ -149,4 +149,29 @@
     <string name="state_name_sao_paulo">São Paulo</string>
     <string name="state_name_sergipe">Sergipe</string>
     <string name="state_name_tocantins">Tocantins</string>
+
+    <!-- UC-008 Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_portuguese">Português (Brasil)</string>
+    <string name="settings_preferences_section">Preferences</string>
+    <string name="settings_sync_station_detail">Sync station detail in background</string>
+    <string name="settings_sync_wifi_only">Auto sync on Wi‑Fi only</string>
+    <string name="settings_show_price_history">Show price history</string>
+    <string name="settings_retention_weeks">Station data retention</string>
+    <string name="settings_retention_weeks_option">%1$d weeks</string>
+    <string name="settings_storage_usage">Storage usage</string>
+    <string name="settings_storage_summary_rows">Summary rows: %1$s</string>
+    <string name="settings_storage_station_rows">Station rows: %1$s</string>
+    <string name="settings_storage_week_count">Imported weeks: %1$s</string>
+    <string name="settings_sync_section">Sync</string>
+    <string name="settings_clear_cache">Clear cache</string>
+    <string name="settings_clear_station_cache">Clear station cache</string>
+    <string name="settings_clear_all_cache">Clear all imported data</string>
+    <string name="settings_clear_cache_confirm">This removes all imported ANP data and resets onboarding. Continue?</string>
+    <string name="settings_clear_cache_confirm_action">Clear all</string>
+    <string name="settings_attribution_section">Data source</string>
+    <string name="settings_anp_attribution_link">Open official ANP page</string>
+    <string name="anp_official_url" translatable="false">https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas</string>
 </resources>

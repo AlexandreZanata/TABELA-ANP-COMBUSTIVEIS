@@ -3,10 +3,12 @@ package com.anpfuel.application.usecase.settings
 import com.anpfuel.domain.event.CacheClearScope
 import com.anpfuel.domain.event.CacheCleared
 import com.anpfuel.domain.event.PreferencesUpdated
+import com.anpfuel.domain.model.StorageUsage
 import com.anpfuel.domain.model.UserPreferences
 import com.anpfuel.domain.repository.CacheRepository
 import com.anpfuel.domain.repository.DomainEventPublisher
 import com.anpfuel.domain.repository.StationPriceRepository
+import com.anpfuel.domain.repository.StorageStatsRepository
 import com.anpfuel.domain.repository.UserPreferencesRepository
 import com.anpfuel.domain.valueobject.BrazilianState
 import com.anpfuel.domain.valueobject.FuelProduct
@@ -27,8 +29,10 @@ class SettingsUseCasesTest {
     private val eventPublisher = mockk<DomainEventPublisher>()
     private val cacheRepository = mockk<CacheRepository>()
     private val stationPriceRepository = mockk<StationPriceRepository>()
+    private val storageStatsRepository = mockk<StorageStatsRepository>()
 
     private lateinit var getSettingsUseCase: GetSettingsUseCase
+    private lateinit var getStorageUsageUseCase: GetStorageUsageUseCase
     private lateinit var updatePreferencesUseCase: UpdatePreferencesUseCase
     private lateinit var clearCacheUseCase: ClearCacheUseCase
     private lateinit var applyStationDetailRetentionUseCase: ApplyStationDetailRetentionUseCase
@@ -48,6 +52,7 @@ class SettingsUseCasesTest {
     @BeforeEach
     fun setUp() {
         getSettingsUseCase = GetSettingsUseCase(userPreferencesRepository)
+        getStorageUsageUseCase = GetStorageUsageUseCase(storageStatsRepository)
         updatePreferencesUseCase = UpdatePreferencesUseCase(
             userPreferencesRepository = userPreferencesRepository,
             eventPublisher = eventPublisher,
@@ -73,6 +78,20 @@ class SettingsUseCasesTest {
         val settings = getSettingsUseCase.invoke()
 
         assertEquals(defaultPreferences, settings)
+    }
+
+    @Test
+    fun getStorageUsageReturnsRepositoryCounts() = runTest {
+        val usage = StorageUsage(
+            summaryRowCount = 2344,
+            stationRowCount = 19676,
+            importedWeekCount = 2,
+        )
+        coEvery { storageStatsRepository.getStorageUsage() } returns usage
+
+        val result = getStorageUsageUseCase.invoke()
+
+        assertEquals(usage, result)
     }
 
     @Test
