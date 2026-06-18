@@ -3,7 +3,7 @@ package com.anpfuel.data.local.importing
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.anpfuel.data.local.AnpFuelDatabase
-import com.anpfuel.data.local.fts.MunicipalityFtsIndexer
+import com.anpfuel.data.local.importing.ImportTestCatalogSupport.createBatchImporter
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -28,15 +28,7 @@ class ImportPerformanceTest {
         database = Room.inMemoryDatabaseBuilder(context, AnpFuelDatabase::class.java)
             .allowMainThreadQueries()
             .build()
-        val auditLogger = ImportAuditLogger(database.importAuditLogDao())
-        importer = PriceTableBatchImporter(
-            database = database,
-            surveyWeekDao = database.surveyWeekDao(),
-            averagePriceDao = database.averagePriceDao(),
-            stationPriceDao = database.stationPriceDao(),
-            importAuditLogger = auditLogger,
-            ftsIndexer = MunicipalityFtsIndexer(database.municipalityFtsDao()),
-        )
+        importer = createBatchImporter(context, database)
     }
 
     @After

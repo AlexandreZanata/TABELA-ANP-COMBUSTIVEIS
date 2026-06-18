@@ -154,23 +154,6 @@ Manual test script (see Appendix A) passes on emulator + one physical device.
 
 **Context (v1 gap):** Summary import indexes only municipalities present in the imported `SurveyWeek` (~380 cities/week). v2 adds a persistent **MunicipalityCatalog** (IBGE 2024 baseline ~5 570 cities) merged with ANP-published names so search never misses a city the government has ever reported.
 
-### 11.2 Data layer — IBGE seed + FTS rebuild 🔬
-
-- [ ] **11.2.1** Add bundled asset `assets/ibge_municipalities.json` (official IBGE open data, 5 570 rows, UTF-8, normalized uppercase without accents for matching)
-- [ ] **11.2.2** Room table `municipality_catalog` + migration; seed on first launch or app upgrade
-- [ ] **11.2.3** Extend `municipality_fts` to index catalog rows; sync trigger after catalog seed and after each summary import (merge ANP aliases)
-- [ ] **11.2.4** POC spike: import latest `resumo_semanal_lpc` and assert **100%** of MUNICIPIOS sheet rows resolve to a catalog entry
-
-**✅ Gate 11.2 — Catalog POC passed:**
-
-| Criterion | Target |
-|-----------|--------|
-| IBGE seed count | ≥ 5 570 municipalities |
-| ANP week 2026-06-07→13 match rate | 100% of ~380 published cities map to catalog |
-| FTS search "sao paulo" | Returns city + state + homonyms with state visible |
-| FTS search with typo "san paolo" | Returns São Paulo (SP) in top 3 (BR-017) |
-| Query latency (3 chars, cold) | &lt; 100 ms on mid-range device |
-
 ### 11.3 Application layer
 
 - [ ] **11.3.1** Extend `SearchMunicipalityUseCase`: search catalog first; annotate results with `DataAvailability` (`HAS_DATA`, `NO_DATA_THIS_WEEK`, `NEVER_IN_ANP`)
@@ -515,8 +498,7 @@ The live page lists weeks back to **31/07/2022–06/08/2022** and growing. The a
 **v2 (start here):**
 
 ```
-Phase 11.2 (IBGE catalog POC) → Gate 11.2
-    → Phase 11.3–11.4 (use cases + UI) → Gate 11
+Phase 11.3–11.4 (use cases + UI) → Gate 11
     → Phase 12.1–12.2 (UC-009 + week catalog POC) → Gate 12.2
     → Phase 12.3–12.4 (sync + WeekPickerScreen) → Gate 12
     → Phase 13 (AnpScaffold + screen audit) → Gate 13   ← can parallelize from 11.4
@@ -524,4 +506,4 @@ Phase 11.2 (IBGE catalog POC) → Gate 11.2
     → Phase 15 (hardening + v2.0.0) → Gate 15
 ```
 
-**Current repo status (2026-06-18):** v1 complete (Phases 0–10). **v2 in progress** — Phase 11.1 complete; next micro-step: **11.2.1** IBGE municipalities asset + Room catalog table.
+**Current repo status (2026-06-18):** v1 complete (Phases 0–10). **v2 in progress** — Phase 11.2 complete (Gate 11.2); next micro-step: **11.3.1** extend `SearchMunicipalityUseCase` with `DataAvailability`.

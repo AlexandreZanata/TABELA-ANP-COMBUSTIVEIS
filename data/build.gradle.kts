@@ -26,6 +26,10 @@ android {
     sourceSets {
         getByName("androidTest") {
             assets.srcDir("$projectDir/samples")
+            assets.srcDir("src/main/assets")
+        }
+        getByName("test") {
+            assets.srcDir("src/main/assets")
         }
     }
 
@@ -66,6 +70,7 @@ dependencies {
     ksp(libs.hilt.work.compiler)
 
     testImplementation(libs.junit.jupiter)
+    testImplementation("org.json:json:20240303")
     testImplementation(libs.kxml2)
     testImplementation(libs.poi.ooxml)
     testImplementation("com.squareup.okhttp3:mockwebserver:${libs.versions.okhttp.get()}")

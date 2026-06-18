@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.anpfuel.data.local.entity.AveragePriceEntity
+import com.anpfuel.data.local.model.MunicipalityLocationRow
 
 @Dao
 interface AveragePriceDao {
@@ -68,6 +69,14 @@ interface AveragePriceDao {
         surveyWeekId: String,
         state: String,
     ): List<String>
+
+    @Query(
+        """
+        SELECT DISTINCT state, municipality FROM average_price
+        WHERE survey_week_id = :surveyWeekId
+        """,
+    )
+    suspend fun findDistinctLocationsBySurveyWeek(surveyWeekId: String): List<MunicipalityLocationRow>
 
     @Query("DELETE FROM average_price")
     suspend fun deleteAll()

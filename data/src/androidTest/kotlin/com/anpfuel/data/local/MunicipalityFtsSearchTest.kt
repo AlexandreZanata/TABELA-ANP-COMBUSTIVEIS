@@ -4,13 +4,12 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.anpfuel.data.local.dao.AveragePriceDao
+import com.anpfuel.data.local.catalog.MunicipalityCatalogSeeder
 import com.anpfuel.data.local.dao.MunicipalityFtsDao
-import com.anpfuel.data.local.dao.SurveyWeekDao
-import com.anpfuel.data.local.entity.AveragePriceEntity
-import com.anpfuel.data.local.entity.SurveyWeekEntity
+import com.anpfuel.data.local.entity.MunicipalityCatalogEntity
 import com.anpfuel.data.local.fts.MunicipalityFtsIndexer
 import com.anpfuel.data.local.fts.MunicipalityFtsMatchExpression
+import com.anpfuel.data.local.importing.ImportTestCatalogSupport
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -22,21 +21,20 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class MunicipalityFtsSearchTest {
 
+    private lateinit var context: Context
     private lateinit var database: AnpFuelDatabase
-    private lateinit var surveyWeekDao: SurveyWeekDao
-    private lateinit var averagePriceDao: AveragePriceDao
     private lateinit var municipalityFtsDao: MunicipalityFtsDao
+    private lateinit var catalogSeeder: MunicipalityCatalogSeeder
     private lateinit var ftsIndexer: MunicipalityFtsIndexer
 
     @Before
     fun setUp() {
-        val context = ApplicationProvider.getApplicationContext<Context>()
+        context = ApplicationProvider.getApplicationContext()
         database = Room.inMemoryDatabaseBuilder(context, AnpFuelDatabase::class.java)
             .allowMainThreadQueries()
             .build()
-        surveyWeekDao = database.surveyWeekDao()
-        averagePriceDao = database.averagePriceDao()
         municipalityFtsDao = database.municipalityFtsDao()
+        catalogSeeder = ImportTestCatalogSupport.createCatalogSeeder(context, database)
         ftsIndexer = MunicipalityFtsIndexer(municipalityFtsDao)
     }
 
@@ -47,8 +45,8 @@ class MunicipalityFtsSearchTest {
 
     @Test
     fun saoPauloQueryReturnsSaoPauloCity() = runBlocking {
-        seedMunicipalities()
-        ftsIndexer.syncAfterBatchInsert()
+        seedCatalogMunicipalities()
+        ftsIndexer.syncAfterCatalogChange()
 
         val matchQuery = MunicipalityFtsMatchExpression.fromUserQuery("SAO PAULO")
         val results = municipalityFtsDao.search(matchQuery, limit = 10)
@@ -58,8 +56,8 @@ class MunicipalityFtsSearchTest {
 
     @Test
     fun campPrefixReturnsCampinasAndCampoGrande() = runBlocking {
-        seedMunicipalities()
-        ftsIndexer.syncAfterBatchInsert()
+        seedCatalogMunicipalities()
+        ftsIndexer.syncAfterCatalogChange()
 
         val matchQuery = MunicipalityFtsMatchExpression.fromUserQuery("CAMP")
         val results = municipalityFtsDao.search(matchQuery, limit = 20)
@@ -70,8 +68,8 @@ class MunicipalityFtsSearchTest {
 
     @Test
     fun saoQueryMatchesMunicipalityWithDiacritics() = runBlocking {
-        seedMunicipalities()
-        ftsIndexer.syncAfterBatchInsert()
+        seedCatalogMunicipalities()
+        ftsIndexer.syncAfterCatalogChange()
 
         val matchQuery = MunicipalityFtsMatchExpression.fromUserQuery("SAO")
         val results = municipalityFtsDao.search(matchQuery, limit = 20)
@@ -80,29 +78,19 @@ class MunicipalityFtsSearchTest {
     }
 
     @Test
-    fun rebuildSyncsFtsAfterBatchInsert() = runBlocking {
-        val surveyWeek = surveyWeekEntity()
-        surveyWeekDao.insert(surveyWeek)
-        averagePriceDao.insertAll(
+    fun rebuildSyncsFtsAfterCatalogInsert() = runBlocking {
+        database.municipalityCatalogDao().insertAll(
             listOf(
-                averagePriceEntity(
-                    id = "avg-sp-gas",
-                    surveyWeekId = surveyWeek.id,
-                    municipality = "SÃO PAULO",
+                catalogEntity(
+                    id = "3550308",
                     state = "SP",
-                    fuelProduct = "GASOLINE",
-                ),
-                averagePriceEntity(
-                    id = "avg-sp-ethanol",
-                    surveyWeekId = surveyWeek.id,
                     municipality = "SÃO PAULO",
-                    state = "SP",
-                    fuelProduct = "HYDRATED_ETHANOL",
+                    normalizedName = "SAO PAULO",
                 ),
             ),
         )
 
-        ftsIndexer.syncAfterBatchInsert()
+        ftsIndexer.syncAfterCatalogChange()
 
         val results = municipalityFtsDao.search(
             MunicipalityFtsMatchExpression.fromUserQuery("SAO PAULO"),
@@ -113,77 +101,29 @@ class MunicipalityFtsSearchTest {
         assertEquals("SÃO PAULO", results.single().municipality)
     }
 
-    private suspend fun seedMunicipalities() {
-        val surveyWeek = surveyWeekEntity()
-        surveyWeekDao.insert(surveyWeek)
-        averagePriceDao.insertAll(
+    private suspend fun seedCatalogMunicipalities() {
+        database.municipalityCatalogDao().insertAll(
             listOf(
-                averagePriceEntity(
-                    id = "avg-sao-paulo-gas",
-                    surveyWeekId = surveyWeek.id,
-                    municipality = "SÃO PAULO",
-                    state = "SP",
-                    fuelProduct = "GASOLINE",
-                ),
-                averagePriceEntity(
-                    id = "avg-sao-paulo-ethanol",
-                    surveyWeekId = surveyWeek.id,
-                    municipality = "SÃO PAULO",
-                    state = "SP",
-                    fuelProduct = "HYDRATED_ETHANOL",
-                ),
-                averagePriceEntity(
-                    id = "avg-campinas",
-                    surveyWeekId = surveyWeek.id,
-                    municipality = "CAMPINAS",
-                    state = "SP",
-                    fuelProduct = "GASOLINE",
-                ),
-                averagePriceEntity(
-                    id = "avg-campo-grande",
-                    surveyWeekId = surveyWeek.id,
-                    municipality = "CAMPO GRANDE",
-                    state = "MS",
-                    fuelProduct = "GASOLINE",
-                ),
-                averagePriceEntity(
-                    id = "avg-sao-jose",
-                    surveyWeekId = surveyWeek.id,
-                    municipality = "SÃO JOSÉ DOS CAMPOS",
-                    state = "SP",
-                    fuelProduct = "GASOLINE",
-                ),
+                catalogEntity("3550308", "SP", "SÃO PAULO", "SAO PAULO"),
+                catalogEntity("3509502", "SP", "CAMPINAS", "CAMPINAS"),
+                catalogEntity("5002704", "MS", "CAMPO GRANDE", "CAMPO GRANDE"),
+                catalogEntity("3549904", "SP", "SÃO JOSÉ DOS CAMPOS", "SAO JOSE DOS CAMPOS"),
             ),
         )
     }
 
-    private fun surveyWeekEntity(): SurveyWeekEntity =
-        SurveyWeekEntity(
-            id = "week-2025-01",
-            startDate = "2025-01-05",
-            endDate = "2025-01-11",
-            summaryImportedAt = 1_735_689_600_000L,
-            stationImportedAt = null,
-        )
-
-    private fun averagePriceEntity(
+    private fun catalogEntity(
         id: String,
-        surveyWeekId: String,
-        municipality: String,
         state: String,
-        fuelProduct: String,
-    ): AveragePriceEntity =
-        AveragePriceEntity(
+        municipality: String,
+        normalizedName: String,
+    ): MunicipalityCatalogEntity =
+        MunicipalityCatalogEntity(
             id = id,
-            surveyWeekId = surveyWeekId,
+            ibgeCode = id,
             state = state,
             municipality = municipality,
-            fuelProduct = fuelProduct,
-            stationCount = 10,
-            unit = "R$/l",
-            avgPrice = 5.50,
-            minPrice = 5.00,
-            maxPrice = 6.00,
-            stdDev = 0.10,
+            normalizedName = normalizedName,
+            anpAlias = null,
         )
 }

@@ -12,7 +12,7 @@ import androidx.room.FtsOptions
  * `unicode61 remove_diacritics 2` tokenization on the same columns.
  */
 @Fts4(
-    contentEntity = AveragePriceEntity::class,
+    contentEntity = MunicipalityCatalogEntity::class,
     tokenizer = FtsOptions.TOKENIZER_UNICODE61,
     tokenizerArgs = ["remove_diacritics=2"],
 )

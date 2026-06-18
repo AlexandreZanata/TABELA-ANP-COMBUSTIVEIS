@@ -6,6 +6,8 @@ import com.anpfuel.data.local.dao.ImportAuditLogDao
 import com.anpfuel.data.local.dao.MunicipalityFtsDao
 import com.anpfuel.data.local.dao.StationPriceDao
 import com.anpfuel.data.local.dao.SurveyWeekDao
+import com.anpfuel.data.local.catalog.MunicipalityAnpAliasMerger
+import com.anpfuel.data.local.catalog.MunicipalityCatalogSeeder
 import com.anpfuel.data.local.fts.MunicipalityFtsIndexer
 import com.anpfuel.data.local.importing.ImportAuditLogger
 import com.anpfuel.data.local.importing.PriceTableBatchImporter
@@ -137,14 +139,16 @@ abstract class RepositoryModule {
             averagePriceDao: AveragePriceDao,
             stationPriceDao: StationPriceDao,
             importAuditLogger: ImportAuditLogger,
-            ftsIndexer: MunicipalityFtsIndexer,
+            catalogSeeder: MunicipalityCatalogSeeder,
+            aliasMerger: MunicipalityAnpAliasMerger,
         ): PriceTableBatchImporter = PriceTableBatchImporter(
             database = database,
             surveyWeekDao = surveyWeekDao,
             averagePriceDao = averagePriceDao,
             stationPriceDao = stationPriceDao,
             importAuditLogger = importAuditLogger,
-            ftsIndexer = ftsIndexer,
+            catalogSeeder = catalogSeeder,
+            aliasMerger = aliasMerger,
         )
     }
 }

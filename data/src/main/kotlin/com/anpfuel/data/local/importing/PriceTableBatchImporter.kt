@@ -7,7 +7,8 @@ import com.anpfuel.data.local.dao.StationPriceDao
 import com.anpfuel.data.local.dao.SurveyWeekDao
 import com.anpfuel.data.local.entity.AveragePriceEntity
 import com.anpfuel.data.local.entity.StationPriceEntity
-import com.anpfuel.data.local.fts.MunicipalityFtsIndexer
+import com.anpfuel.data.local.catalog.MunicipalityAnpAliasMerger
+import com.anpfuel.data.local.catalog.MunicipalityCatalogSeeder
 import com.anpfuel.data.mapper.EntityDomainMapper
 import com.anpfuel.data.parser.StationDetailSheetParser
 import com.anpfuel.data.parser.WeeklySummarySheetParser
@@ -30,7 +31,8 @@ class PriceTableBatchImporter(
     private val averagePriceDao: AveragePriceDao,
     private val stationPriceDao: StationPriceDao,
     private val importAuditLogger: ImportAuditLogger,
-    private val ftsIndexer: MunicipalityFtsIndexer,
+    private val catalogSeeder: MunicipalityCatalogSeeder,
+    private val aliasMerger: MunicipalityAnpAliasMerger,
     private val summaryParser: WeeklySummarySheetParser = WeeklySummarySheetParser(),
     private val stationParser: StationDetailSheetParser = StationDetailSheetParser(),
 ) {
@@ -46,6 +48,8 @@ class PriceTableBatchImporter(
         )
 
         return try {
+            catalogSeeder.seedIfEmpty()
+
             var firstRow: AveragePriceRow? = null
             var surveyWeekId: String? = null
             val pendingBatch = ArrayList<AveragePriceEntity>(BATCH_SIZE)
@@ -83,7 +87,7 @@ class PriceTableBatchImporter(
                 totalRows += insertAveragePriceBatch(batch)
             }
 
-            ftsIndexer.syncAfterBatchInsert()
+            aliasMerger.mergeAliasesFromSurveyWeek(weekId)
 
             importAuditLogger.append(
                 action = ImportAuditAction.IMPORTED,

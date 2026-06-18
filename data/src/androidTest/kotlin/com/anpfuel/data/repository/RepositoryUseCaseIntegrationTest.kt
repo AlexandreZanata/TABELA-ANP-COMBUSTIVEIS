@@ -9,6 +9,7 @@ import com.anpfuel.data.local.AnpFuelDatabase
 import com.anpfuel.data.local.importing.ImportAuditLogger
 import com.anpfuel.data.local.importing.ImportTestAssets
 import com.anpfuel.data.local.importing.PriceTableBatchImporter
+import com.anpfuel.data.local.importing.ImportTestCatalogSupport
 import com.anpfuel.data.local.fts.MunicipalityFtsIndexer
 import com.anpfuel.domain.valueobject.BrazilianState
 import kotlinx.coroutines.runBlocking
@@ -39,16 +40,7 @@ class RepositoryUseCaseIntegrationTest {
             .allowMainThreadQueries()
             .build()
 
-        val auditLogger = ImportAuditLogger(database.importAuditLogDao())
-        val ftsIndexer = MunicipalityFtsIndexer(database.municipalityFtsDao())
-        val batchImporter = PriceTableBatchImporter(
-            database = database,
-            surveyWeekDao = database.surveyWeekDao(),
-            averagePriceDao = database.averagePriceDao(),
-            stationPriceDao = database.stationPriceDao(),
-            importAuditLogger = auditLogger,
-            ftsIndexer = ftsIndexer,
-        )
+        val batchImporter = ImportTestCatalogSupport.createBatchImporter(context, database)
 
         priceTableRepository = PriceTableRepositoryImpl(
             database = database,
@@ -56,15 +48,13 @@ class RepositoryUseCaseIntegrationTest {
             averagePriceDao = database.averagePriceDao(),
             stationPriceDao = database.stationPriceDao(),
             priceTableMetadataStore = InMemoryPriceTableMetadataStore(),
-            ftsIndexer = ftsIndexer,
+            ftsIndexer = MunicipalityFtsIndexer(database.municipalityFtsDao()),
         )
         averagePriceRepository = AveragePriceRepositoryImpl(
             averagePriceDao = database.averagePriceDao(),
             surveyWeekDao = database.surveyWeekDao(),
         )
-        municipalitySearchRepository = MunicipalitySearchRepositoryImpl(
-            municipalityFtsDao = database.municipalityFtsDao(),
-        )
+        municipalitySearchRepository = ImportTestCatalogSupport.createSearchRepository(context, database)
 
         getMunicipalityPricesUseCase = GetMunicipalityPricesUseCase(
             averagePriceRepository = averagePriceRepository,

@@ -7,8 +7,14 @@ import java.text.Normalizer
  */
 object MunicipalitySearchTextNormalizer {
 
+    private val DIACRITIC_MARKS_REGEX = Regex("\\p{Mn}+")
+    private val WHITESPACE_REGEX = Regex("\\s+")
+
     fun normalize(text: String): String =
         Normalizer.normalize(text.trim(), Normalizer.Form.NFD)
-            .replace(Regex("\\p{Mn}+"), "")
+            .replace(DIACRITIC_MARKS_REGEX, "")
+            .replace("'", "")
+            .replace("-", " ")
+            .replace(WHITESPACE_REGEX, " ")
             .uppercase()
 }

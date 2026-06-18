@@ -7,6 +7,7 @@ import com.anpfuel.data.local.AnpFuelDatabase
 import com.anpfuel.data.local.AnpFuelDatabaseMigrations
 import com.anpfuel.data.local.dao.AveragePriceDao
 import com.anpfuel.data.local.dao.ImportAuditLogDao
+import com.anpfuel.data.local.dao.MunicipalityCatalogDao
 import com.anpfuel.data.local.dao.MunicipalityFtsDao
 import com.anpfuel.data.local.dao.StationPriceDao
 import com.anpfuel.data.local.dao.SurveyWeekDao
@@ -30,7 +31,10 @@ object DatabaseModule {
     ): AnpFuelDatabase =
         Room.databaseBuilder(context, AnpFuelDatabase::class.java, DATABASE_NAME)
             .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING)
-            .addMigrations(AnpFuelDatabaseMigrations.MIGRATION_1_2)
+            .addMigrations(
+                AnpFuelDatabaseMigrations.MIGRATION_1_2,
+                AnpFuelDatabaseMigrations.MIGRATION_2_3,
+            )
             .build()
 
     @Provides
@@ -48,6 +52,10 @@ object DatabaseModule {
     @Provides
     fun provideImportAuditLogDao(database: AnpFuelDatabase): ImportAuditLogDao =
         database.importAuditLogDao()
+
+    @Provides
+    fun provideMunicipalityCatalogDao(database: AnpFuelDatabase): MunicipalityCatalogDao =
+        database.municipalityCatalogDao()
 
     @Provides
     fun provideMunicipalityFtsDao(database: AnpFuelDatabase): MunicipalityFtsDao =

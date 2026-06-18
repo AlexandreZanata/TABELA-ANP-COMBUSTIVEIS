@@ -3,7 +3,7 @@ package com.anpfuel.data.local.importing
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.anpfuel.data.local.AnpFuelDatabase
-import com.anpfuel.data.local.fts.MunicipalityFtsIndexer
+import com.anpfuel.data.local.importing.ImportTestCatalogSupport.createBatchImporter
 import com.anpfuel.data.local.importing.ImportAuditAction.DOWNLOADED
 import com.anpfuel.data.local.importing.ImportAuditAction.IMPORTED
 import com.anpfuel.data.mapper.EntityDomainMapper
@@ -29,15 +29,7 @@ class ImportPipelinePocTest {
         database = Room.inMemoryDatabaseBuilder(context, AnpFuelDatabase::class.java)
             .allowMainThreadQueries()
             .build()
-        val auditLogger = ImportAuditLogger(database.importAuditLogDao())
-        importer = PriceTableBatchImporter(
-            database = database,
-            surveyWeekDao = database.surveyWeekDao(),
-            averagePriceDao = database.averagePriceDao(),
-            stationPriceDao = database.stationPriceDao(),
-            importAuditLogger = auditLogger,
-            ftsIndexer = MunicipalityFtsIndexer(database.municipalityFtsDao()),
-        )
+        importer = createBatchImporter(context, database)
     }
 
     @After

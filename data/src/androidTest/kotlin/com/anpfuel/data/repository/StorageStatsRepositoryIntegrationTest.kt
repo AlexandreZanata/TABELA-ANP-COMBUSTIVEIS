@@ -6,6 +6,7 @@ import com.anpfuel.data.local.AnpFuelDatabase
 import com.anpfuel.data.local.importing.ImportAuditLogger
 import com.anpfuel.data.local.importing.ImportTestAssets
 import com.anpfuel.data.local.importing.PriceTableBatchImporter
+import com.anpfuel.data.local.importing.ImportTestCatalogSupport.createBatchImporter
 import com.anpfuel.data.local.fts.MunicipalityFtsIndexer
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -27,16 +28,7 @@ class StorageStatsRepositoryIntegrationTest {
             .allowMainThreadQueries()
             .build()
 
-        val auditLogger = ImportAuditLogger(database.importAuditLogDao())
-        val ftsIndexer = MunicipalityFtsIndexer(database.municipalityFtsDao())
-        val batchImporter = PriceTableBatchImporter(
-            database = database,
-            surveyWeekDao = database.surveyWeekDao(),
-            averagePriceDao = database.averagePriceDao(),
-            stationPriceDao = database.stationPriceDao(),
-            importAuditLogger = auditLogger,
-            ftsIndexer = ftsIndexer,
-        )
+        val batchImporter = createBatchImporter(context, database)
 
         runBlocking {
             val context = ImportTestAssets.applicationContext()
