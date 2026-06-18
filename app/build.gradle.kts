@@ -39,6 +39,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":domain"))
     implementation(project(":application"))
     implementation(project(":data"))
 
@@ -46,6 +47,8 @@ dependencies {
     implementation(libs.bundles.compose)
     implementation(libs.activity.compose)
     implementation(libs.lifecycle.runtime.compose)
+    implementation(libs.navigation.compose)
+    implementation(libs.compose.material.icons.extended)
 
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.ui.test.manifest)

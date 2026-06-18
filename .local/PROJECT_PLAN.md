@@ -90,35 +90,6 @@ All UC-001…UC-008 have at least happy-path + one failure test.
 
 ---
 
-## Phase 7 — UI foundation (Compose + Material 3)
-
-**Goal:** Theme, navigation, i18n baseline before feature screens.  
-**Duration:** ~2–3 days ⏱  
-📎 `.cursor/rules/android-system-design.mdc`, i18n rules
-
-### 7.1 Theme & i18n
-
-- [ ] **7.1.1** `Theme.kt` — Material 3 light/dark + dynamic color
-- [ ] **7.1.2** `values/strings.xml` (English) — common labels, errors
-- [ ] **7.1.3** `values-pt-rBR/strings.xml` — Brazilian Portuguese
-- [ ] **7.1.4** `AnpFuelApplication` + `@HiltAndroidApp`
-
-### 7.2 Navigation
-
-- [ ] **7.2.1** `AnpNavGraph` — routes: onboarding, home, search, location, prices, history, stations, settings
-- [ ] **7.2.2** `MainActivity` single-activity Compose host
-
-### 7.3 Shared UI components
-
-- [ ] **7.3.1** `LoadingState`, `ErrorState`, `EmptyState` composables
-- [ ] **7.3.2** `AnpAttributionFooter` — BR-009 on every price screen
-- [ ] **7.3.3** `SyncStatusBanner` — offline/stale (BR-004, freshness rules)
-- [ ] **7.3.4** `FuelProductLabel` — i18n mapped from enum
-
-**✅ Gate 7:** App launches to empty home with theme toggle; both locales show correct strings.
-
----
-
 ## Phase 8 — Feature screens (MVP v1)
 
 **Goal:** UC-002 through UC-008 shippable MVP.  
@@ -316,4 +287,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 6 Background sync (WorkManager) complete ✓ — next action **Phase 7 UI foundation (Compose + Material 3)**.
+**Current repo status (2026-06-18):** Phase 7 UI foundation complete ✓ — next action **Phase 8 Feature screens (MVP v1)**.

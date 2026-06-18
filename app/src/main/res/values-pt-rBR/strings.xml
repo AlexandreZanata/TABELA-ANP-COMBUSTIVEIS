@@ -1,6 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Preços ANP Combustíveis</string>
-    <string name="home_placeholder_title">Preços ANP Combustíveis</string>
-    <string name="home_placeholder_subtitle">A consulta de preços ficará disponível após a sincronização.</string>
+
+    <!-- Navigation -->
+    <string name="nav_onboarding">Introdução</string>
+    <string name="nav_home">Início</string>
+    <string name="nav_search">Buscar</string>
+    <string name="nav_location">Localização</string>
+    <string name="nav_prices">Preços</string>
+    <string name="nav_history">Histórico</string>
+    <string name="nav_stations">Postos</string>
+    <string name="nav_settings">Configurações</string>
+
+    <!-- Home -->
+    <string name="home_title">Preços ANP Combustíveis</string>
+    <string name="home_empty_message">Nenhum dado de preço sincronizado ainda.</string>
+    <string name="home_empty_hint">Conclua a introdução ou sincronize para carregar as tabelas semanais da ANP.</string>
+    <string name="home_fuel_products_preview">Combustíveis (prévia i18n)</string>
+    <string name="home_navigation_preview">Telas (Fase 8)</string>
+
+    <!-- Shared states -->
+    <string name="state_loading">Carregando…</string>
+    <string name="state_error_title">Algo deu errado</string>
+    <string name="state_empty_title">Nada por aqui</string>
+    <string name="screen_coming_soon">Disponível em uma versão futura.</string>
+
+    <!-- Actions -->
+    <string name="action_retry">Tentar novamente</string>
+    <string name="action_switch_dark_theme">Ativar tema escuro</string>
+    <string name="action_switch_light_theme">Ativar tema claro</string>
+
+    <!-- Sync banners (BR-004, freshness) -->
+    <string name="banner_offline">Offline — exibindo dados em cache.</string>
+    <string name="banner_syncing">Sincronizando tabelas de preços da ANP…</string>
+    <string name="banner_stale_data">Os dados podem estar desatualizados. Toque em atualizar para sincronizar.</string>
+    <string name="banner_partial_data">Médias municipais disponíveis; detalhe por posto incompleto.</string>
+    <string name="banner_sync_error">Falha na sincronização. Os dados em cache permanecem disponíveis.</string>
+
+    <!-- UC-001 sync -->
+    <string name="sync_progress_discovering">Descobrindo novas tabelas…</string>
+    <string name="sync_progress_downloading">Baixando…</string>
+    <string name="sync_progress_importing">Importando…</string>
+    <string name="sync_completed">Sincronização concluída</string>
+    <string name="sync_failed">Falha na sincronização</string>
+    <string name="info_sync_up_to_date">Já está atualizado.</string>
+
+    <!-- Errors (AppError i18n keys) -->
+    <string name="error_sync_network">Não foi possível acessar a ANP. Verifique a conexão e tente novamente.</string>
+    <string name="error_sync_parse">Não foi possível ler o arquivo baixado. Tente novamente mais tarde.</string>
+    <string name="error_search_no_results">Nenhum município corresponde à busca.</string>
+    <string name="error_station_detail_missing">Os preços por posto ainda não foram baixados para esta cidade.</string>
+    <string name="error_storage_full">Espaço insuficiente para importar os dados da ANP.</string>
+
+    <!-- Prices (UC-005) -->
+    <string name="prices_title">Preços de combustíveis</string>
+    <string name="prices_survey_week_label">Semana de pesquisa</string>
+    <string name="prices_last_sync_label">Última sincronização</string>
+    <string name="prices_station_count">%1$d postos</string>
+    <string name="prices_anp_attribution">Fonte: ANP — Agência Nacional do Petróleo, Gás Natural e Biocombustíveis</string>
+    <string name="prices_empty_municipality">Nenhum preço encontrado para este município.</string>
+
+    <!-- FuelProduct labels -->
+    <string name="fuel_product_ethanol">Etanol</string>
+    <string name="fuel_product_gasoline_regular">Gasolina comum</string>
+    <string name="fuel_product_gasoline_premium">Gasolina aditivada</string>
+    <string name="fuel_product_diesel_s500">Diesel S500</string>
+    <string name="fuel_product_diesel_s10">Diesel S10</string>
+    <string name="fuel_product_cng">GNV</string>
+    <string name="fuel_product_lpg_p13">GLP (13 kg)</string>
 </resources>
