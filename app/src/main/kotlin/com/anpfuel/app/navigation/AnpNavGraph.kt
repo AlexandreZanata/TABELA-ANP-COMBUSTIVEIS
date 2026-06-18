@@ -12,7 +12,7 @@ import com.anpfuel.app.ui.components.LoadingState
 import com.anpfuel.app.ui.home.HomeScreen
 import com.anpfuel.app.ui.onboarding.OnboardingScreen
 import com.anpfuel.app.ui.location.LocationPickerScreen
-import com.anpfuel.app.ui.placeholder.HistoryPlaceholderScreen
+import com.anpfuel.app.ui.history.HistoryScreen
 import com.anpfuel.app.ui.prices.PricesScreen
 import com.anpfuel.app.ui.placeholder.SettingsPlaceholderScreen
 import com.anpfuel.app.ui.placeholder.StationsPlaceholderScreen
@@ -101,10 +101,10 @@ fun AnpNavGraph(
             )
         }
         composable(Routes.PRICES) {
-            PricesScreen()
+            PricesScreen(onNavigate = navController::navigate)
         }
         composable(Routes.HISTORY) {
-            HistoryPlaceholderScreen()
+            HistoryScreen()
         }
         composable(Routes.STATIONS) {
             StationsPlaceholderScreen()

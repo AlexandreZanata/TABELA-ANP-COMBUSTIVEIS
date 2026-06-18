@@ -80,6 +80,14 @@
     <string name="prices_station_count">%1$d stations</string>
     <string name="prices_anp_attribution">Source: ANP — Agência Nacional do Petróleo, Gás Natural e Biocombustíveis</string>
     <string name="prices_empty_municipality">No prices found for this municipality.</string>
+    <string name="prices_view_history">View price history</string>
+
+    <!-- UC-006 History -->
+    <string name="history_title">Price history</string>
+    <string name="history_insufficient_data">History available after more weekly syncs.</string>
+    <string name="history_week_label">%1$s</string>
+    <string name="history_disabled">Price history is turned off in settings.</string>
+    <string name="history_fuel_product_label">Fuel product</string>
 
     <!-- FuelProduct labels -->
     <string name="fuel_product_ethanol">Ethanol</string>

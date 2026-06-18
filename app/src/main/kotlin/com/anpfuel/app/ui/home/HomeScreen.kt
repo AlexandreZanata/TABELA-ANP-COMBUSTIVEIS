@@ -243,6 +243,10 @@ private fun RowActions(onNavigate: (String) -> Unit) {
             label = { Text(text = stringResource(R.string.nav_location)) },
         )
         AssistChip(
+            onClick = { onNavigate(Routes.HISTORY) },
+            label = { Text(text = stringResource(R.string.nav_history)) },
+        )
+        AssistChip(
             onClick = { onNavigate(Routes.SETTINGS) },
             label = { Text(text = stringResource(R.string.nav_settings)) },
         )

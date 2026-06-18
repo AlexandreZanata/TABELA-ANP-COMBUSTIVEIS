@@ -97,13 +97,6 @@ All UC-001…UC-008 have at least happy-path + one failure test.
 
 Implement in user journey order:
 
-### 8.4 UC-006 History (v1.1 optional)
-
-- [ ] **8.4.1** `HistoryScreen` — list/chart if ≥2 weeks
-- [ ] **8.4.2** Insufficient data message otherwise
-
-Mark as **optional for MVP** if timeline tight; document in release scope.
-
 ### 8.5 UC-007 Stations (on-demand)
 
 - [ ] **8.5.1** `StationsScreen` — sorted list, download prompt
@@ -263,4 +256,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 8.3 UC-005 Home & prices complete ✓ — next action **Phase 8.4 History (optional)** or **Phase 8.5 Stations**.
+**Current repo status (2026-06-18):** Phase 8.4 UC-006 History complete ✓ — next action **Phase 8.5 Stations (on-demand)**.

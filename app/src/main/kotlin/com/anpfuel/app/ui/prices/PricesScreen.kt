@@ -11,6 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anpfuel.app.R
+import com.anpfuel.app.navigation.Routes
 import com.anpfuel.app.mapper.AppErrorMapper
 import com.anpfuel.app.mapper.SurveyWeekFormatter
 import com.anpfuel.app.ui.components.AnpAttributionFooter
@@ -41,6 +43,7 @@ import com.anpfuel.domain.valueobject.SurveyWeek
 
 @Composable
 fun PricesScreen(
+    onNavigate: (String) -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: PricesViewModel = hiltViewModel(),
 ) {
@@ -53,6 +56,7 @@ fun PricesScreen(
 
     PricesContent(
         uiState = uiState,
+        onNavigate = onNavigate,
         onRetry = { viewModel.load(locale) },
         modifier = modifier,
     )
@@ -62,6 +66,7 @@ fun PricesScreen(
 @Composable
 private fun PricesContent(
     uiState: PricesUiState,
+    onNavigate: (String) -> Unit,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -137,6 +142,12 @@ private fun PricesContent(
                     uiState.prices.forEach { price ->
                         MunicipalityPriceDetailRow(price = price)
                     }
+                    TextButton(
+                        onClick = { onNavigate(Routes.HISTORY) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(text = stringResource(R.string.prices_view_history))
+                    }
                 }
             }
         }
@@ -165,6 +176,7 @@ private fun PricesScreenPreview() {
                 ),
             ),
             onRetry = {},
+            onNavigate = {},
         )
     }
 }
