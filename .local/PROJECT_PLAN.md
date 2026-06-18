@@ -80,12 +80,6 @@ Implement **one use case at a time** — test before wiring UI.
 
 **✅ Gate 5.2:** UC-001 tests green with mocked ports.
 
-### 5.8 UC-007 — GetStationPricesUseCase + DownloadStationDetailUseCase
-
-- [ ] **5.8.1** BR-008: no local data → typed error for on-demand download
-- [ ] **5.8.2** Sort by price ascending
-- [ ] **5.8.3** On-demand download sub-flow
-
 ### 5.9 UC-008 — Settings use cases
 
 - [ ] **5.9.1** `GetSettingsUseCase`, `UpdatePreferencesUseCase`
@@ -353,4 +347,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 5.7 UC-006 GetPriceHistoryUseCase complete ✓ — next action **Phase 5.8 UC-007 GetStationPricesUseCase**.
+**Current repo status (2026-06-18):** Phase 5.8 UC-007 Station prices complete ✓ — next action **Phase 5.9 UC-008 Settings use cases**.
