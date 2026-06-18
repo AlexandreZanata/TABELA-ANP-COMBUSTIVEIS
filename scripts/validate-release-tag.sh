@@ -65,9 +65,16 @@ fi
 echo "OK: working tree clean"
 
 if git rev-parse "$TAG" >/dev/null 2>&1; then
-    echo "ERROR: tag $TAG already exists at $(git rev-parse "$TAG")"
-    exit 1
+    TAG_COMMIT="$(git rev-parse "$TAG^{commit}")"
+    HEAD_COMMIT="$(git rev-parse HEAD)"
+    if [[ "$TAG_COMMIT" == "$HEAD_COMMIT" ]]; then
+        echo "OK: tag $TAG already exists on HEAD ($HEAD_COMMIT)"
+    else
+        echo "ERROR: tag $TAG exists but points to $TAG_COMMIT, not HEAD $HEAD_COMMIT"
+        exit 1
+    fi
+else
+    echo "OK: tag $TAG not yet created"
 fi
-echo "OK: tag $TAG not yet created"
 
 echo "Release tag readiness validation passed."

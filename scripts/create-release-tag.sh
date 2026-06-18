@@ -22,6 +22,17 @@ if [[ -z "$TAG_MESSAGE" ]]; then
     TAG_MESSAGE="ANP Fuel Prices v1.0.0 — MVP"
 fi
 
+if git rev-parse "$TAG" >/dev/null 2>&1; then
+    TAG_COMMIT="$(git rev-parse "$TAG^{commit}")"
+    HEAD_COMMIT="$(git rev-parse HEAD)"
+    if [[ "$TAG_COMMIT" == "$HEAD_COMMIT" ]]; then
+        echo "OK: tag $TAG already exists on HEAD ($HEAD_COMMIT)"
+        exit 0
+    fi
+    echo "ERROR: tag $TAG exists but points to $TAG_COMMIT, not HEAD $HEAD_COMMIT"
+    exit 1
+fi
+
 git tag -a "$TAG" -m "$(cat <<EOF
 $TAG_MESSAGE
 
