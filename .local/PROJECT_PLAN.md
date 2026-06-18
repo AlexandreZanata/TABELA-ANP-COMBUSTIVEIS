@@ -32,14 +32,6 @@ Each item is a **micro-step**. Mark `[x]` when done. Do not skip **Validation ga
 
 **✅ Gate 0.1:** Repo clones clean; no secrets tracked; cursor rules load in IDE.
 
-### 0.4 Test infrastructure
-
-- [ ] **0.4.1** Enable JUnit 5 on `:domain` and `:application` (`useJUnitPlatform()`)
-- [ ] **0.4.2** Add MockK + Turbine to `:application` tests
-- [ ] **0.4.3** Add placeholder test `ExampleDomainTest` that passes — proves wiring
-
-**✅ Gate 0.4:** `./gradlew :domain:test :application:test` green.
-
 ---
 
 ## Phase 1 — Domain layer (TDD first)
@@ -568,10 +560,10 @@ A step is **done** only when:
 **If starting from zero today:**
 
 ```
-Phase 0.4 → Phase 1.1 → 1.2 → … → Gate 1.6
+Phase 1.1 → 1.2 → … → Gate 1.6
          → Phase 2 (Parser POC) → Gate 2
          → Phase 3 (DB POC) → Gate 3
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 0.3 complete ✓ — next action **Phase 0.4 Test infrastructure**.
+**Current repo status (2026-06-18):** Phase 0 complete ✓ — next action **Phase 1.1 Value Objects**.
