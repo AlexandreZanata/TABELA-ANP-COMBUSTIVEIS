@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anpfuel.app.R
+import com.anpfuel.app.ui.accessibility.liveRegionSemantics
 import com.anpfuel.app.ui.theme.AnpFuelTheme
 import com.anpfuel.domain.state.DataReadinessState
 
@@ -46,7 +47,9 @@ fun SyncStatusBanner(
     }
 
     Surface(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .liveRegionSemantics(),
         color = containerColor,
     ) {
         Text(
@@ -63,7 +66,9 @@ fun OfflineBanner(
     modifier: Modifier = Modifier,
 ) {
     Surface(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .liveRegionSemantics(),
         color = MaterialTheme.colorScheme.tertiaryContainer,
     ) {
         Text(

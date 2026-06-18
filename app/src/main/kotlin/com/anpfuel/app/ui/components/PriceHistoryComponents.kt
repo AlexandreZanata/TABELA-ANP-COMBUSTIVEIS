@@ -17,8 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.anpfuel.app.R
+import com.anpfuel.app.ui.accessibility.accessibilityDescription
 import com.anpfuel.app.ui.model.HistoryEntryUiModel
 import com.anpfuel.app.ui.theme.AnpFuelTheme
 import com.anpfuel.domain.valueobject.SurveyWeek
@@ -73,7 +76,9 @@ fun PriceHistoryTrendChart(
     val range = maxValue.subtract(minValue).takeIf { it.signum() > 0 } ?: BigDecimal.ONE
 
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .accessibilityDescription(stringResource(R.string.a11y_price_trend_chart)),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
         ),

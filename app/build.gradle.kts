@@ -65,6 +65,8 @@ dependencies {
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.ui.test.manifest)
 
+    testImplementation(libs.junit.jupiter)
+
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.compose.ui.test.junit4)
     androidTestImplementation(libs.compose.material3)
@@ -78,6 +80,10 @@ dependencies {
     implementation(libs.hilt.work)
     ksp(libs.hilt.work.compiler)
     implementation(libs.work.runtime.ktx)
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 private val maxReleaseApkBytes = 15L * 1024 * 1024

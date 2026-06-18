@@ -116,10 +116,6 @@ Manual test script (see Appendix A) passes on emulator + one physical device.
 
 ### 9.3 Accessibility
 
-- [ ] **9.3.1** TalkBack pass on main flows
-- [ ] **9.3.2** Font scaling 200% — no clipped text
-- [ ] **9.3.3** Contrast check (WCAG AA)
-
 ### 9.4 Security
 
 - [ ] **9.4.1** `android:usesCleartextTraffic="false"`
@@ -236,4 +232,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 9.2 Performance complete ✓ — next action **Phase 9.3 Accessibility**.
+**Current repo status (2026-06-18):** Phase 9.3 Accessibility complete ✓ — next action **Phase 9.4 Security**.

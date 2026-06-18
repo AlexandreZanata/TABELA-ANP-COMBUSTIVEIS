@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anpfuel.app.R
+import com.anpfuel.app.ui.accessibility.headingSemantics
 import com.anpfuel.app.ui.theme.AnpFuelTheme
 
 @Composable
@@ -32,6 +33,7 @@ fun EmptyState(
             text = stringResource(R.string.state_empty_title),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.headingSemantics(),
         )
         Text(
             text = message,

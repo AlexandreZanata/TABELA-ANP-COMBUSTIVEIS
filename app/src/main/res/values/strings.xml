@@ -174,4 +174,11 @@
     <string name="settings_attribution_section">Data source</string>
     <string name="settings_anp_attribution_link">Open official ANP page</string>
     <string name="anp_official_url" translatable="false">https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas</string>
+
+    <!-- Accessibility (Phase 9.3) -->
+    <string name="a11y_loading">Loading content</string>
+    <string name="a11y_fuel_price_card">%1$s, average price %2$s</string>
+    <string name="a11y_station_price_row">%1$s, price %2$s</string>
+    <string name="a11y_price_trend_chart">Price trend chart</string>
+    <string name="a11y_screen_title">%1$s screen</string>
 </resources>

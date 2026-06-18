@@ -173,4 +173,11 @@
     <string name="settings_clear_cache_confirm_action">Limpar tudo</string>
     <string name="settings_attribution_section">Fonte dos dados</string>
     <string name="settings_anp_attribution_link">Abrir página oficial da ANP</string>
+
+    <!-- Accessibility (Phase 9.3) -->
+    <string name="a11y_loading">Carregando conteúdo</string>
+    <string name="a11y_fuel_price_card">%1$s, preço médio %2$s</string>
+    <string name="a11y_station_price_row">%1$s, preço %2$s</string>
+    <string name="a11y_price_trend_chart">Gráfico de tendência de preços</string>
+    <string name="a11y_screen_title">Tela %1$s</string>
 </resources>

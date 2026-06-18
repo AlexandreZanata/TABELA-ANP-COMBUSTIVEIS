@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.anpfuel.app.R
+import com.anpfuel.app.ui.accessibility.accessibilityDescription
 import com.anpfuel.app.ui.theme.AnpFuelTheme
 
 @Composable
@@ -30,7 +31,9 @@ fun LoadingState(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         CircularProgressIndicator(
-            modifier = Modifier.size(48.dp),
+            modifier = Modifier
+                .size(48.dp)
+                .accessibilityDescription(stringResource(R.string.a11y_loading)),
             color = MaterialTheme.colorScheme.primary,
         )
         Text(

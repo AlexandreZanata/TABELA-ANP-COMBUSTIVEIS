@@ -53,11 +53,3 @@ fun AnpFuelTheme(
         content = content,
     )
 }
-
-private object ColorTokens {
-    val White = androidx.compose.ui.graphics.Color.White
-    val BlueLight = androidx.compose.ui.graphics.Color(0xFF90CAF9)
-    val BlueContainerLight = androidx.compose.ui.graphics.Color(0xFFBBDEFB)
-    val GreenLight = androidx.compose.ui.graphics.Color(0xFFA5D6A7)
-    val GreenContainerLight = androidx.compose.ui.graphics.Color(0xFFC8E6C9)
-}
