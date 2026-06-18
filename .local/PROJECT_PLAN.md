@@ -40,14 +40,6 @@ Each item is a **micro-step**. Mark `[x]` when done. Do not skip **Validation ga
 **Duration:** ~3–4 days ⏱  
 📎 UC-004, UC-005, architecture schema
 
-### 3.1 Room setup
-
-- [ ] **3.1.1** Entities: `SurveyWeekEntity`, `AveragePriceEntity`, `StationPriceEntity`, `ImportAuditLogEntity`
-- [ ] **3.1.2** DAOs with batch `@Insert(onConflict = IGNORE)` 
-- [ ] **3.1.3** `AnpFuelDatabase` version 1, `exportSchema = true`, schemas in `data/schemas/`
-- [ ] **3.1.4** Enable WAL via `RoomDatabase.Builder`
-- [ ] **3.1.5** Hilt `DatabaseModule`
-
 ### 3.2 FTS5 municipality search
 
 - [ ] **3.2.1** 🔬 Create `municipality_fts` virtual table per architecture.md
@@ -444,4 +436,4 @@ Phase 2.1 (Parser POC) → Gate 2
          → …
 ```
 
-**Current repo status (2026-06-18):** Phase 1 complete ✓ — next action **Phase 2.1 Parser spike**.
+**Current repo status (2026-06-18):** Phase 3.1 Room setup complete ✓ — next action **Phase 3.2 FTS5 municipality search**.
