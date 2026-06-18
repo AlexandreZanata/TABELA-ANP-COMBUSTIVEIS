@@ -40,15 +40,6 @@ Each item is a **micro-step**. Mark `[x]` when done. Do not skip **Validation ga
 **Duration:** ~3–4 days ⏱  
 📎 `data/samples/`, BR-001, BR-002
 
-### 2.2 Cross-validation with Apache POI (test-only)
-
-- [ ] **2.2.1** Add POI to `testImplementation` only (per tech-stack)
-- [ ] **2.2.2** Test: POI reads `resumo_semanal_lpc_2026-06-07_2026-06-13.xlsx` MUNICIPIOS sheet — row count baseline (~2344 data rows)
-- [ ] **2.2.3** Test: custom parser row count == POI row count
-- [ ] **2.2.4** Test: first 10 rows field-by-field match POI
-- [ ] **2.2.5** Test: same for `revendas_lpc_*.xlsx` (~19676 rows)
-- [ ] **2.2.6** Test: all product labels map via BR-002 (zero unmapped in sample files)
-
 ### 2.3 Memory & performance POC
 
 - [ ] **2.3.1** 🔬 JVM test: parse full station file with `-Xmx64m` heap — must not OOM

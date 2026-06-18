@@ -26,6 +26,7 @@ dependencies {
 
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.kxml2)
+    testImplementation(libs.poi.ooxml)
 }
 
 tasks.withType<Test> {
