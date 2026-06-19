@@ -6,6 +6,8 @@ internal object AnpFixtureFiles {
 
     fun readListingHtml(): String = resolve(LISTING_FIXTURE).readText()
 
+    fun readFullListingHtml(): String = resolve(FULL_LISTING_FIXTURE).readText()
+
     fun resolve(fileName: String): File {
         val candidates = listOf(
             File("fixtures/$fileName"),
@@ -18,4 +20,5 @@ internal object AnpFixtureFiles {
     }
 
     const val LISTING_FIXTURE = "anp-listing.html"
+    const val FULL_LISTING_FIXTURE = "anp-listing-full.html"
 }

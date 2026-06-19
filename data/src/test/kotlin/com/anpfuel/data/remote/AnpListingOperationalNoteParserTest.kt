@@ -7,31 +7,26 @@ import org.junit.jupiter.api.Test
 class AnpListingOperationalNoteParserTest {
 
     @Test
-    fun parsesNotaPrefix() {
-        val note = AnpListingOperationalNoteParser.parseOperationalNote(
-            "NOTA: Os preços médios de Belo Horizonte não foram publicados entre 26/04/2026 e 16/05/2026.",
-        )
+    fun parsesNotaParagraph() {
+        val text =
+            "NOTA: Os preços médios de Belo Horizonte não foram publicados entre 26/04/2026 e 16/05/2026."
 
         assertEquals(
             "Os preços médios de Belo Horizonte não foram publicados entre 26/04/2026 e 16/05/2026.",
-            note,
+            AnpListingOperationalNoteParser.parseOperationalNote(text),
         )
     }
 
     @Test
-    fun parsesAvisoPrefixCaseInsensitive() {
-        val note = AnpListingOperationalNoteParser.parseOperationalNote(
-            "aviso: Correção de preços em Goiatuba para a semana de 21/05/2023 a 27/05/2023.",
-        )
-
+    fun parsesAvisoParagraphCaseInsensitive() {
         assertEquals(
-            "Correção de preços em Goiatuba para a semana de 21/05/2023 a 27/05/2023.",
-            note,
+            "Correção dos preços de Goiatuba.",
+            AnpListingOperationalNoteParser.parseOperationalNote("Aviso: Correção dos preços de Goiatuba."),
         )
     }
 
     @Test
-    fun ignoresRegularParagraphText() {
+    fun returnsNullForRegularParagraph() {
         assertNull(
             AnpListingOperationalNoteParser.parseOperationalNote(
                 "Preços médios semanais: Brasil, regiões, estados e municípios",

@@ -81,11 +81,6 @@ internal object AnpListingWeekCatalogParser {
             .sortedByDescending { it.surveyWeek.endDate }
     }
 
-    private fun anchorContextText(anchor: Element): String {
-        val listItem = anchor.parent()?.takeIf { it.tagName() == "li" }
-        return listItem?.text() ?: anchor.text()
-    }
-
     private fun attachOperationalNote(
         text: String,
         currentWeek: SurveyWeek?,
@@ -93,7 +88,15 @@ internal object AnpListingWeekCatalogParser {
     ) {
         val week = currentWeek ?: return
         val note = AnpListingOperationalNoteParser.parseOperationalNote(text) ?: return
-        buckets.getOrPut(week) { WeekUrlBucket(week) }.operationalNote = note
+        val bucket = buckets.getOrPut(week) { WeekUrlBucket(week) }
+        if (bucket.operationalNote == null) {
+            bucket.operationalNote = note
+        }
+    }
+
+    private fun anchorContextText(anchor: Element): String {
+        val listItem = anchor.parent()?.takeIf { it.tagName() == "li" }
+        return listItem?.text() ?: anchor.text()
     }
 
     private fun updateCurrentWeek(
