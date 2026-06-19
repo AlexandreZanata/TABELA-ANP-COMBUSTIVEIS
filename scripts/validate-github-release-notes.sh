@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Phase 10.6 — validates GitHub Release v1.0.0 draft notes and required disclaimers.
+# Phase 15 — validates GitHub Release v2.0.0 draft notes and required disclaimers.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-RELEASE_NOTES="$ROOT/docs/releases/v1.0.0.md"
+RELEASE_NOTES="$ROOT/docs/releases/v2.0.0.md"
 
 if [[ ! -f "$RELEASE_NOTES" ]]; then
     echo "ERROR: missing $RELEASE_NOTES"
@@ -45,17 +45,15 @@ RELEASE_BODY="$(extract_block 'begin:release-body' 'end:release-body')"
 FULL_DOC="$(cat "$RELEASE_NOTES")"
 
 assert_not_empty "release_body" "$RELEASE_BODY"
-assert_contains "version" "$FULL_DOC" "v1.0.0"
+assert_contains "version" "$FULL_DOC" "v2.0.0"
 assert_contains "anp_attribution" "$RELEASE_BODY" "ANP"
-assert_contains "anp_agency_name" "$RELEASE_BODY" "Agência Nacional do Petróleo"
 assert_contains "not_affiliated" "$RELEASE_BODY" "not affiliated with ANP"
-assert_contains "weekly_disclaimer" "$RELEASE_BODY" "weekly surveys"
-assert_contains "realtime_disclaimer" "$RELEASE_BODY" "not live pump prices"
-assert_contains "offline_disclaimer" "$RELEASE_BODY" "offline after the first sync"
+assert_contains "week_picker" "$RELEASE_BODY" "Week picker"
+assert_contains "install_apk" "$RELEASE_BODY" "app-release.apk"
 assert_contains "privacy_policy" "$RELEASE_BODY" "privacy policy"
 assert_contains "mit_license" "$RELEASE_BODY" "MIT License"
+assert_contains "icon_attribution" "$RELEASE_BODY" "Pictogrammers"
 assert_contains "repository_url" "$RELEASE_BODY" "github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS"
-assert_contains "install_apk" "$RELEASE_BODY" "app-release.apk"
 assert_contains "br009_checklist" "$FULL_DOC" "BR-009"
 
-echo "GitHub Release v1.0.0 notes validation passed."
+echo "GitHub Release v2.0.0 notes validation passed."

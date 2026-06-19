@@ -117,7 +117,8 @@ See **[CONTRIBUTING.md](CONTRIBUTING.md)** for the full contributor guide.
 Validate a release locally:
 
 ```bash
-./gradlew validateReleaseBuild     # signed APK/AAB
+./gradlew validateReleaseBuild     # signed APK/AAB (v2.0.0)
+./gradlew validateReleaseTag       # version, license, disclaimers (Gate 15)
 ./gradlew test                     # full unit test suite (all modules)
 ```
 

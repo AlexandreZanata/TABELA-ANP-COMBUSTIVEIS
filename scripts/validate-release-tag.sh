@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# Phase 10.7 — validates repository readiness for v1.0.0 release tag (Gate 10).
+# Phase 15 / Gate 15 — validates repository readiness for v2.0.0 release tag.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-TAG="v1.0.0"
+TAG="v2.0.0"
 GRADLE="$ROOT/app/build.gradle.kts"
 LICENSE="$ROOT/LICENSE"
 README="$ROOT/README.md"
-RELEASE_NOTES="$ROOT/docs/releases/v1.0.0.md"
+RELEASE_NOTES="$ROOT/docs/releases/v2.0.0.md"
 
 assert_file() {
     local path="$1"
@@ -28,28 +28,28 @@ assert_file "$RELEASE_NOTES" "release notes"
 
 README_TEXT="$(cat "$README")"
 if [[ "$README_TEXT" != *"MIT License"* ]]; then
-    echo "ERROR: README must reference MIT License (Gate 10)"
+    echo "ERROR: README must reference MIT License (Gate 15)"
     exit 1
 fi
 echo "OK: README references MIT License"
 
-if [[ "$README_TEXT" != *"docs/releases/v1.0.0.md"* ]]; then
-    echo "ERROR: README must link to release notes (Gate 10)"
+if [[ "$README_TEXT" != *"docs/releases/v2.0.0.md"* ]]; then
+    echo "ERROR: README must link to v2.0.0 release notes (Gate 15)"
     exit 1
 fi
-echo "OK: README links to v1.0.0 release notes"
+echo "OK: README links to v2.0.0 release notes"
 
 VERSION_NAME="$(grep 'versionName' "$GRADLE" | head -n 1 | sed -E 's/.*"([^"]+)".*/\1/')"
 VERSION_CODE="$(grep 'versionCode' "$GRADLE" | head -n 1 | sed -E 's/.*= ([0-9]+).*/\1/')"
 
-if [[ "$VERSION_NAME" != "1.0.0" ]]; then
-    echo "ERROR: expected versionName 1.0.0, found '$VERSION_NAME'"
+if [[ "$VERSION_NAME" != "2.0.0" ]]; then
+    echo "ERROR: expected versionName 2.0.0, found '$VERSION_NAME'"
     exit 1
 fi
-echo "OK: versionName is 1.0.0"
+echo "OK: versionName is 2.0.0"
 
-if [[ -z "$VERSION_CODE" || "$VERSION_CODE" -lt 1 ]]; then
-    echo "ERROR: invalid versionCode '$VERSION_CODE'"
+if [[ -z "$VERSION_CODE" || "$VERSION_CODE" -lt 2 ]]; then
+    echo "ERROR: invalid versionCode '$VERSION_CODE' (expected >= 2 for v2.0.0)"
     exit 1
 fi
 echo "OK: versionCode is $VERSION_CODE"

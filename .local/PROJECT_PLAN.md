@@ -24,7 +24,7 @@ This document lists **only what remains** to reach **100% plan completion** (all
 | **Gate 11** | Manual search script (10 cities + homonyms) | R3 |
 | **Gate 12** | Appendix A2 manual not signed off | R3 |
 | **Gate 13** | Manual safe-area check (API 34 + notch device) | R3 |
-| **Gate 15** | No tag `v2.0.0`, no GitHub Release, scripts still v1.0.0 | R2 |
+| **Gate 15** | No tag `v2.0.0`, no GitHub Release published | R2 |
 | **Risk 12** | Week list “load more” UX (200+ weeks) | R5 |
 | **15.1.2** | README screenshot PNGs missing | R4 |
 
@@ -33,14 +33,6 @@ This document lists **only what remains** to reach **100% plan completion** (all
 ## Phase R2 — Release tooling & Gate 15 (v2.0.0)
 
 **Goal:** Ship v2.0.0 the same way v1.0.0 shipped — scripts, tag, artifacts, GitHub Release.
-
-### R2.1 Update release scripts (still pinned to v1.0.0)
-
-- [ ] **R2.1.1** `scripts/validate-release-tag.sh` — expect `versionName = "2.0.0"`, link `docs/releases/v2.0.0.md`
-- [ ] **R2.1.2** `scripts/validate-github-release-notes.sh` — validate v2.0.0 draft (`docs/releases/v2.0.0.md`)
-- [ ] **R2.1.3** `scripts/create-release-tag.sh` — tag `v2.0.0`, release notes path v2
-- [ ] **R2.1.4** Root `build.gradle.kts` task descriptions mention v2.0.0 where applicable
-- [ ] **R2.1.5** `README.md` — `validateReleaseTag` / release section references v2.0.0 primary
 
 ### R2.2 Build & tag (local)
 
@@ -216,5 +208,6 @@ R5 (load more UX) → R4 (screenshots)
 - **v2 Phase 14:** MDI fuel drawables, FuelProductIcon, FuelProductTint, attribution.md
 - **v2 Phase 15 (partial):** user-business-logic.md, CHANGELOG, v2.0.0 release notes draft, versionName 2.0.0, V1ToV2DatabaseMigrationTest, JVM tests green
 - **R1 (automated gates):** JVM suite, connectedCheck (Gate 9), assembleRelease (Gate 14), verifyReleaseApkSize, securityCheck — all green on device 2311DRK48G (2026-06-19)
+- **R2.1 (release scripts):** validate-release-tag, validate-github-release-notes, create-release-tag, Gradle tasks, README — pinned to v2.0.0 / Gate 15 (2026-06-19)
 
 </details>

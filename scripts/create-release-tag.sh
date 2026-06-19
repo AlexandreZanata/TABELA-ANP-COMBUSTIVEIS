@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Phase 10.7 — runs Gate 10 checks and creates annotated tag v1.0.0 locally.
+# Phase 15 / Gate 15 — runs release checks and creates annotated tag v2.0.0 locally.
 # Does not push to remote; maintainer publishes GitHub Release separately.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-TAG="v1.0.0"
-RELEASE_NOTES="$ROOT/docs/releases/v1.0.0.md"
+TAG="v2.0.0"
+RELEASE_NOTES="$ROOT/docs/releases/v2.0.0.md"
 
 bash "$ROOT/scripts/validate-release-tag.sh"
 bash "$ROOT/scripts/validate-release-build.sh"
@@ -19,7 +19,7 @@ TAG_MESSAGE="$(awk -v start='## Release title' '
 ' "$RELEASE_NOTES" | sed '/^[[:space:]]*$/d')"
 
 if [[ -z "$TAG_MESSAGE" ]]; then
-    TAG_MESSAGE="ANP Fuel Prices v1.0.0 — MVP"
+    TAG_MESSAGE="ANP Fuel Prices v2.0.0 — Week picker & national search"
 fi
 
 if git rev-parse "$TAG" >/dev/null 2>&1; then
@@ -36,10 +36,10 @@ fi
 git tag -a "$TAG" -m "$(cat <<EOF
 $TAG_MESSAGE
 
-First public MVP release (UC-001…UC-008). Sideload via GitHub Releases.
+v2 release: week picker, national search, safe areas, fuel icons.
 Fuel price data © ANP. This app is not affiliated with ANP.
 
-Refs: Phase 10.7, BR-009
+Refs: Phase 15, Gate 15, BR-009
 EOF
 )"
 
