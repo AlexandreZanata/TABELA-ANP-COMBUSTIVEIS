@@ -140,6 +140,9 @@ private fun FuelPriceCardDarkPreview() {
             price = AveragePriceUiModel(
                 fuelProduct = FuelProduct.GASOLINE_PREMIUM,
                 averageFormatted = "R$ 5,89",
+                minimumFormatted = null,
+                maximumFormatted = null,
+                stationCount = null,
             ),
             onClick = {},
         )

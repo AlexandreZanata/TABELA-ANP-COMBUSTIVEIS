@@ -39,26 +39,55 @@ There is **no authentication** in v1. The End User is anonymous; preferences are
 
 ```mermaid
 flowchart LR
-    A[Launch app] --> B{Data synced?}
-    B -->|No| C[Onboarding + first sync]
-    B -->|Yes| D[Home]
-    C --> D
-    D --> E[Select location]
-    E --> F[View fuel prices]
-    F --> G{Station detail?}
-    G -->|Yes| H[Station list]
-    G -->|No| I[Done / history / settings]
-    H --> I
+    A[Launch app] --> B{Active week set?}
+    B -->|No| C[Onboarding + week picker]
+    B -->|Yes| D{Data synced?}
+    C --> W[Select survey week]
+    W --> S[Sync selected week]
+    S --> D
+    D -->|No| C
+    D -->|Yes| E[Home]
+    E --> F[Select location]
+    F --> G[View fuel prices]
+    G --> H{Station detail?}
+    H -->|Yes| I[Station list]
+    H -->|No| J[Done / history / settings]
+    I --> J
 ```
 
 ### Journey steps (business language)
 
-1. **Launch** — App checks local database for imported `SurveyWeek` records.
-2. **Onboarding (first run)** — Explain data source (ANP), offline model, weekly cadence. Trigger first `SyncJob`.
-3. **Home** — Show selected city (or prompt to select), latest `SurveyWeek` range, prices per `FuelProduct`.
-4. **Location selection** — User picks state + municipality, or searches by name (FTS autocomplete).
-5. **Fuel detail** — Tap a fuel to see min/avg/max, station count, and optional station list.
-6. **Settings** — Language, sync preferences, storage management, data attribution.
+1. **Launch** — App checks `activeSurveyWeek` preference and local database for imported `SurveyWeek` records (BR-018, BR-019).
+2. **Onboarding (first run)** — Explain data source (ANP), offline model, weekly cadence. User **selects survey week** (UC-009) before first sync.
+3. **Week selection** — User picks **latest week** or a historical week from the gov.br catalog; optional operational notes shown per week block.
+4. **Sync** — Targeted download/import for the selected week only (UC-001 scoped); progress visible.
+5. **Home** — Show selected city (or prompt to select), **active week chip** (tap to change week), prices per `FuelProduct` with vector icons.
+6. **Location selection** — User picks state + municipality, or **searches nationally** by name (IBGE catalog + FTS, UC-004).
+7. **Fuel detail** — Tap a fuel to see min/avg/max, station count, and optional station list.
+8. **Settings** — Language, sync preferences, storage management, data attribution, week picker shortcut.
+
+### Week picker journey (v2 — UC-009)
+
+| Step | User action | System response |
+|------|-------------|-----------------|
+| 1 | Completes onboarding intro or taps **Survey week** chip / settings | Opens week picker (full screen or bottom sheet) |
+| 2 | Taps **Use latest week** | Sets `activeSurveyWeek` to catalog newest; triggers sync (UC-001) |
+| 3 | Selects historical week (e.g. `31/05–06/06/2026`) | Confirmation for download; sync scoped to that week |
+| 4 | Sync completes | Home/prices reflect selected week; chip shows range + “Latest” badge when applicable |
+| 5 | Returns later with cached week | Skips picker; chip allows one-tap week change globally |
+
+**Rules:** BR-006, BR-018, BR-019 — default display follows `activeSurveyWeek`, not implicit “newest in DB” when preference is set.
+
+### National search journey (v2 — UC-004)
+
+| Step | User action | System response |
+|------|-------------|-----------------|
+| 1 | Types ≥ 2 characters in search (BR-007) | FTS queries `municipality_catalog` (~5 570 IBGE municipalities) |
+| 2 | Sees ranked results with **state abbreviation** | BR-017 tiers: exact match → prefix → fuzzy; duplicate names disambiguated |
+| 3 | Selects city with no ANP data this week | UC-005 empty state (BR-010), not an error |
+| 4 | Works offline | Local FTS only (BR-004); no network required after catalog seed |
+
+**Examples (Appendix A2):** `"san paolo"` → São Paulo (SP); `"Bom Jesus"` → multiple states listed.
 
 ---
 
@@ -148,6 +177,14 @@ Stored on device only. No cloud sync in v1.
 - Station-level prices (on-demand download)
 - Price history chart per fuel (last N weeks)
 - Compare two `SurveyWeek`s side by side
+
+### v2 — Week picker, national search, polish (shipped v2.0.0)
+
+- **Survey week selection** before sync (UC-009) — gov.br catalog parity, historical weeks on demand
+- **National municipality search** — IBGE baseline catalog + FTS ranking (BR-016, BR-017)
+- **Edge-to-edge safe areas** — `AnpScaffold` on all screens (Phase 13)
+- **Fuel product vector icons** — per-fuel MDI icons with accessible labels (Phase 14)
+- Active week chip on app bars; week picker bottom sheet for returning users
 
 ### Out of scope (v1)
 

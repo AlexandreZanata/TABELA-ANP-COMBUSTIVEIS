@@ -2,19 +2,33 @@
 
 [![CI](https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/actions/workflows/ci.yml/badge.svg)](https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Release](https://img.shields.io/badge/release-v1.0.0-blue.svg)](docs/releases/v1.0.0.md)
+[![Release](https://img.shields.io/badge/release-v2.0.0-blue.svg)](docs/releases/v2.0.0.md)
 
 Open-source Android app to browse Brazilian ANP (National Petroleum Agency) weekly fuel price surveys — fully offline-capable, no backend required.
 
 **100% open source and free to use** under the [MIT License](LICENSE). The only requirement when reusing or redistributing this project is to **reference the original source** — see [docs/license.md](docs/license.md).
 
+## Screenshots (v2.0.0)
+
+| Week picker | Home with fuel icons |
+|-------------|----------------------|
+| *Capture:* [docs/screenshots/v2/week-picker.png](docs/screenshots/v2/week-picker.png) | *Capture:* [docs/screenshots/v2/home-fuel-icons.png](docs/screenshots/v2/home-fuel-icons.png) |
+
+| National search | Safe areas (edge-to-edge) |
+|-----------------|---------------------------|
+| *Capture:* [docs/screenshots/v2/search-national.png](docs/screenshots/v2/search-national.png) | *Capture:* [docs/screenshots/v2/safe-area.png](docs/screenshots/v2/safe-area.png) |
+
+Capture instructions: **[docs/screenshots/v2/README.md](docs/screenshots/v2/README.md)**. Automated layout validation: `FuelProductIconScreenshotTest`, `SafeAreaScreenshotMatrixTest`.
+
 ## Features
 
-- Automatic download of latest ANP price tables from [gov.br/anp](https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas)
-- Browse average prices by fuel type, state, and city
-- Search cities with autocomplete
+- **Survey week picker** — choose latest or any historical ANP week (gov.br catalog parity)
+- **National city search** — ~5 570 IBGE municipalities with FTS ranking and typo tolerance
+- Automatic download of ANP price tables from [gov.br/anp](https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas)
+- Browse average prices by fuel type, state, and city — **vector icon per fuel**
 - Optional per-station detail (CNPJ, address, brand, price)
 - Historical price trends (local storage)
+- Edge-to-edge UI with system bar safe areas
 - 100% on-device processing — no server
 
 ## Stack (definitive)
@@ -37,7 +51,7 @@ Full specification: **[docs/tech-stack.md](docs/tech-stack.md)** · ADR: **[docs
 
 ```
 :app/               # Compose UI, ViewModels, theme, navigation
-:application/       # Use cases (UC-001…UC-008)
+:application/       # Use cases (UC-001…UC-009)
 :domain/            # Entities, Value Objects, rules, events, ports
 :data/              # Room, OkHttp, parser, WorkManager, repositories
 docs/               # Architecture, use cases, glossary
@@ -65,8 +79,10 @@ See [docs/data-sources.md](docs/data-sources.md) for column schemas and download
 | Document | Purpose |
 |----------|---------|
 | [docs/user-business-logic.md](docs/user-business-logic.md) | **Product contract** — user journeys, states, rules |
-| [docs/use-cases/](docs/use-cases/) | Detailed use cases (UC-001 … UC-008) |
-| [docs/glossary.md](docs/glossary.md) | Domain language + business rules (BR-001 … BR-015) |
+| [docs/use-cases/](docs/use-cases/) | Detailed use cases (UC-001 … UC-009) |
+| [docs/glossary.md](docs/glossary.md) | Domain language + business rules (BR-001 … BR-019) |
+| [docs/attribution.md](docs/attribution.md) | Third-party assets (fuel icons) |
+| [CHANGELOG.md](CHANGELOG.md) | Release history |
 | [docs/architecture.md](docs/architecture.md) | Layers, packages, data flow, database |
 | [docs/tech-stack.md](docs/tech-stack.md) | **Definitive stack** — libraries and module deps |
 | [docs/adr/001-kotlin-compose-stack.md](docs/adr/001-kotlin-compose-stack.md) | Architecture decision record |
@@ -77,6 +93,7 @@ See [docs/data-sources.md](docs/data-sources.md) for column schemas and download
 | [docs/play-store-listing.md](docs/play-store-listing.md) | Play Store listing draft (en + pt-BR) |
 | [docs/privacy-policy.md](docs/privacy-policy.md) | Privacy policy — no personal data collected |
 | [docs/release-build.md](docs/release-build.md) | Signed release APK/AAB build instructions |
+| [docs/releases/v2.0.0.md](docs/releases/v2.0.0.md) | GitHub Release v2.0.0 draft notes |
 | [docs/releases/v1.0.0.md](docs/releases/v1.0.0.md) | GitHub Release v1.0.0 draft notes |
 | [.local/PROJECT_PLAN.md](.local/PROJECT_PLAN.md) | Micro-step execution plan (POCs & gates) |
 
@@ -95,14 +112,16 @@ See **[CONTRIBUTING.md](CONTRIBUTING.md)** for the full contributor guide.
 
 ## Releases
 
-**Latest:** [v1.0.0](docs/releases/v1.0.0.md) — MVP with UC-001…UC-008. Sideload the signed APK from GitHub Releases (see [release build guide](docs/release-build.md)).
+**Latest:** [v2.0.0](docs/releases/v2.0.0.md) — week picker, national search, safe areas, fuel icons. Previous: [v1.0.0](docs/releases/v1.0.0.md).
 
 Validate a release locally:
 
 ```bash
-./gradlew validateReleaseTag      # Gate 10 readiness (no build)
-./gradlew createReleaseTag        # signed build + annotated tag v1.0.0
+./gradlew validateReleaseBuild     # signed APK/AAB
+./gradlew test                     # full unit test suite (all modules)
 ```
+
+See [CHANGELOG.md](CHANGELOG.md) for version history.
 
 ## License
 

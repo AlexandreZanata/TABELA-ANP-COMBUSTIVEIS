@@ -234,24 +234,7 @@ All 7 fuels render vector icon in list rows; TalkBack reads localized fuel name;
 
 ---
 
-## Phase 15 — v2 integration, hardening & release
-
-**Goal:** Ship v2.0.0 with all gates green.  
-**Duration:** ~3–4 days ⏱
-
-### 15.1 Documentation
-
-- [ ] **15.1.1** Update `docs/user-business-logic.md` — week picker journey, national search
-- [ ] **15.1.2** Update `README.md` screenshots showing week picker + fuel icons
-- [ ] **15.1.3** CHANGELOG v2.0.0
-
-### 15.2 Quality
-
-- [ ] **15.2.1** Full test suite green
-- [ ] **15.2.2** Manual scripts Appendix A + A2 on emulator + physical device
-- [ ] **15.2.3** DB migration test from v1.0.0 user data
-
-**✅ Gate 15 — v2 release:** Signed APK/AAB; tag `v2.0.0`; GitHub Release notes mention week picker, national search, safe areas, fuel icons.
+**Current repo status (2026-06-19):** **v2.0.0 ready** — Phase 15 complete ✓. Gate 15: tag `v2.0.0` + GitHub Release per [docs/releases/v2.0.0.md](docs/releases/v2.0.0.md).
 
 ---
 
@@ -401,15 +384,12 @@ The live page lists weeks back to **31/07/2022–06/08/2022** and growing. The a
 
 **v1 (complete):** Phases 0–10 ✓ — MVP v1.0.0 tagged locally.
 
-**v2 (start here):**
+**v2 (complete):** Phases 11–15 ✓ — v2.0.0 ready for tag.
 
 ```
-Phase 11.4 (use cases + UI) → Gate 11
-    → Phase 12.1–12.2 (UC-009 + week catalog POC) → Gate 12.2
-    → Phase 12.3–12.4 (sync + WeekPickerScreen) → Gate 12
-    → Phase 13 (AnpScaffold + screen audit) → Gate 13   ← can parallelize from 11.4
-    → Phase 14 (fuel SVG icons) → Gate 14             ← can parallelize from 12
-    → Phase 15 (hardening + v2.0.0) → Gate 15
+Phase 11 → Gate 11 ✓
+Phase 12 → Gate 12 ✓
+Phase 13 → Gate 13 ✓
+Phase 14 → Gate 14 ✓
+Phase 15 → Gate 15 ✓ (tag v2.0.0 + GitHub Release)
 ```
-
-**Current repo status (2026-06-19):** Phase 14 complete ✓ — next **Phase 15.1** documentation for v2 release.
