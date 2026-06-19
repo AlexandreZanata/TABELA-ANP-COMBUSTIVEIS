@@ -13,7 +13,9 @@ import com.anpfuel.application.usecase.settings.ClearCacheUseCase
 import com.anpfuel.application.usecase.settings.GetSettingsUseCase
 import com.anpfuel.application.usecase.settings.GetStorageUsageUseCase
 import com.anpfuel.application.usecase.settings.UpdatePreferencesUseCase
+import com.anpfuel.application.usecase.sync.DiscoverSurveyWeekCatalogUseCase
 import com.anpfuel.application.usecase.sync.DownloadStationDetailUseCase
+import com.anpfuel.application.usecase.sync.SelectSurveyWeekUseCase
 import com.anpfuel.application.usecase.sync.SyncPriceTablesUseCase
 import com.anpfuel.domain.repository.AveragePriceRepository
 import com.anpfuel.domain.repository.CacheRepository
@@ -45,6 +47,24 @@ object UseCaseModule {
     ): ApplyStationDetailRetentionUseCase = ApplyStationDetailRetentionUseCase(
         userPreferencesRepository = userPreferencesRepository,
         stationPriceRepository = stationPriceRepository,
+    )
+
+    @Provides
+    @Singleton
+    fun provideDiscoverSurveyWeekCatalogUseCase(
+        priceTableSyncGateway: PriceTableSyncGateway,
+    ): DiscoverSurveyWeekCatalogUseCase = DiscoverSurveyWeekCatalogUseCase(
+        priceTableSyncGateway = priceTableSyncGateway,
+    )
+
+    @Provides
+    @Singleton
+    fun provideSelectSurveyWeekUseCase(
+        userPreferencesRepository: UserPreferencesRepository,
+        eventPublisher: DomainEventPublisher,
+    ): SelectSurveyWeekUseCase = SelectSurveyWeekUseCase(
+        userPreferencesRepository = userPreferencesRepository,
+        eventPublisher = eventPublisher,
     )
 
     @Provides
