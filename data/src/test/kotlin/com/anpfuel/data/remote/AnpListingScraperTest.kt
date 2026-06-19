@@ -50,4 +50,41 @@ class AnpListingScraperTest {
             assertTrue(priceTable.sourceUrl.startsWith("https://"))
         }
     }
+
+    @Test
+    fun parseSurveyWeekCatalogGroupsUrlsUnderSectionHeaders() {
+        val html = AnpFixtureFiles.readListingHtml()
+
+        val catalog = scraper.parseSurveyWeekCatalogFromHtml(html)
+
+        assertEquals(2, catalog.size)
+        val latestWeek = SurveyWeek.fromIsoDates("2026-06-07", "2026-06-13")
+        val latestEntry = catalog.first()
+
+        assertEquals(latestWeek, latestEntry.surveyWeek)
+        assertTrue(latestEntry.summaryUrl.contains("resumo_semanal_lpc_2026-06-07_2026-06-13"))
+        assertTrue(latestEntry.stationUrl.contains("revendas_lpc_2026-06-07_2026-06-13"))
+    }
+
+    @Test
+    fun parseSurveyWeekCatalogOrdersNewestWeekFirst() {
+        val html = AnpFixtureFiles.readListingHtml()
+
+        val catalog = scraper.parseSurveyWeekCatalogFromHtml(html)
+
+        assertTrue(
+            catalog.zipWithNext().all { (newer, older) ->
+                newer.surveyWeek.endDate >= older.surveyWeek.endDate
+            },
+        )
+    }
+
+    @Test
+    fun parseSurveyWeekCatalogOmitsIncompleteWeekBlocks() {
+        val html = AnpFixtureFiles.readListingHtml()
+
+        val catalog = scraper.parseSurveyWeekCatalogFromHtml(html)
+
+        assertTrue(catalog.none { it.surveyWeek == SurveyWeek.fromIsoDates("2026-04-12", "2026-04-18") })
+    }
 }

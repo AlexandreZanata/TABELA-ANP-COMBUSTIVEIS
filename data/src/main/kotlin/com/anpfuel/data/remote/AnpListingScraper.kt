@@ -1,6 +1,7 @@
 package com.anpfuel.data.remote
 
 import com.anpfuel.domain.model.PriceTable
+import com.anpfuel.domain.model.SurveyWeekCatalogEntry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -21,6 +22,18 @@ class AnpListingScraper @Inject constructor(
         val html = fetchListingHtml(listingPageUrl)
         parsePriceTablesFromHtml(html, listingPageUrl)
     }
+
+    suspend fun discoverSurveyWeekCatalog(
+        listingPageUrl: String = AnpEndpoints.LISTING_PAGE_URL,
+    ): List<SurveyWeekCatalogEntry> = withContext(Dispatchers.IO) {
+        val html = fetchListingHtml(listingPageUrl)
+        parseSurveyWeekCatalogFromHtml(html, listingPageUrl)
+    }
+
+    fun parseSurveyWeekCatalogFromHtml(
+        html: String,
+        baseUrl: String = AnpEndpoints.LISTING_PAGE_URL,
+    ): List<SurveyWeekCatalogEntry> = AnpListingWeekCatalogParser.parse(html, baseUrl)
 
     fun parsePriceTablesFromHtml(
         html: String,
