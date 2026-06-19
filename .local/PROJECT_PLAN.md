@@ -204,7 +204,6 @@ The listing exposes **~200+ weeks** (Jul/2022 → present, Jun/2026). v2 does **
 
 ### 12.4 UI — Week picker screen
 
-- [ ] **12.4.6** App bar **SurveyWeekChip** on home, prices, stations, history — tap opens week picker sheet
 - [ ] **12.4.7** i18n keys: `week_picker_title`, `week_picker_latest`, `week_picker_updated_at`, `week_picker_operational_note`, `week_picker_download_week`, `active_week_label`
 
 **✅ Gate 12 — Week selection complete:**
@@ -476,4 +475,4 @@ Phase 11.4 (use cases + UI) → Gate 11
     → Phase 15 (hardening + v2.0.0) → Gate 15
 ```
 
-**Current repo status (2026-06-19):** Phase 12.4.5 returning-user launch routing complete ✓ — next micro-step **Phase 12.4.6** SurveyWeekChip on app bars.
+**Current repo status (2026-06-19):** Phase 12.4.6 SurveyWeekChip on app bars complete ✓ — next micro-step **Phase 12.4.7** i18n key audit.

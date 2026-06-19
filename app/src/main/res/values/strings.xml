@@ -64,6 +64,9 @@
     <string name="week_picker_confirm_title">Download historical week?</string>
     <string name="week_picker_confirm_message">Download and import ANP data for %1$s? This may take a few minutes.</string>
     <string name="active_week_label">Latest</string>
+    <string name="survey_week_chip_latest_suffix">· Latest</string>
+    <string name="a11y_survey_week_chip">Active survey week: %1$s. Tap to change.</string>
+    <string name="a11y_survey_week_chip_latest">Active survey week: %1$s (latest). Tap to change.</string>
 
     <!-- Sync banners (BR-004, freshness) -->
     <string name="banner_offline">Offline — showing cached data.</string>

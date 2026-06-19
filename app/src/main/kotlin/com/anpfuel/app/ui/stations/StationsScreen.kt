@@ -35,6 +35,7 @@ import com.anpfuel.app.ui.components.FuelProductLabel
 import com.anpfuel.app.ui.components.LoadingState
 import com.anpfuel.app.ui.components.OfflineBanner
 import com.anpfuel.app.ui.components.StationPriceRow
+import com.anpfuel.app.ui.weekpicker.SurveyWeekChipAction
 import com.anpfuel.app.ui.model.StationPriceUiModel
 import com.anpfuel.app.ui.theme.AnpFuelTheme
 import com.anpfuel.domain.valueobject.BrazilianState
@@ -57,6 +58,7 @@ fun StationsScreen(
         onFuelProductSelected = { fuelProduct -> viewModel.onFuelProductSelected(fuelProduct, locale) },
         onDownloadStationDetail = { viewModel.downloadStationDetail(locale) },
         onRetry = { viewModel.load(locale) },
+        onWeekChanged = { viewModel.load(locale) },
         modifier = modifier,
     )
 }
@@ -68,6 +70,7 @@ private fun StationsContent(
     onFuelProductSelected: (FuelProduct) -> Unit,
     onDownloadStationDetail: () -> Unit,
     onRetry: () -> Unit,
+    onWeekChanged: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -76,6 +79,9 @@ private fun StationsContent(
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(R.string.stations_title)) },
+                actions = {
+                    SurveyWeekChipAction(onWeekChanged = onWeekChanged)
+                },
             )
         },
         bottomBar = { AnpAttributionFooter() },
@@ -222,6 +228,7 @@ private fun StationsScreenPreview() {
             onFuelProductSelected = {},
             onDownloadStationDetail = {},
             onRetry = {},
+            onWeekChanged = {},
         )
     }
 }

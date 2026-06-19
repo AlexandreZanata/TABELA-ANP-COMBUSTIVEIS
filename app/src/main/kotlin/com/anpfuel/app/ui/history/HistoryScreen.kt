@@ -35,6 +35,7 @@ import com.anpfuel.app.ui.components.LoadingState
 import com.anpfuel.app.ui.components.OfflineBanner
 import com.anpfuel.app.ui.components.PriceHistoryEntryRow
 import com.anpfuel.app.ui.components.PriceHistoryTrendChart
+import com.anpfuel.app.ui.weekpicker.SurveyWeekChipAction
 import com.anpfuel.app.ui.model.HistoryEntryUiModel
 import com.anpfuel.app.ui.theme.AnpFuelTheme
 import com.anpfuel.domain.valueobject.BrazilianState
@@ -58,6 +59,7 @@ fun HistoryScreen(
         uiState = uiState,
         onFuelProductSelected = { fuelProduct -> viewModel.onFuelProductSelected(fuelProduct, locale) },
         onRetry = { viewModel.load(locale) },
+        onWeekChanged = { viewModel.load(locale) },
         modifier = modifier,
     )
 }
@@ -68,6 +70,7 @@ private fun HistoryContent(
     uiState: HistoryUiState,
     onFuelProductSelected: (FuelProduct) -> Unit,
     onRetry: () -> Unit,
+    onWeekChanged: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val locale = LocalConfiguration.current.locales[0]
@@ -78,6 +81,9 @@ private fun HistoryContent(
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(R.string.history_title)) },
+                actions = {
+                    SurveyWeekChipAction(onWeekChanged = onWeekChanged)
+                },
             )
         },
         bottomBar = { AnpAttributionFooter() },
@@ -193,6 +199,7 @@ private fun HistoryScreenPreview() {
             ),
             onFuelProductSelected = {},
             onRetry = {},
+            onWeekChanged = {},
         )
     }
 }

@@ -35,6 +35,7 @@ import com.anpfuel.app.ui.components.LoadingState
 import com.anpfuel.app.ui.components.MunicipalityPriceDetailRow
 import com.anpfuel.app.ui.components.OfflineBanner
 import com.anpfuel.app.ui.components.SyncStatusBanner
+import com.anpfuel.app.ui.weekpicker.SurveyWeekChipAction
 import com.anpfuel.app.ui.model.AveragePriceUiModel
 import com.anpfuel.app.ui.theme.AnpFuelTheme
 import com.anpfuel.domain.state.DataReadinessState
@@ -60,6 +61,7 @@ fun PricesScreen(
         uiState = uiState,
         onNavigate = onNavigate,
         onRetry = { viewModel.load(locale) },
+        onWeekChanged = { viewModel.load(locale) },
         modifier = modifier,
     )
 }
@@ -70,6 +72,7 @@ private fun PricesContent(
     uiState: PricesUiState,
     onNavigate: (String) -> Unit,
     onRetry: () -> Unit,
+    onWeekChanged: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -78,6 +81,9 @@ private fun PricesContent(
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(R.string.prices_title)) },
+                actions = {
+                    SurveyWeekChipAction(onWeekChanged = onWeekChanged)
+                },
             )
         },
         bottomBar = { AnpAttributionFooter() },
@@ -186,6 +192,7 @@ private fun PricesScreenPreview() {
             ),
             onRetry = {},
             onNavigate = {},
+            onWeekChanged = {},
         )
     }
 }

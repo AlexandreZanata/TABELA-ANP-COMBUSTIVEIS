@@ -43,6 +43,7 @@ import com.anpfuel.app.ui.components.FuelPriceCard
 import com.anpfuel.app.ui.components.LoadingState
 import com.anpfuel.app.ui.components.OfflineBanner
 import com.anpfuel.app.ui.components.SyncStatusBanner
+import com.anpfuel.app.ui.weekpicker.SurveyWeekChipAction
 import com.anpfuel.app.ui.model.AveragePriceUiModel
 import com.anpfuel.app.ui.theme.AnpFuelTheme
 import com.anpfuel.domain.state.DataReadinessState
@@ -74,6 +75,7 @@ fun HomeScreen(
         onNavigate = onNavigate,
         onRefresh = { viewModel.refresh(locale) },
         onRetry = { viewModel.load(locale) },
+        onWeekChanged = { viewModel.load(locale) },
         modifier = modifier,
     )
 }
@@ -87,6 +89,7 @@ internal fun HomeContent(
     onNavigate: (String) -> Unit,
     onRefresh: () -> Unit,
     onRetry: () -> Unit,
+    onWeekChanged: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -96,6 +99,7 @@ internal fun HomeContent(
             TopAppBar(
                 title = { Text(text = stringResource(R.string.home_title)) },
                 actions = {
+                    SurveyWeekChipAction(onWeekChanged = onWeekChanged)
                     IconButton(onClick = onToggleTheme) {
                         Icon(
                             imageVector = if (darkTheme) Icons.Default.LightMode else Icons.Default.DarkMode,
@@ -288,6 +292,7 @@ private fun HomeWithPricesPreview() {
             onNavigate = {},
             onRefresh = {},
             onRetry = {},
+            onWeekChanged = {},
         )
     }
 }
