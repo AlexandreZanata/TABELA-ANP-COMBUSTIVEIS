@@ -64,9 +64,8 @@ androidTest-results/
 data/downloads/
 *.log
 
-# Local execution plans & scratch (optional — remove to commit .local/)
-.local/poc-results/
-.local/scratch/
+# Local execution plans & scratch (never commit)
+.local/
 
 # Sample data (large XLSX — keep locally, optional in repo)
 # Uncomment to exclude samples from git:
