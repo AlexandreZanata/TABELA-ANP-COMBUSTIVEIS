@@ -11,11 +11,12 @@ import com.anpfuel.domain.event.SyncJobCompletedPayload
 import com.anpfuel.domain.event.SyncJobOutcome
 import com.anpfuel.domain.exception.DomainException
 import com.anpfuel.domain.model.PriceTable
-import com.anpfuel.domain.repository.AveragePriceRepository
 import com.anpfuel.domain.repository.DomainEventPublisher
 import com.anpfuel.domain.repository.PriceTableRepository
 import com.anpfuel.domain.repository.PriceTableSyncGateway
 import com.anpfuel.domain.repository.SyncJobRepository
+import com.anpfuel.domain.repository.UserPreferencesRepository
+import com.anpfuel.domain.rule.ActiveSurveyWeekRule
 import com.anpfuel.domain.rule.SyncJobConcurrencyRule
 import com.anpfuel.domain.state.SyncJobState
 import com.anpfuel.domain.valueobject.BrazilianState
@@ -37,7 +38,7 @@ class DownloadStationDetailUseCase(
     private val syncJobRepository: SyncJobRepository,
     private val priceTableRepository: PriceTableRepository,
     private val priceTableSyncGateway: PriceTableSyncGateway,
-    private val averagePriceRepository: AveragePriceRepository,
+    private val userPreferencesRepository: UserPreferencesRepository,
     private val eventPublisher: DomainEventPublisher,
 ) {
 
@@ -52,7 +53,7 @@ class DownloadStationDetailUseCase(
 
         prepareForSync()
 
-        val resolvedSurveyWeek = surveyWeek ?: requireLatestSurveyWeek()
+        val resolvedSurveyWeek = surveyWeek ?: resolveDisplaySurveyWeek()
         val stationDetailRequested = StationDetailRequested.create(
             payload = StationDetailRequested.Payload(
                 surveyWeekId = DomainId.forSurveyWeek(resolvedSurveyWeek),
@@ -192,9 +193,14 @@ class DownloadStationDetailUseCase(
         SyncJobConcurrencyRule.validateCanStartSync(syncJobRepository.getCurrentState())
     }
 
-    private suspend fun requireLatestSurveyWeek(): SurveyWeek =
-        averagePriceRepository.getLatestImportedSurveyWeek()
-            ?: throw DomainException("BR-006: No successfully imported SurveyWeek is available")
+    private suspend fun resolveDisplaySurveyWeek(): SurveyWeek {
+        val preferences = userPreferencesRepository.getPreferences()
+        val importedSurveys = priceTableRepository.getImportedPriceSurveys()
+        return ActiveSurveyWeekRule.resolveDisplayWeek(
+            activeSurveyWeek = preferences.activeSurveyWeek,
+            importedSurveys = importedSurveys,
+        ) ?: throw DomainException("BR-006: No successfully imported SurveyWeek is available")
+    }
 
     private suspend fun transitionTo(target: SyncJobState) {
         val next = syncJobRepository.getCurrentState().transitionTo(target)

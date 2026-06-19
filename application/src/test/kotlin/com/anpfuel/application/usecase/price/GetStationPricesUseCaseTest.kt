@@ -1,10 +1,10 @@
 package com.anpfuel.application.usecase.price
 
 import com.anpfuel.application.error.AppError
+import com.anpfuel.domain.model.PriceSurvey
 import com.anpfuel.domain.model.RetailStation
 import com.anpfuel.domain.model.StationPrice
 import com.anpfuel.domain.model.UserPreferences
-import com.anpfuel.domain.repository.AveragePriceRepository
 import com.anpfuel.domain.repository.PriceTableRepository
 import com.anpfuel.domain.repository.StationPriceRepository
 import com.anpfuel.domain.repository.UserPreferencesRepository
@@ -27,7 +27,6 @@ import org.junit.jupiter.api.Test
 class GetStationPricesUseCaseTest {
 
     private val stationPriceRepository = mockk<StationPriceRepository>()
-    private val averagePriceRepository = mockk<AveragePriceRepository>()
     private val priceTableRepository = mockk<PriceTableRepository>()
     private val userPreferencesRepository = mockk<UserPreferencesRepository>()
 
@@ -51,13 +50,20 @@ class GetStationPricesUseCaseTest {
     fun setUp() {
         useCase = GetStationPricesUseCase(
             stationPriceRepository = stationPriceRepository,
-            averagePriceRepository = averagePriceRepository,
             priceTableRepository = priceTableRepository,
             userPreferencesRepository = userPreferencesRepository,
         )
 
         coEvery { priceTableRepository.countImportedSurveyWeeks() } returns 1
-        coEvery { averagePriceRepository.getLatestImportedSurveyWeek() } returns surveyWeek
+        coEvery { priceTableRepository.getImportedPriceSurveys() } returns listOf(
+            PriceSurvey.restore(
+                id = DomainId.forSurveyWeek(surveyWeek),
+                surveyWeek = surveyWeek,
+                summaryImportedAt = java.time.Instant.parse("2026-06-14T10:00:00Z"),
+                stationImportedAt = null,
+            ),
+        )
+        coEvery { priceTableRepository.findPriceSurveyByWeek(surveyWeek) } returns null
         coEvery { userPreferencesRepository.getPreferences() } returns UserPreferences(
             preferredState = state,
             preferredMunicipality = municipality,
@@ -111,6 +117,26 @@ class GetStationPricesUseCaseTest {
         val outcome = useCase.invoke() as StationPricesOutcome.Success
 
         assertTrue(outcome.isEmpty)
+    }
+
+    @Test
+    fun returnsEmptySuccessWhenStationDetailImportedButMunicipalityHasNoStations() = runTest {
+        coEvery { priceTableRepository.findPriceSurveyByWeek(surveyWeek) } returns PriceSurvey.restore(
+            id = DomainId.forSurveyWeek(surveyWeek),
+            surveyWeek = surveyWeek,
+            summaryImportedAt = java.time.Instant.parse("2026-06-14T10:00:00Z"),
+            stationImportedAt = java.time.Instant.parse("2026-06-14T10:05:00Z"),
+        )
+        coEvery {
+            stationPriceRepository.hasStationData(surveyWeek, state, municipality)
+        } returns false
+
+        val outcome = useCase.invoke() as StationPricesOutcome.Success
+
+        assertTrue(outcome.isEmpty)
+        coVerify(exactly = 0) {
+            stationPriceRepository.getStationPrices(any(), any(), any(), any())
+        }
     }
 
     @Test

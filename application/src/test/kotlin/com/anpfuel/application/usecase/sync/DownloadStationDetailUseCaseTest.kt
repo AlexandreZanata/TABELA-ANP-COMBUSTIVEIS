@@ -4,11 +4,13 @@ import com.anpfuel.domain.event.PriceTableImported
 import com.anpfuel.domain.event.StationDetailRequested
 import com.anpfuel.domain.event.SyncJobOutcome
 import com.anpfuel.domain.model.PriceTable
-import com.anpfuel.domain.repository.AveragePriceRepository
+import com.anpfuel.domain.model.PriceSurvey
+import com.anpfuel.domain.model.UserPreferences
 import com.anpfuel.domain.repository.DomainEventPublisher
 import com.anpfuel.domain.repository.PriceTableRepository
 import com.anpfuel.domain.repository.PriceTableSyncGateway
 import com.anpfuel.domain.repository.SyncJobRepository
+import com.anpfuel.domain.repository.UserPreferencesRepository
 import com.anpfuel.domain.state.SyncJobState
 import com.anpfuel.domain.valueobject.BrazilianState
 import com.anpfuel.domain.valueobject.DomainId
@@ -29,7 +31,7 @@ class DownloadStationDetailUseCaseTest {
     private val syncJobRepository = mockk<SyncJobRepository>()
     private val priceTableRepository = mockk<PriceTableRepository>(relaxed = true)
     private val priceTableSyncGateway = mockk<PriceTableSyncGateway>()
-    private val averagePriceRepository = mockk<AveragePriceRepository>()
+    private val userPreferencesRepository = mockk<UserPreferencesRepository>()
     private val eventPublisher = mockk<DomainEventPublisher>()
 
     private lateinit var useCase: DownloadStationDetailUseCase
@@ -49,7 +51,7 @@ class DownloadStationDetailUseCaseTest {
             syncJobRepository = syncJobRepository,
             priceTableRepository = priceTableRepository,
             priceTableSyncGateway = priceTableSyncGateway,
-            averagePriceRepository = averagePriceRepository,
+            userPreferencesRepository = userPreferencesRepository,
             eventPublisher = eventPublisher,
         )
 
@@ -58,7 +60,15 @@ class DownloadStationDetailUseCaseTest {
             syncState = firstArg<SyncJobState>()
         }
         coEvery { eventPublisher.publish(any()) } returns Unit
-        coEvery { averagePriceRepository.getLatestImportedSurveyWeek() } returns surveyWeek
+        coEvery { userPreferencesRepository.getPreferences() } returns UserPreferences()
+        coEvery { priceTableRepository.getImportedPriceSurveys() } returns listOf(
+            PriceSurvey.restore(
+                id = DomainId.forSurveyWeek(surveyWeek),
+                surveyWeek = surveyWeek,
+                summaryImportedAt = java.time.Instant.parse("2026-06-14T10:00:00Z"),
+                stationImportedAt = null,
+            ),
+        )
     }
 
     @Test

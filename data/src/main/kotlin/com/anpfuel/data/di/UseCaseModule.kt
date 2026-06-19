@@ -104,13 +104,13 @@ object UseCaseModule {
         syncJobRepository: SyncJobRepository,
         priceTableRepository: PriceTableRepository,
         priceTableSyncGateway: PriceTableSyncGateway,
-        averagePriceRepository: AveragePriceRepository,
+        userPreferencesRepository: UserPreferencesRepository,
         eventPublisher: DomainEventPublisher,
     ): DownloadStationDetailUseCase = DownloadStationDetailUseCase(
         syncJobRepository = syncJobRepository,
         priceTableRepository = priceTableRepository,
         priceTableSyncGateway = priceTableSyncGateway,
-        averagePriceRepository = averagePriceRepository,
+        userPreferencesRepository = userPreferencesRepository,
         eventPublisher = eventPublisher,
     )
 
@@ -222,12 +222,10 @@ object UseCaseModule {
     @Singleton
     fun provideGetStationPricesUseCase(
         stationPriceRepository: StationPriceRepository,
-        averagePriceRepository: AveragePriceRepository,
         priceTableRepository: PriceTableRepository,
         userPreferencesRepository: UserPreferencesRepository,
     ): GetStationPricesUseCase = GetStationPricesUseCase(
         stationPriceRepository = stationPriceRepository,
-        averagePriceRepository = averagePriceRepository,
         priceTableRepository = priceTableRepository,
         userPreferencesRepository = userPreferencesRepository,
     )

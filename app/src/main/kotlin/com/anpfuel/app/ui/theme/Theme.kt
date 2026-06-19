@@ -50,6 +50,9 @@ fun AnpFuelTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content,
+        content = {
+            AnpSystemBarsEffect(darkTheme = darkTheme)
+            content()
+        },
     )
 }

@@ -2,10 +2,10 @@ package com.anpfuel.application.usecase.price
 
 import com.anpfuel.application.error.AppError
 import com.anpfuel.domain.model.StationPrice
-import com.anpfuel.domain.repository.AveragePriceRepository
 import com.anpfuel.domain.repository.PriceTableRepository
 import com.anpfuel.domain.repository.StationPriceRepository
 import com.anpfuel.domain.repository.UserPreferencesRepository
+import com.anpfuel.domain.rule.ActiveSurveyWeekRule
 import com.anpfuel.domain.rule.EmptyMunicipalityResultRule
 import com.anpfuel.domain.rule.SearchRequiresImportedDataRule
 import com.anpfuel.domain.rule.StationDetailOptInRule
@@ -38,7 +38,6 @@ sealed class StationPricesOutcome {
 
 class GetStationPricesUseCase(
     private val stationPriceRepository: StationPriceRepository,
-    private val averagePriceRepository: AveragePriceRepository,
     private val priceTableRepository: PriceTableRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
 ) {
@@ -61,7 +60,7 @@ class GetStationPricesUseCase(
         val resolvedMunicipality = municipality?.trim()?.takeIf { it.isNotBlank() }
             ?: preferences.preferredMunicipality?.trim()?.takeIf { it.isNotBlank() }
             ?: throw DomainException("Preferred municipality is not set")
-        val resolvedSurveyWeek = surveyWeek ?: requireLatestSurveyWeek()
+        val resolvedSurveyWeek = surveyWeek ?: resolveDisplaySurveyWeek()
 
         val hasLocalStationData = stationPriceRepository.hasStationData(
             surveyWeek = resolvedSurveyWeek,
@@ -69,6 +68,15 @@ class GetStationPricesUseCase(
             municipality = resolvedMunicipality,
         )
         if (!hasLocalStationData) {
+            if (isStationDetailImported(resolvedSurveyWeek)) {
+                return StationPricesOutcome.Success(
+                    surveyWeek = resolvedSurveyWeek,
+                    state = resolvedState,
+                    municipality = resolvedMunicipality,
+                    fuelProduct = resolvedFuelProduct,
+                    stations = emptyList(),
+                )
+            }
             return StationPricesOutcome.StationDetailMissing(
                 requiresOnDemandDownload = StationDetailOptInRule.requiresOnDemandDownload(
                     syncStationDetail = preferences.syncStationDetail,
@@ -95,7 +103,15 @@ class GetStationPricesUseCase(
         )
     }
 
-    private suspend fun requireLatestSurveyWeek(): SurveyWeek =
-        averagePriceRepository.getLatestImportedSurveyWeek()
-            ?: throw DomainException("BR-006: No successfully imported SurveyWeek is available")
+    private suspend fun resolveDisplaySurveyWeek(): SurveyWeek {
+        val preferences = userPreferencesRepository.getPreferences()
+        val importedSurveys = priceTableRepository.getImportedPriceSurveys()
+        return ActiveSurveyWeekRule.resolveDisplayWeek(
+            activeSurveyWeek = preferences.activeSurveyWeek,
+            importedSurveys = importedSurveys,
+        ) ?: throw DomainException("BR-006: No successfully imported SurveyWeek is available")
+    }
+
+    private suspend fun isStationDetailImported(surveyWeek: SurveyWeek): Boolean =
+        priceTableRepository.findPriceSurveyByWeek(surveyWeek)?.hasStationData == true
 }

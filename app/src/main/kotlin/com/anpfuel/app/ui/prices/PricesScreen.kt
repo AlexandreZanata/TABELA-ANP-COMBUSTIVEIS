@@ -2,6 +2,7 @@ package com.anpfuel.app.ui.prices
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -151,17 +152,24 @@ private fun PricesContent(
                     uiState.prices.forEach { price ->
                         MunicipalityPriceDetailRow(price = price)
                     }
-                    TextButton(
-                        onClick = { onNavigate(Routes.HISTORY) },
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(0.dp),
                     ) {
-                        Text(text = stringResource(R.string.prices_view_history))
-                    }
-                    TextButton(
-                        onClick = { onNavigate(Routes.STATIONS) },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text(text = stringResource(R.string.prices_view_stations))
+                        TextButton(
+                            onClick = { onNavigate(Routes.HISTORY) },
+                            modifier = Modifier.fillMaxWidth(),
+                            contentPadding = PaddingValues(vertical = 8.dp),
+                        ) {
+                            Text(text = stringResource(R.string.prices_view_history))
+                        }
+                        TextButton(
+                            onClick = { onNavigate(Routes.STATIONS) },
+                            modifier = Modifier.fillMaxWidth(),
+                            contentPadding = PaddingValues(vertical = 8.dp),
+                        ) {
+                            Text(text = stringResource(R.string.prices_view_stations))
+                        }
                     }
                 }
             }
