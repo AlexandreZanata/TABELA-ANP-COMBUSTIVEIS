@@ -1,7 +1,7 @@
 package com.anpfuel.domain.rule
 
+import com.anpfuel.domain.model.AppStartDestination
 import com.anpfuel.domain.model.PriceSurvey
-import com.anpfuel.domain.navigation.AppStartDestination
 import com.anpfuel.domain.valueobject.SurveyWeek
 
 /**

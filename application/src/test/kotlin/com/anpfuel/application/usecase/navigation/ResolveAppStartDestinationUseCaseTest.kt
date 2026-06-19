@@ -2,7 +2,7 @@ package com.anpfuel.application.usecase.navigation
 
 import com.anpfuel.domain.model.PriceSurvey
 import com.anpfuel.domain.model.UserPreferences
-import com.anpfuel.domain.navigation.AppStartDestination
+import com.anpfuel.domain.model.AppStartDestination
 import com.anpfuel.domain.repository.PriceTableRepository
 import com.anpfuel.domain.repository.UserPreferencesRepository
 import com.anpfuel.domain.valueobject.SurveyWeek
@@ -29,6 +29,27 @@ class ResolveAppStartDestinationUseCaseTest {
             userPreferencesRepository = userPreferencesRepository,
             priceTableRepository = priceTableRepository,
         )
+    }
+
+    @Test
+    fun returnsOnboardingWhenNotCompleted() = runTest {
+        coEvery { userPreferencesRepository.getPreferences() } returns UserPreferences(
+            onboardingCompleted = false,
+        )
+        coEvery { priceTableRepository.getImportedPriceSurveys() } returns emptyList()
+
+        assertEquals(AppStartDestination.ONBOARDING, useCase())
+    }
+
+    @Test
+    fun returnsWeekPickerWhenActiveSurveyWeekNotSet() = runTest {
+        coEvery { userPreferencesRepository.getPreferences() } returns UserPreferences(
+            onboardingCompleted = true,
+            activeSurveyWeek = null,
+        )
+        coEvery { priceTableRepository.getImportedPriceSurveys() } returns emptyList()
+
+        assertEquals(AppStartDestination.WEEK_PICKER, useCase())
     }
 
     @Test

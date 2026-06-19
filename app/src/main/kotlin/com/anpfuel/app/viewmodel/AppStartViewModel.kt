@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anpfuel.app.navigation.Routes
 import com.anpfuel.application.usecase.navigation.ResolveAppStartDestinationUseCase
-import com.anpfuel.domain.navigation.AppStartDestination
+import com.anpfuel.domain.model.AppStartDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow

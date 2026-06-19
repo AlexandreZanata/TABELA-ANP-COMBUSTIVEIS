@@ -1,6 +1,6 @@
 package com.anpfuel.application.usecase.navigation
 
-import com.anpfuel.domain.navigation.AppStartDestination
+import com.anpfuel.domain.model.AppStartDestination
 import com.anpfuel.domain.repository.PriceTableRepository
 import com.anpfuel.domain.repository.UserPreferencesRepository
 import com.anpfuel.domain.rule.AppStartDestinationRule
