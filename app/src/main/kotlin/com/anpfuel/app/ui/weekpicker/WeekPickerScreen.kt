@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,12 +24,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anpfuel.app.R
 import com.anpfuel.app.mapper.AppErrorMapper
 import com.anpfuel.app.mapper.SurveyWeekFormatter
@@ -52,6 +53,7 @@ fun WeekPickerRoute(
     viewModel: WeekPickerViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val locale = LocalConfiguration.current.locales[0]
 
     LaunchedEffect(viewModel) {
         viewModel.navigation.collect { destination ->
@@ -65,10 +67,20 @@ fun WeekPickerRoute(
         uiState = uiState,
         onRetryCatalog = viewModel::loadCatalog,
         onUseLatestWeek = viewModel::useLatestWeek,
+        onSelectWeek = viewModel::onWeekRowTapped,
         onRetrySync = viewModel::retrySync,
         onNavigateBack = onNavigateBack,
         modifier = modifier,
     )
+
+    uiState.pendingConfirmation?.let { entry ->
+        WeekPickerConfirmDialog(
+            entry = entry,
+            locale = locale,
+            onConfirm = viewModel::confirmPendingWeek,
+            onDismiss = viewModel::dismissPendingConfirmation,
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -220,6 +232,34 @@ fun WeekPickerContent(
             }
         }
     }
+}
+
+@Composable
+fun WeekPickerConfirmDialog(
+    entry: SurveyWeekCatalogEntry,
+    locale: Locale,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val weekLabel = SurveyWeekFormatter.formatRange(entry.surveyWeek, locale)
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = stringResource(R.string.week_picker_confirm_title)) },
+        text = {
+            Text(text = stringResource(R.string.week_picker_confirm_message, weekLabel))
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(text = stringResource(R.string.week_picker_download_week))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = stringResource(R.string.action_cancel))
+            }
+        },
+    )
 }
 
 @Composable

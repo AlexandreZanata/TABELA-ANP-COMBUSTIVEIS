@@ -74,6 +74,35 @@ class WeekPickerViewModel @Inject constructor(
         selectWeek(latestEntry, SurveyWeekSelectionMode.LATEST)
     }
 
+    fun onWeekRowTapped(entry: SurveyWeekCatalogEntry) {
+        if (_uiState.value.isSyncing) {
+            return
+        }
+
+        val catalog = _uiState.value.catalog
+        if (WeekPickerSelectionPolicy.requiresConfirmation(catalog, entry)) {
+            _uiState.update { it.copy(pendingConfirmation = entry) }
+            return
+        }
+
+        val mode = if (WeekPickerSelectionPolicy.isLatestCatalogEntry(catalog, entry)) {
+            SurveyWeekSelectionMode.LATEST
+        } else {
+            SurveyWeekSelectionMode.SPECIFIC
+        }
+        selectWeek(entry, mode)
+    }
+
+    fun confirmPendingWeek() {
+        val entry = _uiState.value.pendingConfirmation ?: return
+        _uiState.update { it.copy(pendingConfirmation = null) }
+        selectWeek(entry, SurveyWeekSelectionMode.SPECIFIC)
+    }
+
+    fun dismissPendingConfirmation() {
+        _uiState.update { it.copy(pendingConfirmation = null) }
+    }
+
     fun retrySync() {
         val entry = _uiState.value.pendingWeekSelection ?: return
         val mode = _uiState.value.pendingSelectionMode ?: SurveyWeekSelectionMode.LATEST
@@ -93,6 +122,7 @@ class WeekPickerViewModel @Inject constructor(
                 it.copy(
                     isSyncing = true,
                     syncError = null,
+                    pendingConfirmation = null,
                     pendingWeekSelection = entry,
                     pendingSelectionMode = selectionMode,
                 )

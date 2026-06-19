@@ -204,7 +204,6 @@ The listing exposes **~200+ weeks** (Jul/2022 → present, Jun/2026). v2 does **
 
 ### 12.4 UI — Week picker screen
 
-- [ ] **12.4.3** Secondary: tap any historical week → confirm → start sync for that week only
 - [ ] **12.4.4** Show operational note banner when `operationalNote` non-null (collapsible)
 - [ ] **12.4.5** Returning users: show week picker on launch **when** user taps "Change week" OR on fresh install OR when `activeSurveyWeek` not imported locally; otherwise home opens with active week chip in app bar
 - [ ] **12.4.6** App bar **SurveyWeekChip** on home, prices, stations, history — tap opens week picker sheet
@@ -479,4 +478,4 @@ Phase 11.4 (use cases + UI) → Gate 11
     → Phase 15 (hardening + v2.0.0) → Gate 15
 ```
 
-**Current repo status (2026-06-19):** Phase 12.4.2 "Use latest week" CTA complete ✓ — next micro-step **Phase 12.4.3** historical week confirm + sync.
+**Current repo status (2026-06-19):** Phase 12.4.3 historical week confirm + sync complete ✓ — next micro-step **Phase 12.4.4** collapsible operational note banner.

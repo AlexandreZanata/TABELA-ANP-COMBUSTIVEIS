@@ -34,6 +34,7 @@
     <string name="action_retry">Retry</string>
     <string name="action_next">Next</string>
     <string name="action_back">Back</string>
+    <string name="action_cancel">Cancel</string>
     <string name="action_switch_dark_theme">Switch to dark theme</string>
     <string name="action_switch_light_theme">Switch to light theme</string>
 
@@ -56,6 +57,8 @@
     <string name="week_picker_updated_at">Updated %1$s</string>
     <string name="week_picker_operational_note">Note: %1$s</string>
     <string name="week_picker_download_week">Download this week</string>
+    <string name="week_picker_confirm_title">Download historical week?</string>
+    <string name="week_picker_confirm_message">Download and import ANP data for %1$s? This may take a few minutes.</string>
     <string name="active_week_label">Latest</string>
 
     <!-- Sync banners (BR-004, freshness) -->

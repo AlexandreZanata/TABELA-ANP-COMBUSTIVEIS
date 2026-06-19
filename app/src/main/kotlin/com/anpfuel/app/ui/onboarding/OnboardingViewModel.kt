@@ -2,6 +2,7 @@ package com.anpfuel.app.ui.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.anpfuel.app.ui.weekpicker.WeekPickerSelectionPolicy
 import com.anpfuel.application.error.AppError
 import com.anpfuel.application.usecase.onboarding.CompleteOnboardingResult
 import com.anpfuel.application.usecase.onboarding.CompleteOnboardingUseCase
@@ -39,6 +40,7 @@ data class OnboardingUiState(
     val error: AppError? = null,
     val pendingWeekSelection: SurveyWeekCatalogEntry? = null,
     val pendingSelectionMode: SurveyWeekSelectionMode? = null,
+    val pendingConfirmation: SurveyWeekCatalogEntry? = null,
 ) {
     val isOnLastPage: Boolean
         get() = pageIndex == pageCount - 1
@@ -135,7 +137,32 @@ class OnboardingViewModel @Inject constructor(
     }
 
     fun selectWeekAndSync(entry: SurveyWeekCatalogEntry) {
+        if (_uiState.value.step == OnboardingStep.SYNCING) {
+            return
+        }
+
+        val catalog = _uiState.value.catalog
+        if (WeekPickerSelectionPolicy.requiresConfirmation(catalog, entry)) {
+            _uiState.update { it.copy(pendingConfirmation = entry) }
+            return
+        }
+
+        val mode = if (WeekPickerSelectionPolicy.isLatestCatalogEntry(catalog, entry)) {
+            SurveyWeekSelectionMode.LATEST
+        } else {
+            SurveyWeekSelectionMode.SPECIFIC
+        }
+        selectWeekAndSync(entry, mode)
+    }
+
+    fun confirmPendingWeek() {
+        val entry = _uiState.value.pendingConfirmation ?: return
+        _uiState.update { it.copy(pendingConfirmation = null) }
         selectWeekAndSync(entry, SurveyWeekSelectionMode.SPECIFIC)
+    }
+
+    fun dismissPendingConfirmation() {
+        _uiState.update { it.copy(pendingConfirmation = null) }
     }
 
     fun retrySync() {
@@ -174,6 +201,7 @@ class OnboardingViewModel @Inject constructor(
                 it.copy(
                     step = OnboardingStep.SYNCING,
                     error = null,
+                    pendingConfirmation = null,
                     pendingWeekSelection = entry,
                     pendingSelectionMode = selectionMode,
                 )

@@ -23,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,6 +35,7 @@ import com.anpfuel.app.ui.accessibility.headingSemantics
 import com.anpfuel.app.ui.components.AnpAttributionFooter
 import com.anpfuel.app.ui.components.LoadingState
 import com.anpfuel.app.ui.theme.AnpFuelTheme
+import com.anpfuel.app.ui.weekpicker.WeekPickerConfirmDialog
 import com.anpfuel.app.ui.weekpicker.WeekPickerContent
 import com.anpfuel.app.ui.weekpicker.WeekPickerUiState
 import com.anpfuel.domain.model.SurveyWeekCatalogEntry
@@ -49,6 +51,7 @@ fun OnboardingScreen(
     viewModel: OnboardingViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val locale = LocalConfiguration.current.locales[0]
 
     LaunchedEffect(viewModel) {
         viewModel.navigation.collect { destination ->
@@ -73,6 +76,15 @@ fun OnboardingScreen(
         onBackToIntro = viewModel::backToIntro,
         modifier = modifier,
     )
+
+    uiState.pendingConfirmation?.let { entry ->
+        WeekPickerConfirmDialog(
+            entry = entry,
+            locale = locale,
+            onConfirm = viewModel::confirmPendingWeek,
+            onDismiss = viewModel::dismissPendingConfirmation,
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
