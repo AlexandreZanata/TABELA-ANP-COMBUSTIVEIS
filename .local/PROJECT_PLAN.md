@@ -204,7 +204,6 @@ The listing exposes **~200+ weeks** (Jul/2022 → present, Jun/2026). v2 does **
 
 ### 12.4 UI — Week picker screen
 
-- [ ] **12.4.1** **WeekPickerScreen** (Compose): scrollable list grouped like gov.br — each row shows date range, "Latest" chip on first entry, updated-at subtitle
 - [ ] **12.4.2** Primary CTA: **Use latest week** (one tap, selects index 0)
 - [ ] **12.4.3** Secondary: tap any historical week → confirm → start sync for that week only
 - [ ] **12.4.4** Show operational note banner when `operationalNote` non-null (collapsible)
@@ -481,4 +480,4 @@ Phase 11.4 (use cases + UI) → Gate 11
     → Phase 15 (hardening + v2.0.0) → Gate 15
 ```
 
-**Current repo status (2026-06-19):** Phase 12.3.4 onboarding week selection complete ✓ — next micro-step **Phase 12.4.1** WeekPickerScreen.
+**Current repo status (2026-06-19):** Phase 12.4.1 WeekPickerScreen complete ✓ — next micro-step **Phase 12.4.2** primary "Use latest week" CTA.

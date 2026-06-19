@@ -1,19 +1,15 @@
 package com.anpfuel.app.ui.onboarding
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -27,7 +23,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,19 +30,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anpfuel.app.R
-import com.anpfuel.app.mapper.AppErrorMapper
-import com.anpfuel.app.mapper.SurveyWeekFormatter
 import com.anpfuel.app.ui.accessibility.headingSemantics
 import com.anpfuel.app.ui.components.AnpAttributionFooter
-import com.anpfuel.app.ui.components.ErrorState
 import com.anpfuel.app.ui.components.LoadingState
 import com.anpfuel.app.ui.theme.AnpFuelTheme
+import com.anpfuel.app.ui.weekpicker.WeekPickerContent
+import com.anpfuel.app.ui.weekpicker.WeekPickerUiState
 import com.anpfuel.domain.model.SurveyWeekCatalogEntry
 import com.anpfuel.domain.valueobject.SurveyWeek
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.util.Locale
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
@@ -132,13 +123,19 @@ private fun OnboardingContent(
             }
 
             OnboardingStep.WEEK_PICKER -> {
-                OnboardingWeekPickerContent(
-                    uiState = uiState,
-                    onUseLatestWeekAndSync = onUseLatestWeekAndSync,
+                WeekPickerContent(
+                    uiState = WeekPickerUiState(
+                        catalog = uiState.catalog,
+                        isLoadingCatalog = uiState.isLoadingCatalog,
+                        catalogError = uiState.catalogError,
+                        syncError = uiState.error,
+                        showSkipAction = true,
+                    ),
+                    onUseLatestWeek = onUseLatestWeekAndSync,
                     onSelectWeek = onSelectWeek,
                     onRetryCatalog = onRetryCatalog,
                     onRetrySync = onRetrySync,
-                    onSkipSync = onSkipSync,
+                    onSkip = onSkipSync,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding),
@@ -210,136 +207,6 @@ private fun OnboardingIntroContent(
             onProceedToWeekPicker = onProceedToWeekPicker,
             onSkipSync = onSkipSync,
         )
-    }
-}
-
-@Composable
-private fun OnboardingWeekPickerContent(
-    uiState: OnboardingUiState,
-    onUseLatestWeekAndSync: () -> Unit,
-    onSelectWeek: (SurveyWeekCatalogEntry) -> Unit,
-    onRetryCatalog: () -> Unit,
-    onRetrySync: () -> Unit,
-    onSkipSync: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val locale = LocalConfiguration.current.locales[0]
-
-    Column(
-        modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        when {
-            uiState.isLoadingCatalog -> {
-                LoadingState(
-                    message = stringResource(R.string.sync_progress_discovering),
-                    modifier = Modifier.fillMaxSize(),
-                )
-            }
-
-            uiState.catalogError != null -> {
-                ErrorState(
-                    message = stringResource(AppErrorMapper.toStringRes(uiState.catalogError)),
-                    onRetry = onRetryCatalog,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-
-            else -> {
-                if (uiState.catalog.isNotEmpty()) {
-                    Button(
-                        onClick = onUseLatestWeekAndSync,
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Text(text = stringResource(R.string.week_picker_latest))
-                    }
-                }
-
-                if (uiState.error != null) {
-                    ErrorState(
-                        message = stringResource(AppErrorMapper.toStringRes(uiState.error)),
-                        onRetry = onRetrySync,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
-
-                LazyColumn(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                ) {
-                    itemsIndexed(uiState.catalog) { index, entry ->
-                        WeekPickerRow(
-                            entry = entry,
-                            isLatest = index == 0,
-                            locale = locale,
-                            onClick = { onSelectWeek(entry) },
-                        )
-                    }
-                }
-
-                TextButton(
-                    onClick = onSkipSync,
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Text(text = stringResource(R.string.onboarding_action_skip))
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun WeekPickerRow(
-    entry: SurveyWeekCatalogEntry,
-    isLatest: Boolean,
-    locale: Locale,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(vertical = 12.dp, horizontal = 8.dp),
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text(
-                text = SurveyWeekFormatter.formatRange(entry.surveyWeek, locale),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            if (isLatest) {
-                AssistChip(
-                    onClick = onClick,
-                    label = { Text(text = stringResource(R.string.active_week_label)) },
-                )
-            }
-        }
-
-        entry.publishedAt?.let { publishedAt ->
-            val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(locale)
-            Text(
-                text = stringResource(
-                    R.string.week_picker_updated_at,
-                    publishedAt.format(formatter),
-                ),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 4.dp),
-            )
-        }
-
-        entry.operationalNote?.let { note ->
-            Text(
-                text = stringResource(R.string.week_picker_operational_note, note),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.tertiary,
-                modifier = Modifier.padding(top = 4.dp),
-            )
-        }
     }
 }
 

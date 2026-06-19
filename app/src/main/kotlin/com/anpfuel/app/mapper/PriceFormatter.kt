@@ -29,7 +29,8 @@ object SurveyWeekFormatter {
 
     fun formatRange(week: SurveyWeek, locale: Locale): String {
         val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(locale)
-        return "${week.startDate.format(formatter)} – ${week.endDate.format(formatter)}"
+        val separator = if (locale.language == "pt") " a " else " – "
+        return "${week.startDate.format(formatter)}$separator${week.endDate.format(formatter)}"
     }
 }
 
