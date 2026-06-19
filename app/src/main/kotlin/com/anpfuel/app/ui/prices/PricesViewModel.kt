@@ -10,6 +10,7 @@ import com.anpfuel.application.usecase.readiness.GetDataReadinessUseCase
 import com.anpfuel.app.ui.model.AveragePriceUiModel
 import com.anpfuel.domain.state.DataReadinessState
 import com.anpfuel.domain.valueobject.BrazilianState
+import com.anpfuel.domain.valueobject.DataAvailability
 import com.anpfuel.domain.valueobject.SurveyWeek
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Locale
@@ -29,6 +30,8 @@ data class PricesUiState(
     val surveyWeek: SurveyWeek? = null,
     val prices: List<AveragePriceUiModel> = emptyList(),
     val isEmptyMunicipality: Boolean = false,
+    val dataAvailability: DataAvailability? = null,
+    val operationalNote: String? = null,
     val error: AppError? = null,
     val errorMessage: String? = null,
 )
@@ -71,6 +74,8 @@ class PricesViewModel @Inject constructor(
                         surveyWeek = pricesResult.surveyWeek,
                         prices = uiPrices,
                         isEmptyMunicipality = pricesResult.isEmpty,
+                        dataAvailability = pricesResult.dataAvailability,
+                        operationalNote = pricesResult.operationalNote,
                     )
                 }
             }.onFailure { error ->

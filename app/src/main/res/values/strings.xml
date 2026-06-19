@@ -80,6 +80,8 @@
     <string name="prices_station_count">%1$d stations</string>
     <string name="prices_anp_attribution">Source: ANP — Agência Nacional do Petróleo, Gás Natural e Biocombustíveis</string>
     <string name="prices_empty_municipality">No prices found for this municipality.</string>
+    <string name="prices_empty_no_data_this_week">This municipality has no ANP prices for the selected survey week.</string>
+    <string name="prices_empty_never_in_anp">This municipality has never appeared in ANP weekly price reports.</string>
     <string name="prices_view_history">View price history</string>
 
     <!-- UC-006 History -->
@@ -114,12 +116,14 @@
     <string name="location_municipality_label">Municipalities in %1$s</string>
     <string name="location_empty_state">No municipalities with price data for this state. Sync ANP tables or choose another state.</string>
     <string name="location_current_selection">Current: %1$s (%2$s)</string>
+    <string name="location_no_data_this_week">No price data for this week</string>
 
     <!-- UC-004 Search -->
     <string name="search_municipality_hint">Search municipality</string>
     <string name="search_min_chars_hint">Type at least 2 characters to search.</string>
     <string name="search_result_format">%1$s — %2$s</string>
     <string name="search_browse_by_state">Browse by state</string>
+    <string name="search_no_data_this_week">No price data for this week</string>
 
     <!-- Brazilian states (UC-003) -->
     <string name="state_name_acre">Acre</string>

@@ -29,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anpfuel.app.R
 import com.anpfuel.app.mapper.AppErrorMapper
+import com.anpfuel.app.mapper.DataAvailabilityI18n
 import com.anpfuel.app.ui.components.AnpAttributionFooter
 import com.anpfuel.app.ui.components.EmptyState
 import com.anpfuel.app.ui.components.ErrorState
@@ -145,19 +146,11 @@ internal fun SearchContent(
                                 items = uiState.results,
                                 key = { "${it.state.name}:${it.municipality}" },
                             ) { result ->
+                                val subtitleRes = DataAvailabilityI18n.toSearchSubtitleStringRes(result.dataAvailability)
                                 ListItem(
-                                    headlineContent = {
-                                        Text(
-                                            text = stringResource(
-                                                R.string.search_result_format,
-                                                result.municipality,
-                                                result.state.abbreviation,
-                                            ),
-                                        )
-                                    },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable { onResultSelected(result) },
+                                    headlineContent = { Text(stringResource(R.string.search_result_format, result.municipality, result.state.abbreviation)) },
+                                    supportingContent = if (subtitleRes != null) { { Text(stringResource(subtitleRes), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) } } else null,
+                                    modifier = Modifier.fillMaxWidth().clickable { onResultSelected(result) },
                                 )
                                 HorizontalDivider()
                             }

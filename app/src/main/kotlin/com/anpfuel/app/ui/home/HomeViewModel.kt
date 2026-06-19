@@ -14,6 +14,7 @@ import com.anpfuel.domain.event.SyncRequestSource
 import com.anpfuel.domain.exception.DomainException
 import com.anpfuel.domain.state.DataReadinessState
 import com.anpfuel.domain.valueobject.BrazilianState
+import com.anpfuel.domain.valueobject.DataAvailability
 import com.anpfuel.domain.valueobject.SurveyWeek
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Locale
@@ -36,6 +37,8 @@ data class HomeUiState(
     val hasLocation: Boolean = false,
     val hasCachedData: Boolean = false,
     val isEmptyMunicipality: Boolean = false,
+    val dataAvailability: DataAvailability? = null,
+    val operationalNote: String? = null,
     val error: AppError? = null,
     val errorMessage: String? = null,
 )
@@ -79,6 +82,8 @@ class HomeViewModel @Inject constructor(
                             surveyWeek = readinessResult.latestSurveyWeek,
                             prices = emptyList(),
                             isEmptyMunicipality = false,
+                            dataAvailability = null,
+                            operationalNote = null,
                         )
                     }
                     return@launch
@@ -101,6 +106,8 @@ class HomeViewModel @Inject constructor(
                         surveyWeek = pricesResult.surveyWeek,
                         prices = uiPrices,
                         isEmptyMunicipality = pricesResult.isEmpty,
+                        dataAvailability = pricesResult.dataAvailability,
+                        operationalNote = pricesResult.operationalNote,
                     )
                 }
             }.onFailure { error ->

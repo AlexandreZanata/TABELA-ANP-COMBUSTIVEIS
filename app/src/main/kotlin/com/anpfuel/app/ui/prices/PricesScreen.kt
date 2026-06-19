@@ -28,6 +28,7 @@ import com.anpfuel.app.navigation.Routes
 import com.anpfuel.app.mapper.AppErrorMapper
 import com.anpfuel.app.mapper.SurveyWeekFormatter
 import com.anpfuel.app.ui.components.AnpAttributionFooter
+import com.anpfuel.app.ui.components.Br010EmptyState
 import com.anpfuel.app.ui.components.EmptyState
 import com.anpfuel.app.ui.components.ErrorState
 import com.anpfuel.app.ui.components.LoadingState
@@ -38,6 +39,7 @@ import com.anpfuel.app.ui.model.AveragePriceUiModel
 import com.anpfuel.app.ui.theme.AnpFuelTheme
 import com.anpfuel.domain.state.DataReadinessState
 import com.anpfuel.domain.valueobject.BrazilianState
+import com.anpfuel.domain.valueobject.DataAvailability
 import com.anpfuel.domain.valueobject.FuelProduct
 import com.anpfuel.domain.valueobject.SurveyWeek
 
@@ -132,8 +134,9 @@ private fun PricesContent(
 
             when {
                 !uiState.isLoading && uiState.error == null && uiState.isEmptyMunicipality -> {
-                    EmptyState(
-                        message = stringResource(R.string.prices_empty_municipality),
+                    Br010EmptyState(
+                        dataAvailability = uiState.dataAvailability ?: DataAvailability.NO_DATA_THIS_WEEK,
+                        operationalNote = uiState.operationalNote,
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }

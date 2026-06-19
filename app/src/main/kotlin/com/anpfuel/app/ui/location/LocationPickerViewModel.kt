@@ -2,6 +2,7 @@ package com.anpfuel.app.ui.location
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.anpfuel.application.usecase.location.CatalogMunicipalityItem
 import com.anpfuel.application.usecase.location.PreferredLocation
 import com.anpfuel.application.usecase.location.SelectLocationUseCase
 import com.anpfuel.domain.valueobject.BrazilianState
@@ -25,7 +26,7 @@ data class LocationPickerUiState(
     val isLoading: Boolean = true,
     val step: LocationPickerStep = LocationPickerStep.StateList,
     val states: List<BrazilianState> = emptyList(),
-    val municipalities: List<String> = emptyList(),
+    val municipalities: List<CatalogMunicipalityItem> = emptyList(),
     val preferredLocation: PreferredLocation? = null,
     val isSaving: Boolean = false,
     val errorMessage: String? = null,
@@ -81,7 +82,7 @@ class LocationPickerViewModel @Inject constructor(
                     isLoading = true,
                     errorMessage = null,
                     step = LocationPickerStep.MunicipalityList(state),
-                    municipalities = emptyList(),
+                    municipalities = emptyList<CatalogMunicipalityItem>(),
                 )
             }
             runCatching {
@@ -89,7 +90,7 @@ class LocationPickerViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        municipalities = result.municipalities.map { it.municipality },
+                        municipalities = result.municipalities,
                     )
                 }
             }.onFailure { error ->
@@ -104,7 +105,7 @@ class LocationPickerViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 step = LocationPickerStep.StateList,
-                municipalities = emptyList(),
+                municipalities = emptyList<CatalogMunicipalityItem>(),
                 errorMessage = null,
             )
         }

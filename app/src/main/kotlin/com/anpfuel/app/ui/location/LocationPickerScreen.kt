@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,11 +18,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -31,6 +34,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anpfuel.app.R
 import com.anpfuel.app.mapper.BrazilianStateI18n
+import com.anpfuel.app.mapper.DataAvailabilityI18n
+import com.anpfuel.application.usecase.location.CatalogMunicipalityItem
 import com.anpfuel.app.ui.components.AnpAttributionFooter
 import com.anpfuel.app.ui.components.EmptyState
 import com.anpfuel.app.ui.components.ErrorState
@@ -66,7 +71,7 @@ fun LocationPickerScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LocationPickerContent(
+internal fun LocationPickerContent(
     uiState: LocationPickerUiState,
     onStateSelected: (BrazilianState) -> Unit,
     onMunicipalitySelected: (String) -> Unit,
@@ -193,9 +198,9 @@ private fun StateListContent(
 }
 
 @Composable
-private fun MunicipalityListContent(
+internal fun MunicipalityListContent(
     state: BrazilianState,
-    municipalities: List<String>,
+    municipalities: List<CatalogMunicipalityItem>,
     isLoading: Boolean,
     isEmpty: Boolean,
     preferredMunicipality: String?,
@@ -235,25 +240,23 @@ private fun MunicipalityListContent(
             }
 
             else -> {
+                val sections = remember(municipalities) { groupMunicipalitiesBySectionLetter(municipalities) }
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(municipalities, key = { it }) { municipality ->
-                        val isPreferred = municipality == preferredMunicipality
-                        ListItem(
-                            headlineContent = {
-                                Text(
-                                    text = municipality,
-                                    color = if (isPreferred) {
-                                        MaterialTheme.colorScheme.primary
-                                    } else {
-                                        MaterialTheme.colorScheme.onSurface
-                                    },
-                                )
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { onMunicipalitySelected(municipality) },
-                        )
-                        HorizontalDivider()
+                    sections.forEach { section ->
+                        item(key = "header-${section.letter}") {
+                            Surface(color = MaterialTheme.colorScheme.surfaceContainerHigh, modifier = Modifier.fillMaxWidth()) {
+                                Text(section.letter.toString(), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp))
+                            }
+                        }
+                        items(section.items, key = { it.municipality }) { item ->
+                            val subtitleRes = DataAvailabilityI18n.toLocationSubtitleStringRes(item.dataAvailability)
+                            ListItem(
+                                headlineContent = { Text(item.municipality, color = if (item.municipality == preferredMunicipality) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface) },
+                                supportingContent = if (subtitleRes != null) { { Text(stringResource(subtitleRes), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) } } else null,
+                                modifier = Modifier.fillMaxWidth().clickable { onMunicipalitySelected(item.municipality) },
+                            )
+                            HorizontalDivider()
+                        }
                     }
                 }
             }

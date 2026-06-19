@@ -80,6 +80,8 @@
     <string name="prices_station_count">%1$d postos</string>
     <string name="prices_anp_attribution">Fonte: ANP — Agência Nacional do Petróleo, Gás Natural e Biocombustíveis</string>
     <string name="prices_empty_municipality">Nenhum preço encontrado para este município.</string>
+    <string name="prices_empty_no_data_this_week">Este município não possui preços da ANP para a semana de pesquisa selecionada.</string>
+    <string name="prices_empty_never_in_anp">Este município nunca apareceu nos relatórios semanais de preços da ANP.</string>
     <string name="prices_view_history">Ver histórico de preços</string>
 
     <!-- UC-006 History -->
@@ -114,12 +116,14 @@
     <string name="location_municipality_label">Municípios em %1$s</string>
     <string name="location_empty_state">Nenhum município com dados de preço neste estado. Sincronize as tabelas da ANP ou escolha outro estado.</string>
     <string name="location_current_selection">Atual: %1$s (%2$s)</string>
+    <string name="location_no_data_this_week">Sem dados de preço nesta semana</string>
 
     <!-- UC-004 Search -->
     <string name="search_municipality_hint">Buscar município</string>
     <string name="search_min_chars_hint">Digite pelo menos 2 caracteres para buscar.</string>
     <string name="search_result_format">%1$s — %2$s</string>
     <string name="search_browse_by_state">Navegar por estado</string>
+    <string name="search_no_data_this_week">Sem dados de preço nesta semana</string>
 
     <!-- Brazilian states (UC-003) -->
     <string name="state_name_acre">Acre</string>
