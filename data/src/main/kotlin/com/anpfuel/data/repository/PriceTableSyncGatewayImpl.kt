@@ -22,6 +22,9 @@ class PriceTableSyncGatewayImpl @Inject constructor(
     override suspend fun discoverPriceTables(): List<PriceTable> =
         listingScraper.discoverPriceTables()
 
+    override suspend fun discoverSurveyWeekCatalog() =
+        listingScraper.discoverSurveyWeekCatalog()
+
     override suspend fun downloadPriceTable(priceTable: PriceTable): PriceTable {
         val downloadResult = fileDownloader.download(priceTable)
         return priceTable.copy(checksum = downloadResult.sha256)

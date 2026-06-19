@@ -202,7 +202,7 @@ The listing exposes **~200+ weeks** (Jul/2022 → present, Jun/2026). v2 does **
 
 ### 12.3 Application layer
 
-- [ ] **12.3.1** `DiscoverSurveyWeekCatalogUseCase` — returns ordered list (newest first)
+- [x] **12.3.1** `DiscoverSurveyWeekCatalogUseCase` — returns ordered list (newest first)
 - [ ] **12.3.2** `SelectSurveyWeekUseCase` — persists choice, emits `SurveyWeekSelected`
 - [ ] **12.3.3** Extend `SyncPriceTablesUseCase`: accept optional target `SurveyWeek`; download **only** that week's files (summary mandatory; station per existing preference)
 - [ ] **12.3.4** Extend UC-002 onboarding: after intro slides → **week picker** → sync selected week → location/home
@@ -486,4 +486,4 @@ Phase 11.4 (use cases + UI) → Gate 11
     → Phase 15 (hardening + v2.0.0) → Gate 15
 ```
 
-**Current repo status (2026-06-18):** Phase 12.2 Gate 12.2 complete ✓ — next micro-step **Phase 12.3.1** `DiscoverSurveyWeekCatalogUseCase`.
+**Current repo status (2026-06-18):** Phase 12.3.1 complete ✓ — next micro-step **Phase 12.3.2** `SelectSurveyWeekUseCase`.

@@ -2,6 +2,7 @@ package com.anpfuel.domain.repository
 
 import com.anpfuel.domain.event.PriceTableImported
 import com.anpfuel.domain.model.PriceTable
+import com.anpfuel.domain.model.SurveyWeekCatalogEntry
 
 /**
  * Port for ANP price table discovery, download, and file import (UC-001).
@@ -9,6 +10,8 @@ import com.anpfuel.domain.model.PriceTable
 interface PriceTableSyncGateway {
 
     suspend fun discoverPriceTables(): List<PriceTable>
+
+    suspend fun discoverSurveyWeekCatalog(): List<SurveyWeekCatalogEntry>
 
     suspend fun downloadPriceTable(priceTable: PriceTable): PriceTable
 
