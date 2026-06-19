@@ -24,8 +24,12 @@ Agent engineering rules live in [`.cursor/rules/`](.cursor/rules/) and mirror th
 ```bash
 git clone https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS.git
 cd TABELA-ANP-COMBUSTIVEIS
+./gradlew validateRepoBaseline   # Gate 0.1
 ./gradlew test
+./gradlew :app:assembleDebug     # compile debug APK
 ```
+
+See **[docs/local-build.md](docs/local-build.md)** for prerequisites (`local.properties`, JDK 17, SDK 35), install on device, and troubleshooting.
 
 Do not commit `local.properties`, keystores, `.env`, or downloaded ANP files under `data/downloads/`.
 

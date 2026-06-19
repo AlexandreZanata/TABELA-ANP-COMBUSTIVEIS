@@ -80,6 +80,7 @@ See [docs/data-sources.md](docs/data-sources.md) for column schemas and download
 | [docs/license.md](docs/license.md) | MIT license — free use, attribution required |
 | [docs/play-store-listing.md](docs/play-store-listing.md) | Play Store listing draft (en + pt-BR) |
 | [docs/privacy-policy.md](docs/privacy-policy.md) | Privacy policy — no personal data collected |
+| [docs/local-build.md](docs/local-build.md) | **Local compile** — debug APK, install, prerequisites |
 | [docs/release-build.md](docs/release-build.md) | Signed release APK/AAB build instructions |
 | [docs/releases/v2.0.0.md](docs/releases/v2.0.0.md) | GitHub Release v2.0.0 draft notes |
 | [docs/releases/v1.0.0.md](docs/releases/v1.0.0.md) | GitHub Release v1.0.0 draft notes |
@@ -97,6 +98,17 @@ Before implementing a feature:
 6. Follow [commit conventions](docs/commit-conventions.md) (English, Conventional Commits)
 
 See **[CONTRIBUTING.md](CONTRIBUTING.md)** for the full contributor guide.
+
+### Quick start — compile locally
+
+```bash
+./gradlew validateRepoBaseline   # Gate 0.1 — repo + .cursor rules
+./gradlew test                     # unit tests (same as CI)
+./gradlew :app:assembleDebug       # debug APK
+./gradlew :app:installDebug        # install on device/emulator
+```
+
+Full details: **[docs/local-build.md](docs/local-build.md)**.
 
 ## Releases
 
