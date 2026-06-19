@@ -25,6 +25,7 @@ import com.anpfuel.domain.state.SyncJobState
 import com.anpfuel.domain.sync.PriceTableSyncPlanner
 import com.anpfuel.domain.valueobject.DomainId
 import com.anpfuel.domain.valueobject.PriceTableType
+import com.anpfuel.domain.valueobject.SurveyWeek
 
 data class SyncPriceTablesResult(
     val outcome: SyncJobOutcome,
@@ -41,7 +42,10 @@ class SyncPriceTablesUseCase(
     private val applyStationDetailRetentionUseCase: ApplyStationDetailRetentionUseCase,
 ) {
 
-    suspend operator fun invoke(source: SyncRequestSource): SyncPriceTablesResult {
+    suspend operator fun invoke(
+        source: SyncRequestSource,
+        targetSurveyWeek: SurveyWeek? = null,
+    ): SyncPriceTablesResult {
         val events = mutableListOf<DomainEvent>()
 
         suspend fun publish(event: DomainEvent) {
@@ -61,7 +65,10 @@ class SyncPriceTablesUseCase(
 
         return try {
             val discovered = priceTableSyncGateway.discoverPriceTables()
-            discovered.forEach { table ->
+            val preferences = userPreferencesRepository.getPreferences()
+            val effectiveTargetWeek = targetSurveyWeek ?: preferences.activeSurveyWeek
+            val weekTables = resolveWeekTables(discovered, effectiveTargetWeek)
+            weekTables.forEach { table ->
                 publish(
                     PriceTableDiscovered.create(
                         payload = PriceTableDiscovered.Payload(
@@ -73,10 +80,8 @@ class SyncPriceTablesUseCase(
                 )
             }
 
-            val preferences = userPreferencesRepository.getPreferences()
-            val latestWeekTables = PriceTableSyncPlanner.selectLatestWeekTables(discovered)
             val candidateTables = PriceTableSyncPlanner.resolveTablesForSync(
-                latestWeekTables = latestWeekTables,
+                weekTables = weekTables,
                 syncStationDetail = preferences.syncStationDetail,
             )
             val pendingTables = candidateTables.filter { isPendingImport(it) }
@@ -91,6 +96,22 @@ class SyncPriceTablesUseCase(
         } catch (error: Throwable) {
             failSync(error, events)
         }
+    }
+
+    private fun resolveWeekTables(
+        discovered: List<PriceTable>,
+        targetSurveyWeek: SurveyWeek?,
+    ): List<PriceTable> {
+        if (targetSurveyWeek != null) {
+            val weekTables = PriceTableSyncPlanner.selectWeekTables(discovered, targetSurveyWeek)
+            if (weekTables.none { it.tableType == PriceTableType.WEEKLY_SUMMARY }) {
+                throw DomainException(
+                    "Target survey week not found in ANP listing: $targetSurveyWeek",
+                )
+            }
+            return weekTables
+        }
+        return PriceTableSyncPlanner.selectLatestWeekTables(discovered)
     }
 
     private suspend fun prepareForSync() {

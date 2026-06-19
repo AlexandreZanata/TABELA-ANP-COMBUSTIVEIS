@@ -30,6 +30,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.IOException
@@ -171,6 +172,98 @@ class SyncPriceTablesUseCaseTest {
         coVerify(exactly = 0) { priceTableSyncGateway.discoverPriceTables() }
     }
 
+    @Test
+    fun syncsTargetSurveyWeekWhenExplicitlyProvided() = runTest {
+        val olderWeek = SurveyWeek.fromIsoDates("2026-05-31", "2026-06-06")
+        val olderSummaryUrl =
+            "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/" +
+                "arquivos-lpc/2026/resumo_semanal_lpc_2026-05-31_2026-06-06.xlsx"
+        val olderStationUrl =
+            "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/" +
+                "arquivos-lpc/2026/revendas_lpc_2026-05-31_2026-06-06.xlsx"
+        val discovered = latestWeekTables() + listOf(
+            PriceTable.create(
+                surveyWeek = olderWeek,
+                tableType = PriceTableType.WEEKLY_SUMMARY,
+                sourceUrl = olderSummaryUrl,
+            ),
+            PriceTable.create(
+                surveyWeek = olderWeek,
+                tableType = PriceTableType.STATION_DETAIL,
+                sourceUrl = olderStationUrl,
+            ),
+        )
+        val downloadedSummary = discovered[2].copy(checksum = "older-summary-sha")
+        val downloadedStation = discovered[3].copy(checksum = "older-station-sha")
+
+        coEvery { userPreferencesRepository.getPreferences() } returns UserPreferences(syncStationDetail = true)
+        coEvery { priceTableSyncGateway.discoverPriceTables() } returns discovered
+        coEvery { priceTableRepository.findPriceSurveyByWeek(olderWeek) } returns null
+        coEvery { priceTableRepository.findPriceTableByUrl(any()) } returns null
+        coEvery { priceTableSyncGateway.downloadPriceTable(discovered[2]) } returns downloadedSummary
+        coEvery { priceTableSyncGateway.downloadPriceTable(discovered[3]) } returns downloadedStation
+        coEvery { priceTableSyncGateway.importWeeklySummary(downloadedSummary) } returns
+            summaryImportPayload(olderWeek)
+        coEvery { priceTableSyncGateway.importStationDetail(downloadedStation) } returns
+            stationImportPayload(olderWeek)
+
+        val result = useCase.invoke(SyncRequestSource.MANUAL, targetSurveyWeek = olderWeek)
+
+        assertEquals(SyncJobOutcome.SUCCESS, result.outcome)
+        assertEquals(2, result.events.filterIsInstance<PriceTableDiscovered>().size)
+        coVerify(exactly = 0) { priceTableSyncGateway.downloadPriceTable(discovered.first()) }
+        coVerify(exactly = 1) { priceTableSyncGateway.downloadPriceTable(discovered[2]) }
+        coVerify(exactly = 1) { priceTableSyncGateway.downloadPriceTable(discovered[3]) }
+    }
+
+    @Test
+    fun usesActiveSurveyWeekFromPreferencesWhenTargetNotProvided() = runTest {
+        val olderWeek = SurveyWeek.fromIsoDates("2026-05-31", "2026-06-06")
+        val olderSummaryUrl =
+            "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/" +
+                "arquivos-lpc/2026/resumo_semanal_lpc_2026-05-31_2026-06-06.xlsx"
+        val olderSummary = PriceTable.create(
+            surveyWeek = olderWeek,
+            tableType = PriceTableType.WEEKLY_SUMMARY,
+            sourceUrl = olderSummaryUrl,
+        )
+        val discovered = latestWeekTables() + olderSummary
+        val downloadedSummary = olderSummary.copy(checksum = "older-summary-sha")
+
+        coEvery { userPreferencesRepository.getPreferences() } returns UserPreferences(
+            syncStationDetail = false,
+            activeSurveyWeek = olderWeek,
+        )
+        coEvery { priceTableSyncGateway.discoverPriceTables() } returns discovered
+        coEvery { priceTableRepository.findPriceSurveyByWeek(olderWeek) } returns null
+        coEvery { priceTableRepository.findPriceTableByUrl(olderSummaryUrl) } returns null
+        coEvery { priceTableSyncGateway.downloadPriceTable(olderSummary) } returns downloadedSummary
+        coEvery { priceTableSyncGateway.importWeeklySummary(downloadedSummary) } returns
+            summaryImportPayload(olderWeek)
+
+        val result = useCase.invoke(SyncRequestSource.MANUAL)
+
+        assertEquals(SyncJobOutcome.SUCCESS, result.outcome)
+        coVerify(exactly = 1) { priceTableSyncGateway.downloadPriceTable(olderSummary) }
+        coVerify(exactly = 0) { priceTableSyncGateway.downloadPriceTable(discovered.first()) }
+    }
+
+    @Test
+    fun throwsWhenTargetSurveyWeekMissingFromDiscovery() = runTest {
+        val missingWeek = SurveyWeek.fromIsoDates("2026-01-01", "2026-01-07")
+
+        coEvery { userPreferencesRepository.getPreferences() } returns UserPreferences()
+        coEvery { priceTableSyncGateway.discoverPriceTables() } returns latestWeekTables()
+
+        assertThrows(DomainException::class.java) {
+            kotlinx.coroutines.runBlocking {
+                useCase.invoke(SyncRequestSource.MANUAL, targetSurveyWeek = missingWeek)
+            }
+        }
+
+        coVerify(exactly = 0) { priceTableSyncGateway.downloadPriceTable(any()) }
+    }
+
     private fun latestWeekTables(): List<PriceTable> = listOf(
         PriceTable.create(
             surveyWeek = surveyWeek,
@@ -184,13 +277,17 @@ class SyncPriceTablesUseCaseTest {
         ),
     )
 
-    private fun summaryImportPayload() = PriceTableImported.Payload(
+    private fun summaryImportPayload(
+        surveyWeek: SurveyWeek = this.surveyWeek,
+    ) = PriceTableImported.Payload(
         surveyWeekId = DomainId.forSurveyWeek(surveyWeek),
         tableType = PriceTableType.WEEKLY_SUMMARY,
         rowCount = 2344,
     )
 
-    private fun stationImportPayload() = PriceTableImported.Payload(
+    private fun stationImportPayload(
+        surveyWeek: SurveyWeek = this.surveyWeek,
+    ) = PriceTableImported.Payload(
         surveyWeekId = DomainId.forSurveyWeek(surveyWeek),
         tableType = PriceTableType.STATION_DETAIL,
         rowCount = 19676,

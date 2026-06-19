@@ -28,6 +28,30 @@ class PriceTableSyncPlannerTest {
     }
 
     @Test
+    fun selectsTargetSurveyWeekTables() {
+        val discovered = listOf(
+            table(weekA, PriceTableType.WEEKLY_SUMMARY, "a-summary"),
+            table(weekA, PriceTableType.STATION_DETAIL, "a-station"),
+            table(weekB, PriceTableType.WEEKLY_SUMMARY, "b-summary"),
+            table(weekB, PriceTableType.STATION_DETAIL, "b-station"),
+        )
+
+        val targetWeek = PriceTableSyncPlanner.selectWeekTables(discovered, weekA)
+
+        assertEquals(2, targetWeek.size)
+        assertTrue(targetWeek.all { it.surveyWeek == weekA })
+    }
+
+    @Test
+    fun selectWeekTablesReturnsEmptyWhenWeekMissing() {
+        val discovered = listOf(
+            table(weekB, PriceTableType.WEEKLY_SUMMARY, "b-summary"),
+        )
+
+        assertTrue(PriceTableSyncPlanner.selectWeekTables(discovered, weekA).isEmpty())
+    }
+
+    @Test
     fun resolvesSummaryOnlyWhenStationDetailDisabled() {
         val latestWeekTables = listOf(
             table(weekA, PriceTableType.WEEKLY_SUMMARY, "summary"),
@@ -35,7 +59,7 @@ class PriceTableSyncPlannerTest {
         )
 
         val resolved = PriceTableSyncPlanner.resolveTablesForSync(
-            latestWeekTables = latestWeekTables,
+            weekTables = latestWeekTables,
             syncStationDetail = false,
         )
 
@@ -51,7 +75,7 @@ class PriceTableSyncPlannerTest {
         )
 
         val resolved = PriceTableSyncPlanner.resolveTablesForSync(
-            latestWeekTables = latestWeekTables,
+            weekTables = latestWeekTables,
             syncStationDetail = true,
         )
 
@@ -65,7 +89,7 @@ class PriceTableSyncPlannerTest {
         )
 
         val resolved = PriceTableSyncPlanner.resolveTablesForSync(
-            latestWeekTables = latestWeekTables,
+            weekTables = latestWeekTables,
             syncStationDetail = true,
         )
 
@@ -79,13 +103,28 @@ class PriceTableSyncPlannerTest {
     }
 
     @Test
+    fun selectWeekTablesFiltersBySurveyWeek() {
+        val discovered = listOf(
+            table(weekA, PriceTableType.WEEKLY_SUMMARY, "a-summary"),
+            table(weekA, PriceTableType.STATION_DETAIL, "a-station"),
+            table(weekB, PriceTableType.WEEKLY_SUMMARY, "b-summary"),
+            table(weekB, PriceTableType.STATION_DETAIL, "b-station"),
+        )
+
+        val weekBTables = PriceTableSyncPlanner.selectWeekTables(discovered, weekB)
+
+        assertEquals(2, weekBTables.size)
+        assertTrue(weekBTables.all { it.surveyWeek == weekB })
+    }
+
+    @Test
     fun resolveTablesForSyncReturnsEmptyWhenSummaryMissing() {
         val latestWeekTables = listOf(
             table(weekA, PriceTableType.STATION_DETAIL, "station"),
         )
 
         val resolved = PriceTableSyncPlanner.resolveTablesForSync(
-            latestWeekTables = latestWeekTables,
+            weekTables = latestWeekTables,
             syncStationDetail = true,
         )
 
