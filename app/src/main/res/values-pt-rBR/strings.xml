@@ -63,7 +63,7 @@
     <string name="week_picker_download_week">Baixar esta semana</string>
     <string name="week_picker_confirm_title">Baixar semana histórica?</string>
     <string name="week_picker_confirm_message">Baixar e importar dados da ANP para %1$s? Isso pode levar alguns minutos.</string>
-    <string name="active_week_label">Mais recente</string>
+    <string name="active_week_label">Atual</string>
     <string name="survey_week_chip_latest_suffix">· Atual</string>
     <string name="a11y_survey_week_chip">Semana de pesquisa ativa: %1$s. Toque para alterar.</string>
     <string name="a11y_survey_week_chip_latest">Semana de pesquisa ativa: %1$s (mais recente). Toque para alterar.</string>

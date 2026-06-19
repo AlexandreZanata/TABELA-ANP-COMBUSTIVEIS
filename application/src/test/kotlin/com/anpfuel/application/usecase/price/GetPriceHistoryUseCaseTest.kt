@@ -66,7 +66,7 @@ class GetPriceHistoryUseCaseTest {
         val outcome = useCase.invoke()
 
         val success = assertInstanceOf(PriceHistoryOutcome.Success::class.java, outcome)
-        assertEquals(listOf(weekA, weekB, weekC), success.entries.map { it.surveyWeek })
+        assertEquals(listOf(weekC, weekB, weekA), success.entries.map { it.surveyWeek })
     }
 
     @Test

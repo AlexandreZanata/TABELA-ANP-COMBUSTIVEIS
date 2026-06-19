@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 class PriceHistoryOrderingRuleTest {
 
     @Test
-    fun ordersEntriesBySurveyWeekStartDateAscending() {
+    fun ordersEntriesBySurveyWeekStartDateDescending() {
         val weekA = SurveyWeek.fromIsoDates("2026-05-31", "2026-06-06")
         val weekB = SurveyWeek.fromIsoDates("2026-06-07", "2026-06-13")
         val weekC = SurveyWeek.fromIsoDates("2026-06-14", "2026-06-20")
@@ -24,7 +24,7 @@ class PriceHistoryOrderingRuleTest {
 
         val ordered = PriceHistoryOrderingRule.orderBySurveyWeekStartDate(unordered)
 
-        assertEquals(listOf(weekA, weekB, weekC), ordered.map { it.surveyWeek })
+        assertEquals(listOf(weekC, weekB, weekA), ordered.map { it.surveyWeek })
     }
 
     private fun averagePrice(surveyWeek: SurveyWeek): AveragePrice = AveragePrice.create(

@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -292,19 +293,29 @@ fun WeekPickerRow(
                 .padding(vertical = 12.dp, horizontal = 8.dp),
         ) {
             Row(
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Text(
-                    text = SurveyWeekFormatter.formatRange(entry.surveyWeek, locale),
+                    text = SurveyWeekFormatter.formatRangeCompact(entry.surveyWeek, locale),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.weight(1f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
                 if (isLatest) {
                     AssistChip(
                         onClick = onClick ?: {},
                         enabled = onClick != null,
-                        label = { Text(text = stringResource(R.string.active_week_label)) },
+                        label = {
+                            Text(
+                                text = stringResource(R.string.active_week_label),
+                                maxLines = 1,
+                                softWrap = false,
+                            )
+                        },
                     )
                 }
             }

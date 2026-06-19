@@ -73,7 +73,9 @@ fun PriceHistoryTrendChart(
     entries: List<HistoryEntryUiModel>,
     modifier: Modifier = Modifier,
 ) {
-    val values = entries.mapNotNull { it.averageValue }
+    val values = entries
+        .sortedBy { it.surveyWeek.startDate }
+        .mapNotNull { it.averageValue }
     if (values.size < 2) {
         return
     }
@@ -98,7 +100,9 @@ fun PriceHistoryTrendChart(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.Bottom,
         ) {
-            entries.forEach { entry ->
+            entries
+                .sortedBy { it.surveyWeek.startDate }
+                .forEach { entry ->
                 val value = entry.averageValue
                 if (value == null) {
                     return@forEach
