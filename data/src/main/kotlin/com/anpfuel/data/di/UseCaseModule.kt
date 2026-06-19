@@ -72,16 +72,6 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideResolveAppStartDestinationUseCase(
-        userPreferencesRepository: UserPreferencesRepository,
-        priceTableRepository: PriceTableRepository,
-    ): ResolveAppStartDestinationUseCase = ResolveAppStartDestinationUseCase(
-        userPreferencesRepository = userPreferencesRepository,
-        priceTableRepository = priceTableRepository,
-    )
-
-    @Provides
-    @Singleton
     fun provideSelectSurveyWeekUseCase(
         userPreferencesRepository: UserPreferencesRepository,
         eventPublisher: DomainEventPublisher,
