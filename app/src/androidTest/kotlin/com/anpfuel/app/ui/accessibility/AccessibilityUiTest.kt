@@ -8,6 +8,8 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.unit.Density
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import com.anpfuel.app.R
 import com.anpfuel.app.ui.components.ErrorState
 import com.anpfuel.app.ui.components.LoadingState
 import com.anpfuel.app.ui.home.HomeContent
@@ -28,13 +30,17 @@ class AccessibilityUiTest {
 
     @Test
     fun loadingStateExposesTalkBackDescription() {
+        val loadingDescription = InstrumentationRegistry.getInstrumentation()
+            .targetContext
+            .getString(R.string.a11y_loading)
+
         composeTestRule.setContent {
             AnpFuelTheme(dynamicColor = false) {
                 LoadingState()
             }
         }
 
-        composeTestRule.onNodeWithContentDescription("Loading content").assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(loadingDescription).assertIsDisplayed()
     }
 
     @Test
@@ -72,6 +78,7 @@ class AccessibilityUiTest {
                         onRefresh = {},
                         onRetry = {},
                         onWeekChanged = {},
+                        includeSurveyWeekChip = false,
                     )
                 }
             }

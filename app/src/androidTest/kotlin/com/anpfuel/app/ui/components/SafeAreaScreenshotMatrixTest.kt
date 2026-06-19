@@ -50,6 +50,7 @@ class SafeAreaScreenshotMatrixTest {
                     onRefresh = {},
                     onRetry = {},
                     onWeekChanged = {},
+                    includeSurveyWeekChip = false,
                 )
             }
         }

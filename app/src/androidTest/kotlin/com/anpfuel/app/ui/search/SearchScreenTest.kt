@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.anpfuel.app.ui.theme.AnpFuelTheme
 import com.anpfuel.domain.model.MunicipalitySearchResult
 import com.anpfuel.domain.valueobject.BrazilianState
+import com.anpfuel.domain.valueobject.DataAvailability
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,6 +48,7 @@ class SearchScreenTest {
                             MunicipalitySearchResult(
                                 municipality = "Curitiba",
                                 state = BrazilianState.PARANA,
+                                dataAvailability = DataAvailability.HAS_DATA,
                             ),
                         ),
                     ),

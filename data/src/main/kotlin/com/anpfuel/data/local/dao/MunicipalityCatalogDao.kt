@@ -27,6 +27,26 @@ interface MunicipalityCatalogDao {
         normalizedName: String,
     ): MunicipalityCatalogEntity?
 
+    @Query(
+        """
+        SELECT * FROM municipality_catalog
+        WHERE state = :state AND municipality = :municipality
+        LIMIT 1
+        """,
+    )
+    suspend fun findByStateAndMunicipality(
+        state: String,
+        municipality: String,
+    ): MunicipalityCatalogEntity?
+
+    @Query(
+        """
+        SELECT * FROM municipality_catalog
+        WHERE state || char(31) || municipality IN (:compositeKeys)
+        """,
+    )
+    suspend fun findByStateMunicipalityKeys(compositeKeys: List<String>): List<MunicipalityCatalogEntity>
+
     @Query("UPDATE municipality_catalog SET anp_alias = :alias WHERE id = :id")
     suspend fun updateAnpAlias(id: String, alias: String)
 

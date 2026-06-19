@@ -12,6 +12,11 @@ android {
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments["clearPackageData"] = "true"
+    }
+
+    testOptions {
+        execution = "ANDROIDX_TEST_ORCHESTRATOR"
     }
 
     compileOptions {
@@ -82,7 +87,9 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.work:work-testing:${libs.versions.work.get()}")
     androidTestImplementation(libs.mockk)
+    androidTestImplementation("io.mockk:mockk-android:${libs.versions.mockk.get()}")
     androidTestImplementation(project(":application"))
+    androidTestUtil("androidx.test:orchestrator:1.5.1")
 }
 
 tasks.withType<Test> {

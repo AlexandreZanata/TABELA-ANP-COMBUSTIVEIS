@@ -80,3 +80,9 @@ tasks.register<Exec>("createReleaseTag") {
     commandLine("bash", "scripts/create-release-tag.sh")
     isIgnoreExitValue = false
 }
+
+gradle.projectsEvaluated {
+    tasks.findByPath(":app:connectedDebugAndroidTest")?.mustRunAfter(
+        ":data:connectedDebugAndroidTest",
+    )
+}

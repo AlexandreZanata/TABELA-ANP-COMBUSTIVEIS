@@ -2,18 +2,10 @@ package com.anpfuel.app.startup
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.room.Room
+import androidx.test.platform.app.InstrumentationRegistry
 import com.anpfuel.app.MainActivity
-import com.anpfuel.data.local.AnpFuelDatabase
-import com.anpfuel.data.local.AnpFuelDatabaseMigrations
-import com.anpfuel.data.local.entity.SurveyWeekEntity
-import com.anpfuel.data.local.preferences.UserPreferencesDataStore
-import com.anpfuel.domain.model.UserPreferences
-import com.anpfuel.domain.valueobject.BrazilianState
-import com.anpfuel.domain.valueobject.DomainId
-import com.anpfuel.domain.valueobject.SurveyWeek
+import com.anpfuel.app.support.InstrumentedAppDataSeeder
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertTrue
 import org.junit.BeforeClass
@@ -58,33 +50,9 @@ class AppStartupPerformanceTest {
         @BeforeClass
         @JvmStatic
         fun seedCachedPreferences() {
+            val context = InstrumentationRegistry.getInstrumentation().targetContext
             runBlocking {
-                val context = ApplicationProvider.getApplicationContext<android.content.Context>()
-                val surveyWeek = SurveyWeek.fromIsoDates("2026-06-07", "2026-06-13")
-                UserPreferencesDataStore(context).write(
-                    UserPreferences(
-                        onboardingCompleted = true,
-                        activeSurveyWeek = surveyWeek,
-                        preferredMunicipality = "Curitiba",
-                        preferredState = BrazilianState.PARANA,
-                    ),
-                )
-                Room.databaseBuilder(context, AnpFuelDatabase::class.java, "anp_fuel.db")
-                    .addMigrations(
-                        AnpFuelDatabaseMigrations.MIGRATION_1_2,
-                        AnpFuelDatabaseMigrations.MIGRATION_2_3,
-                    )
-                    .build()
-                    .surveyWeekDao()
-                    .insert(
-                        SurveyWeekEntity(
-                            id = DomainId.forSurveyWeek(surveyWeek).value,
-                            startDate = surveyWeek.startDate.toString(),
-                            endDate = surveyWeek.endDate.toString(),
-                            summaryImportedAt = 1_718_284_800_000L,
-                            stationImportedAt = null,
-                        ),
-                    )
+                InstrumentedAppDataSeeder.seedReturningUserHomeState(context)
             }
         }
     }

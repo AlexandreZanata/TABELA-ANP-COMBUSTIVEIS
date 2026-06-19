@@ -91,6 +91,7 @@ internal fun HomeContent(
     onRetry: () -> Unit,
     onWeekChanged: () -> Unit,
     modifier: Modifier = Modifier,
+    includeSurveyWeekChip: Boolean = true,
 ) {
     AnpScaffold(
         modifier = modifier.fillMaxSize(),
@@ -99,7 +100,9 @@ internal fun HomeContent(
             AnpTopAppBar(
                 title = { Text(text = stringResource(R.string.home_title)) },
                 actions = {
-                    SurveyWeekChipAction(onWeekChanged = onWeekChanged)
+                    if (includeSurveyWeekChip) {
+                        SurveyWeekChipAction(onWeekChanged = onWeekChanged)
+                    }
                     IconButton(onClick = onToggleTheme) {
                         Icon(
                             imageVector = if (darkTheme) Icons.Default.LightMode else Icons.Default.DarkMode,

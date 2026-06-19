@@ -49,6 +49,7 @@ class HomeScreenTest {
                     onRefresh = {},
                     onRetry = {},
                     onWeekChanged = {},
+                    includeSurveyWeekChip = false,
                 )
             }
         }
@@ -73,6 +74,7 @@ class HomeScreenTest {
                     onRefresh = {},
                     onRetry = {},
                     onWeekChanged = {},
+                    includeSurveyWeekChip = false,
                 )
             }
         }

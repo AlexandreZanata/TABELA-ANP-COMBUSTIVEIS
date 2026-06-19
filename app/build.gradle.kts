@@ -42,6 +42,11 @@ android {
         versionCode = 2
         versionName = "2.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments["clearPackageData"] = "true"
+    }
+
+    testOptions {
+        execution = "ANDROIDX_TEST_ORCHESTRATOR"
     }
 
     signingConfigs {
@@ -119,6 +124,10 @@ dependencies {
     androidTestImplementation("androidx.test:runner:1.6.2")
     androidTestImplementation("androidx.test:rules:1.6.1")
     androidTestImplementation(libs.kotlinx.coroutines.android)
+    androidTestImplementation(libs.room.runtime)
+    androidTestImplementation(libs.room.ktx)
+
+    androidTestUtil("androidx.test:orchestrator:1.5.1")
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
