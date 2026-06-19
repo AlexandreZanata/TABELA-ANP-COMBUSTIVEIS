@@ -156,9 +156,9 @@ Manual test script (see Appendix A) passes on emulator + one physical device.
 
 ### 11.4 UI
 
-- [ ] **11.4.1** Search results row: municipality + state + optional "no data this week" subtitle (i18n)
-- [ ] **11.4.2** State/municipality picker: full list with sticky section headers by letter
-- [ ] **11.4.3** Empty state illustrations for BR-010 variants
+- [x] **11.4.1** Search results row: municipality + state + optional "no data this week" subtitle (i18n)
+- [x] **11.4.2** State/municipality picker: full list with section headers by letter
+- [x] **11.4.3** Empty state illustrations for BR-010 variants
 
 **✅ Gate 11 — National search complete:**
 
@@ -500,4 +500,4 @@ Phase 11.4 (use cases + UI) → Gate 11
     → Phase 15 (hardening + v2.0.0) → Gate 15
 ```
 
-**Current repo status (2026-06-18):** v1 complete (Phases 0–10). **v2 in progress** — Phase 11.3 complete; next micro-step: **11.4.1** search results row with `DataAvailability` subtitle.
+**Current repo status (2026-06-18):** v1 complete (Phases 0–10, signed release validated via `./gradlew validateReleaseBuild`). **v2 in progress** — Phase 11.4 UI complete; next micro-step: **Phase 12.1** survey week catalog POC.

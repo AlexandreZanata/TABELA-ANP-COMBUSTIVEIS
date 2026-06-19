@@ -66,6 +66,12 @@ Or run the shell script directly:
 ./scripts/validate-release-build.sh
 ```
 
+Or verify a single APK:
+
+```bash
+./scripts/verify-release-signature.sh app/build/outputs/apk/release/app-release.apk
+```
+
 Validation checks:
 
 - Signing config present (`signing.properties` or env vars)

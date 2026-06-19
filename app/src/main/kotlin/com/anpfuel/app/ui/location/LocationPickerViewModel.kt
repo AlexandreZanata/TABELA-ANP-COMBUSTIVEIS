@@ -89,7 +89,7 @@ class LocationPickerViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        municipalities = result.municipalities,
+                        municipalities = result.municipalities.map { it.municipality },
                     )
                 }
             }.onFailure { error ->
