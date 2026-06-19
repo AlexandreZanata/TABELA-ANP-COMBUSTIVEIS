@@ -225,19 +225,7 @@ Manual script (Appendix A2) passes; user can install fresh → pick week `31/05�
 **Duration:** ~2–3 days ⏱  
 📎 `FuelProduct` enum (7 values), `FuelProductLabel.kt`
 
-### 14.1 Asset sourcing & license
-
-- [ ] **14.1.1** Evaluate icon sets — pick one primary library for consistency:
-
-| Library | License | Notes |
-|---------|---------|-------|
-| [Material Design Icons (Pictogrammers)](https://pictogrammers.com/library/mdi/) | Apache 2.0 | `gas-station`, `fuel`, `propane-tank`; generic but consistent |
-| [Phosphor Icons](https://phosphoricons.com/) | MIT | `GasPump`, `Drop`, `Flame`; good weight variants |
-| [Tabler Icons](https://tabler.io/icons) | MIT | `gas-station`, `flame`; stroke style |
-
-- [ ] **14.1.2** **Do not use** Petrobras, Ipiranga, or brand-specific pump artwork — trademark restriction
-- [ ] **14.1.3** Create `docs/attribution.md` (or extend `NOTICE`) listing icon sources and licenses
-- [ ] **14.1.4** Download SVG sources; convert to Android Vector Drawable (`app/src/main/res/drawable/ic_fuel_*.xml`)
+**Asset sourcing (14.1) complete:** MDI/Pictogrammers (Apache 2.0); `docs/attribution.md`; SVG sources in `docs/assets/icons/mdi/`; drawables `ic_fuel_*.xml`.
 
 ### 14.2 Icon mapping (`FuelProduct` → drawable)
 
@@ -440,4 +428,4 @@ Phase 11.4 (use cases + UI) → Gate 11
     → Phase 15 (hardening + v2.0.0) → Gate 15
 ```
 
-**Current repo status (2026-06-19):** Phase 13 complete ✓ — next **Phase 14.1** fuel icon asset sourcing.
+**Current repo status (2026-06-19):** Phase 14.1 fuel icon assets complete ✓ — next **Phase 14.2** composable integration.
