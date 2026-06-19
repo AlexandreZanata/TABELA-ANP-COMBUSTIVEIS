@@ -101,4 +101,18 @@ class AnpListingScraperTest {
         assertEquals(LocalDate.of(2026, 6, 12), latestEntry.publishedAt)
         assertNull(olderEntry.publishedAt)
     }
+
+    @Test
+    fun parseSurveyWeekCatalogStoresOperationalNoteOnWeekBlock() {
+        val html = AnpFixtureFiles.readListingHtml()
+
+        val catalog = scraper.parseSurveyWeekCatalogFromHtml(html)
+        val weekWithNote = catalog.first { it.surveyWeek == SurveyWeek.fromIsoDates("2026-05-31", "2026-06-06") }
+
+        assertEquals(
+            "Os preços médios de Belo Horizonte não foram publicados entre 26/04/2026 e 16/05/2026.",
+            weekWithNote.operationalNote,
+        )
+        assertNull(catalog.first().operationalNote)
+    }
 }

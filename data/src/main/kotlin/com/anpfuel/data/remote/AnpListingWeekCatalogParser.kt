@@ -11,11 +11,12 @@ import org.jsoup.select.NodeVisitor
 import java.time.LocalDate
 
 /**
- * Groups ANP listing links under week section headers (Phase 12.2.1–12.2.2).
+ * Groups ANP listing links under week section headers (Phase 12.2.1–12.2.3).
  */
 internal object AnpListingWeekCatalogParser {
 
     private val HEADER_TAGS = setOf("h1", "h2", "h3", "h4", "h5", "h6", "strong", "p")
+    private val NOTE_TAGS = setOf("p", "div", "em", "small", "span")
 
     fun parse(html: String, baseUrl: String): List<SurveyWeekCatalogEntry> {
         val document = org.jsoup.Jsoup.parse(html, baseUrl)
@@ -28,10 +29,16 @@ internal object AnpListingWeekCatalogParser {
             object : NodeVisitor {
                 override fun head(node: Node, depth: Int) {
                     when (node) {
-                        is TextNode -> updateCurrentWeek(node.wholeText, currentWeek) { currentWeek = it }
+                        is TextNode -> {
+                            updateCurrentWeek(node.wholeText, currentWeek) { currentWeek = it }
+                            attachOperationalNote(node.wholeText, currentWeek, buckets)
+                        }
                         is Element -> {
                             if (node.tagName() in HEADER_TAGS) {
                                 updateCurrentWeek(node.ownText(), currentWeek) { currentWeek = it }
+                            }
+                            if (node.tagName() in NOTE_TAGS) {
+                                attachOperationalNote(node.text(), currentWeek, buckets)
                             }
                             if (node.tagName() == "a") {
                                 val href = node.absUrl("href").ifBlank { node.attr("href") }
@@ -68,6 +75,7 @@ internal object AnpListingWeekCatalogParser {
                     summaryUrl = requireNotNull(it.summaryUrl),
                     stationUrl = requireNotNull(it.stationUrl),
                     publishedAt = it.resolvePublishedAt(),
+                    operationalNote = it.operationalNote,
                 )
             }
             .sortedByDescending { it.surveyWeek.endDate }
@@ -76,6 +84,16 @@ internal object AnpListingWeekCatalogParser {
     private fun anchorContextText(anchor: Element): String {
         val listItem = anchor.parent()?.takeIf { it.tagName() == "li" }
         return listItem?.text() ?: anchor.text()
+    }
+
+    private fun attachOperationalNote(
+        text: String,
+        currentWeek: SurveyWeek?,
+        buckets: MutableMap<SurveyWeek, WeekUrlBucket>,
+    ) {
+        val week = currentWeek ?: return
+        val note = AnpListingOperationalNoteParser.parseOperationalNote(text) ?: return
+        buckets.getOrPut(week) { WeekUrlBucket(week) }.operationalNote = note
     }
 
     private fun updateCurrentWeek(
@@ -95,6 +113,7 @@ internal object AnpListingWeekCatalogParser {
         var stationUrl: String? = null,
         var summaryPublishedAt: LocalDate? = null,
         var stationPublishedAt: LocalDate? = null,
+        var operationalNote: String? = null,
     ) {
         fun resolvePublishedAt(): LocalDate? =
             listOfNotNull(summaryPublishedAt, stationPublishedAt).maxOrNull()

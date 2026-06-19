@@ -190,7 +190,6 @@ The listing exposes **~200+ weeks** (Jul/2022 → present, Jun/2026). v2 does **
 
 ### 12.2 Data layer — listing scraper enrichment 🔬
 
-- [ ] **12.2.3** Parse optional `NOTA:` / `Aviso:` paragraphs attached to a week block; store as `operationalNote`
 - [ ] **12.2.4** Fixture test: HTML snapshot from gov.br listing (Jun/2026) yields ≥ 30 `SurveyWeekCatalogEntry` with both file types for latest week
 - [ ] **12.2.5** Live test: discovered catalog count matches visible week count on listing page (document in `.local/poc-results/week-catalog-poc.md`)
 
@@ -489,4 +488,4 @@ Phase 11.4 (use cases + UI) → Gate 11
     → Phase 15 (hardening + v2.0.0) → Gate 15
 ```
 
-**Current repo status (2026-06-18):** Phase 12.2.2 updated-at suffix complete ✓ — next micro-step **Phase 12.2.3** parse operational `NOTA`/`Aviso` notes.
+**Current repo status (2026-06-18):** Phase 12.2.3 operational notes complete ✓ — next micro-step **Phase 12.2.4** full gov.br listing fixture (≥ 30 weeks).
