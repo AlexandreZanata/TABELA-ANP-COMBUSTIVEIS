@@ -8,9 +8,10 @@ import org.jsoup.nodes.Node
 import org.jsoup.nodes.TextNode
 import org.jsoup.select.NodeTraversor
 import org.jsoup.select.NodeVisitor
+import java.time.LocalDate
 
 /**
- * Groups ANP listing links under week section headers (Phase 12.2.1).
+ * Groups ANP listing links under week section headers (Phase 12.2.1–12.2.2).
  */
 internal object AnpListingWeekCatalogParser {
 
@@ -37,11 +38,17 @@ internal object AnpListingWeekCatalogParser {
                                 val priceTable = AnpPriceTableUrlParser.toPriceTable(href) ?: return
                                 val week = currentWeek ?: priceTable.surveyWeek
                                 val bucket = buckets.getOrPut(week) { WeekUrlBucket(week) }
+                                val linkContextText = anchorContextText(node)
+                                val updatedAt = AnpListingUpdatedAtParser.parseUpdatedAt(linkContextText)
                                 when (priceTable.tableType) {
-                                    PriceTableType.WEEKLY_SUMMARY ->
+                                    PriceTableType.WEEKLY_SUMMARY -> {
                                         bucket.summaryUrl = bucket.summaryUrl ?: priceTable.sourceUrl
-                                    PriceTableType.STATION_DETAIL ->
+                                        bucket.summaryPublishedAt = updatedAt ?: bucket.summaryPublishedAt
+                                    }
+                                    PriceTableType.STATION_DETAIL -> {
                                         bucket.stationUrl = bucket.stationUrl ?: priceTable.sourceUrl
+                                        bucket.stationPublishedAt = updatedAt ?: bucket.stationPublishedAt
+                                    }
                                 }
                             }
                         }
@@ -60,9 +67,15 @@ internal object AnpListingWeekCatalogParser {
                     surveyWeek = it.surveyWeek,
                     summaryUrl = requireNotNull(it.summaryUrl),
                     stationUrl = requireNotNull(it.stationUrl),
+                    publishedAt = it.resolvePublishedAt(),
                 )
             }
             .sortedByDescending { it.surveyWeek.endDate }
+    }
+
+    private fun anchorContextText(anchor: Element): String {
+        val listItem = anchor.parent()?.takeIf { it.tagName() == "li" }
+        return listItem?.text() ?: anchor.text()
     }
 
     private fun updateCurrentWeek(
@@ -80,5 +93,10 @@ internal object AnpListingWeekCatalogParser {
         val surveyWeek: SurveyWeek,
         var summaryUrl: String? = null,
         var stationUrl: String? = null,
-    )
+        var summaryPublishedAt: LocalDate? = null,
+        var stationPublishedAt: LocalDate? = null,
+    ) {
+        fun resolvePublishedAt(): LocalDate? =
+            listOfNotNull(summaryPublishedAt, stationPublishedAt).maxOrNull()
+    }
 }

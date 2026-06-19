@@ -1,11 +1,6 @@
 package com.anpfuel.data.remote
 
 import com.anpfuel.domain.valueobject.SurveyWeek
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatterBuilder
-import java.time.format.ResolverStyle
-import java.time.temporal.ChronoField
 
 /**
  * Parses pt-BR ANP listing week section headers (Phase 12.2.1).
@@ -18,20 +13,11 @@ internal object AnpListingWeekHeaderParser {
         RegexOption.IGNORE_CASE,
     )
 
-    private val BRAZILIAN_DATE: DateTimeFormatter = DateTimeFormatterBuilder()
-        .appendValue(ChronoField.DAY_OF_MONTH, 1, 2, java.time.format.SignStyle.NOT_NEGATIVE)
-        .appendLiteral('/')
-        .appendValue(ChronoField.MONTH_OF_YEAR, 1, 2, java.time.format.SignStyle.NOT_NEGATIVE)
-        .appendLiteral('/')
-        .appendValue(ChronoField.YEAR, 4)
-        .toFormatter()
-        .withResolverStyle(ResolverStyle.STRICT)
-
     fun parseWeekHeader(text: String): SurveyWeek? {
         val match = WEEK_HEADER_PATTERN.find(text.trim()) ?: return null
         return try {
-            val startDate = LocalDate.parse(match.groupValues[1], BRAZILIAN_DATE)
-            val endDate = LocalDate.parse(match.groupValues[2], BRAZILIAN_DATE)
+            val startDate = AnpBrazilianDateParser.parseDate(match.groupValues[1]) ?: return null
+            val endDate = AnpBrazilianDateParser.parseDate(match.groupValues[2]) ?: return null
             SurveyWeek(startDate = startDate, endDate = endDate)
         } catch (_: Exception) {
             null

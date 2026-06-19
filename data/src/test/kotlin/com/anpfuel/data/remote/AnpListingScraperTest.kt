@@ -4,8 +4,10 @@ import com.anpfuel.domain.valueobject.PriceTableType
 import com.anpfuel.domain.valueobject.SurveyWeek
 import okhttp3.OkHttpClient
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
 
 class AnpListingScraperTest {
 
@@ -86,5 +88,17 @@ class AnpListingScraperTest {
         val catalog = scraper.parseSurveyWeekCatalogFromHtml(html)
 
         assertTrue(catalog.none { it.surveyWeek == SurveyWeek.fromIsoDates("2026-04-12", "2026-04-18") })
+    }
+
+    @Test
+    fun parseSurveyWeekCatalogStoresLatestUpdatedAtPerWeek() {
+        val html = AnpFixtureFiles.readListingHtml()
+
+        val catalog = scraper.parseSurveyWeekCatalogFromHtml(html)
+        val latestEntry = catalog.first()
+        val olderEntry = catalog.last()
+
+        assertEquals(LocalDate.of(2026, 6, 12), latestEntry.publishedAt)
+        assertNull(olderEntry.publishedAt)
     }
 }
