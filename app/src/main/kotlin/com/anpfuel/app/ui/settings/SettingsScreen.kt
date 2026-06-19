@@ -290,7 +290,10 @@ private fun SettingsContent(
                         }
                     }
 
-                    SettingsSection(title = stringResource(R.string.settings_attribution_section)) {
+                    SettingsSection(
+                        title = stringResource(R.string.settings_attribution_section),
+                        showBottomDivider = false,
+                    ) {
                         Text(
                             text = stringResource(R.string.prices_anp_attribution),
                             style = MaterialTheme.typography.bodySmall,
@@ -327,6 +330,7 @@ private fun SettingsContent(
 private fun SettingsSection(
     title: String,
     modifier: Modifier = Modifier,
+    showBottomDivider: Boolean = true,
     content: @Composable () -> Unit,
 ) {
     Column(
@@ -339,7 +343,9 @@ private fun SettingsSection(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         content()
-        HorizontalDivider()
+        if (showBottomDivider) {
+            HorizontalDivider()
+        }
     }
 }
 

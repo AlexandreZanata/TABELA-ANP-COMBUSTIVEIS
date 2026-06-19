@@ -101,7 +101,10 @@ internal fun HomeContent(
                 title = { Text(text = stringResource(R.string.home_title)) },
                 actions = {
                     if (includeSurveyWeekChip) {
-                        SurveyWeekChipAction(onWeekChanged = onWeekChanged)
+                        SurveyWeekChipAction(
+                            onWeekChanged = onWeekChanged,
+                            hasTrailingAction = true,
+                        )
                     }
                     IconButton(onClick = onToggleTheme) {
                         Icon(

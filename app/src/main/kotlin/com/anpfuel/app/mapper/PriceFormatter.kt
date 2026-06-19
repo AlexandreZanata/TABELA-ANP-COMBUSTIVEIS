@@ -36,6 +36,51 @@ object SurveyWeekFormatter {
         val separator = if (locale.language == "pt") " a " else " – "
         return "${week.startDate.format(formatter)}$separator${week.endDate.format(formatter)}"
     }
+
+    /**
+     * Shorter week range for constrained UI (top bar chip, history rows).
+     * Same month: "Jun 7–13, 2026" (en) / "7–13 jun 2026" (pt).
+     */
+    fun formatRangeCompact(week: SurveyWeek, locale: Locale): String {
+        val start = week.startDate
+        val end = week.endDate
+        if (start == end) {
+            return formatRange(week, locale)
+        }
+
+        val dayFormatter = DateTimeFormatter.ofPattern("d", locale)
+        val monthFormatter = DateTimeFormatter.ofPattern("MMM", locale)
+        val monthDayFormatter = DateTimeFormatter.ofPattern("MMM d", locale)
+
+        return when {
+            start.year == end.year && start.month == end.month -> {
+                if (locale.language == "pt") {
+                    "${start.format(dayFormatter)}–${end.format(dayFormatter)} " +
+                        "${start.format(monthFormatter)} ${start.year}"
+                } else {
+                    "${start.format(monthFormatter)} ${start.format(dayFormatter)}–${end.format(dayFormatter)}, ${start.year}"
+                }
+            }
+
+            start.year == end.year -> {
+                if (locale.language == "pt") {
+                    "${start.format(dayFormatter)} ${start.format(monthFormatter)} – " +
+                        "${end.format(dayFormatter)} ${end.format(monthFormatter)} ${end.year}"
+                } else {
+                    "${start.format(monthDayFormatter)} – ${end.format(monthDayFormatter)}, ${end.year}"
+                }
+            }
+
+            else -> {
+                if (locale.language == "pt") {
+                    "${start.format(dayFormatter)} ${start.format(monthFormatter)} ${start.year} – " +
+                        "${end.format(dayFormatter)} ${end.format(monthFormatter)} ${end.year}"
+                } else {
+                    formatRange(week, locale)
+                }
+            }
+        }
+    }
 }
 
 object LastSyncFormatter {

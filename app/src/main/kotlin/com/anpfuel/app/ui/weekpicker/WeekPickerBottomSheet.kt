@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.unit.dp
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -21,7 +22,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anpfuel.app.R
@@ -32,6 +32,7 @@ import com.anpfuel.app.ui.components.SurveyWeekChip
 fun SurveyWeekChipAction(
     onWeekChanged: () -> Unit,
     modifier: Modifier = Modifier,
+    hasTrailingAction: Boolean = false,
     activeSurveyWeekViewModel: ActiveSurveyWeekViewModel = hiltViewModel(),
 ) {
     val uiState by activeSurveyWeekViewModel.uiState.collectAsStateWithLifecycle()
@@ -41,12 +42,18 @@ fun SurveyWeekChipAction(
         activeSurveyWeekViewModel.load()
     }
 
+    val chipModifier = if (hasTrailingAction) {
+        modifier
+    } else {
+        modifier.padding(end = 12.dp)
+    }
+
     uiState.surveyWeek?.let { surveyWeek ->
         SurveyWeekChip(
             surveyWeek = surveyWeek,
             isLatest = uiState.isLatest,
             onClick = { sheetVisible = true },
-            modifier = modifier,
+            modifier = chipModifier,
         )
     }
 

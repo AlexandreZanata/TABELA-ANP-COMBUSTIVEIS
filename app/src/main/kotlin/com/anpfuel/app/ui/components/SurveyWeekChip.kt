@@ -27,14 +27,15 @@ fun SurveyWeekChip(
     modifier: Modifier = Modifier,
 ) {
     val locale = LocalConfiguration.current.locales[0]
-    val weekLabel = SurveyWeekFormatter.formatRange(surveyWeek, locale)
+    val weekLabel = SurveyWeekFormatter.formatRangeCompact(surveyWeek, locale)
+    val accessibilityWeekLabel = SurveyWeekFormatter.formatRange(surveyWeek, locale)
     val accessibilityLabel = stringResource(
         if (isLatest) {
             R.string.a11y_survey_week_chip_latest
         } else {
             R.string.a11y_survey_week_chip
         },
-        weekLabel,
+        accessibilityWeekLabel,
     )
 
     AssistChip(
