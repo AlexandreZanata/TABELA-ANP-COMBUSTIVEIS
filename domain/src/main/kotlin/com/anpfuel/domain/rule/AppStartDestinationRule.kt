@@ -1,0 +1,35 @@
+package com.anpfuel.domain.rule
+
+import com.anpfuel.domain.model.PriceSurvey
+import com.anpfuel.domain.navigation.AppStartDestination
+import com.anpfuel.domain.valueobject.SurveyWeek
+
+/**
+ * BR-018, BR-019 — Resolve cold-start destination for returning users (UC-009 A1).
+ */
+object AppStartDestinationRule {
+
+    fun resolve(
+        onboardingCompleted: Boolean,
+        activeSurveyWeek: SurveyWeek?,
+        importedSurveys: List<PriceSurvey>,
+    ): AppStartDestination {
+        if (!onboardingCompleted) {
+            return AppStartDestination.ONBOARDING
+        }
+
+        if (WeekSelectionBeforeSyncRule.requiresWeekSelection(activeSurveyWeek)) {
+            return AppStartDestination.WEEK_PICKER
+        }
+
+        val activeWeekImported = importedSurveys.any {
+            it.surveyWeek == activeSurveyWeek && it.hasSummaryData
+        }
+
+        return if (activeWeekImported) {
+            AppStartDestination.HOME
+        } else {
+            AppStartDestination.WEEK_PICKER
+        }
+    }
+}

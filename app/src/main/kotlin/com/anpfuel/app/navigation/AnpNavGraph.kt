@@ -123,10 +123,22 @@ fun AnpNavGraph(
             )
         }
         composable(Routes.WEEK_PICKER) {
+            val canNavigateBack = navController.previousBackStackEntry != null
             WeekPickerRoute(
-                onNavigateBack = navController::popBackStack,
+                onNavigateBack = if (canNavigateBack) {
+                    { navController.popBackStack() }
+                } else {
+                    null
+                },
                 onWeekSelected = {
-                    navController.popBackStack()
+                    if (canNavigateBack) {
+                        navController.popBackStack()
+                    } else {
+                        navController.navigate(Routes.HOME) {
+                            popUpTo(Routes.WEEK_PICKER) { inclusive = true }
+                            launchSingleTop = true
+                        }
+                    }
                 },
             )
         }

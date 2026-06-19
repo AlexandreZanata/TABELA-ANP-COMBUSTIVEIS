@@ -2,6 +2,7 @@ package com.anpfuel.data.di
 
 import com.anpfuel.application.usecase.location.SearchMunicipalityUseCase
 import com.anpfuel.application.usecase.location.SelectLocationUseCase
+import com.anpfuel.application.usecase.navigation.ResolveAppStartDestinationUseCase
 import com.anpfuel.application.usecase.network.ObserveNetworkConnectivityUseCase
 import com.anpfuel.application.usecase.onboarding.CompleteOnboardingUseCase
 import com.anpfuel.application.usecase.onboarding.OnboardingSelectWeekAndSyncUseCase
@@ -43,6 +44,16 @@ object UseCaseModule {
 
     @Provides
     @Singleton
+    fun provideResolveAppStartDestinationUseCase(
+        userPreferencesRepository: UserPreferencesRepository,
+        priceTableRepository: PriceTableRepository,
+    ): ResolveAppStartDestinationUseCase = ResolveAppStartDestinationUseCase(
+        userPreferencesRepository = userPreferencesRepository,
+        priceTableRepository = priceTableRepository,
+    )
+
+    @Provides
+    @Singleton
     fun provideApplyStationDetailRetentionUseCase(
         userPreferencesRepository: UserPreferencesRepository,
         stationPriceRepository: StationPriceRepository,
@@ -57,6 +68,16 @@ object UseCaseModule {
         priceTableSyncGateway: PriceTableSyncGateway,
     ): DiscoverSurveyWeekCatalogUseCase = DiscoverSurveyWeekCatalogUseCase(
         priceTableSyncGateway = priceTableSyncGateway,
+    )
+
+    @Provides
+    @Singleton
+    fun provideResolveAppStartDestinationUseCase(
+        userPreferencesRepository: UserPreferencesRepository,
+        priceTableRepository: PriceTableRepository,
+    ): ResolveAppStartDestinationUseCase = ResolveAppStartDestinationUseCase(
+        userPreferencesRepository = userPreferencesRepository,
+        priceTableRepository = priceTableRepository,
     )
 
     @Provides

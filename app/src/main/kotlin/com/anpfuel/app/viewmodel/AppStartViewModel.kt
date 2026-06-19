@@ -3,7 +3,8 @@ package com.anpfuel.app.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anpfuel.app.navigation.Routes
-import com.anpfuel.domain.repository.UserPreferencesRepository
+import com.anpfuel.application.usecase.navigation.ResolveAppStartDestinationUseCase
+import com.anpfuel.domain.navigation.AppStartDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +14,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class AppStartViewModel @Inject constructor(
-    private val userPreferencesRepository: UserPreferencesRepository,
+    private val resolveAppStartDestinationUseCase: ResolveAppStartDestinationUseCase,
 ) : ViewModel() {
 
     private val _startDestination = MutableStateFlow<String?>(null)
@@ -21,12 +22,13 @@ class AppStartViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val preferences = userPreferencesRepository.getPreferences()
-            _startDestination.value = if (preferences.onboardingCompleted) {
-                Routes.HOME
-            } else {
-                Routes.ONBOARDING
-            }
+            _startDestination.value = resolveAppStartDestinationUseCase().toRoute()
         }
+    }
+
+    private fun AppStartDestination.toRoute(): String = when (this) {
+        AppStartDestination.ONBOARDING -> Routes.ONBOARDING
+        AppStartDestination.HOME -> Routes.HOME
+        AppStartDestination.WEEK_PICKER -> Routes.WEEK_PICKER
     }
 }

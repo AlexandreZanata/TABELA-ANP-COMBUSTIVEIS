@@ -47,8 +47,8 @@ import java.util.Locale
 
 @Composable
 fun WeekPickerRoute(
-    onNavigateBack: () -> Unit,
-    onWeekSelected: () -> Unit = onNavigateBack,
+    onNavigateBack: (() -> Unit)?,
+    onWeekSelected: () -> Unit = { onNavigateBack?.invoke() },
     modifier: Modifier = Modifier,
     viewModel: WeekPickerViewModel = hiltViewModel(),
 ) {
