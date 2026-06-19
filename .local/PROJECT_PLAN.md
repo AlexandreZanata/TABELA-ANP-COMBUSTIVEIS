@@ -190,8 +190,6 @@ The listing exposes **~200+ weeks** (Jul/2022 → present, Jun/2026). v2 does **
 
 ### 12.2 Data layer — listing scraper enrichment 🔬
 
-- [ ] **12.2.5** Live test: discovered catalog count matches visible week count on listing page (document in `.local/poc-results/week-catalog-poc.md`)
-
 **✅ Gate 12.2 — Week catalog POC passed:**
 
 | Criterion | Target |
@@ -200,6 +198,7 @@ The listing exposes **~200+ weeks** (Jul/2022 → present, Jun/2026). v2 does **
 | Week label | Matches gov.br pt-BR date range formatting |
 | Historical depth | ≥ 50 weeks discoverable from single HTML fetch |
 | BH May/2026 note | Operational warning captured when present in fixture |
+| Live catalog match | Discovered count matches complete visible week blocks (see `.local/poc-results/week-catalog-poc.md`) |
 
 ### 12.3 Application layer
 
@@ -487,4 +486,4 @@ Phase 11.4 (use cases + UI) → Gate 11
     → Phase 15 (hardening + v2.0.0) → Gate 15
 ```
 
-**Current repo status (2026-06-18):** Phase 12.2.4 full listing fixture complete ✓ — next micro-step **Phase 12.2.5** live catalog count validation.
+**Current repo status (2026-06-18):** Phase 12.2 Gate 12.2 complete ✓ — next micro-step **Phase 12.3.1** `DiscoverSurveyWeekCatalogUseCase`.

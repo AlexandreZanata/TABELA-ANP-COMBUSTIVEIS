@@ -64,6 +64,66 @@ class AnpPriceTableUrlParserTest {
     }
 
     @Test
+    fun acceptsLegacyHyphenFilenameFormat() {
+        val url =
+            "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/" +
+                "arquivos-lpc/2022/resumo-semanal-lpc-2022-12-25-2022-12-31.xlsx"
+
+        val priceTable = requireNotNull(AnpPriceTableUrlParser.toPriceTable(url))
+
+        assertEquals(SurveyWeek.fromIsoDates("2022-12-25", "2022-12-31"), priceTable.surveyWeek)
+    }
+
+    @Test
+    fun acceptsDotSeparatedDatesInFilename() {
+        val url =
+            "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/" +
+                "arquivos-lpc/2024/Resumo_SEMANAL_LPC_2024.12.22_2024.12.28.xlsx"
+
+        val priceTable = requireNotNull(AnpPriceTableUrlParser.toPriceTable(url))
+
+        assertEquals(SurveyWeek.fromIsoDates("2024-12-22", "2024-12-28"), priceTable.surveyWeek)
+    }
+
+    @Test
+    fun acceptsDuplicateFileSuffixBeforeExtension() {
+        val url =
+            "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/" +
+                "arquivos-lpc/2026/resumo_semanal_lpc_2026-03-08_2026-03-14-1.xlsx"
+
+        val priceTable = requireNotNull(AnpPriceTableUrlParser.toPriceTable(url))
+
+        assertEquals(SurveyWeek.fromIsoDates("2026-03-08", "2026-03-14"), priceTable.surveyWeek)
+    }
+
+    @Test
+    fun acceptsCompactBrazilianDateRangeInFilename() {
+        val url =
+            "https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/" +
+                "arquivos-lpc/2025/resumo_semanal_lpc-17112025-a-23112025.xlsx"
+
+        val priceTable = requireNotNull(AnpPriceTableUrlParser.toPriceTable(url))
+
+        assertEquals(SurveyWeek.fromIsoDates("2025-11-17", "2025-11-23"), priceTable.surveyWeek)
+    }
+
+    @Test
+    fun infersTableTypeFromPortugueseLinkText() {
+        assertEquals(
+            PriceTableType.WEEKLY_SUMMARY,
+            AnpPriceTableUrlParser.inferTableTypeFromLinkText(
+                "Preços médios semanais: Brasil, regiões, estados e municípios",
+            ),
+        )
+        assertEquals(
+            PriceTableType.STATION_DETAIL,
+            AnpPriceTableUrlParser.inferTableTypeFromLinkText(
+                "Preços por posto revendedor (combustíveis automotivos e GLP P13)",
+            ),
+        )
+    }
+
+    @Test
     fun priceTableIdIsDeterministicForSameUrl() {
         val first = requireNotNull(AnpPriceTableUrlParser.toPriceTable(summaryUrl))
         val second = requireNotNull(AnpPriceTableUrlParser.toPriceTable(summaryUrl))

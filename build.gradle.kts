@@ -46,6 +46,13 @@ tasks.register<Exec>("validatePlayStoreListing") {
     isIgnoreExitValue = false
 }
 
+tasks.register<Exec>("validateWeekCatalogPoc") {
+    group = "verification"
+    description = "Live ANP listing week catalog validation (Phase 12.2.5)"
+    commandLine("bash", "scripts/validate-week-catalog-poc.sh")
+    isIgnoreExitValue = false
+}
+
 tasks.register<Exec>("validateReleaseBuild") {
     group = "verification"
     description = "Builds and validates signed release APK/AAB (Phase 10.5)"
