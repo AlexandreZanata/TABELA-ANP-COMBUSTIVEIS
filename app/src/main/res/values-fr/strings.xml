@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Prix des carburants ANP</string>
+
+    <!-- Navigation -->
+    <string name="nav_onboarding">Introduction</string>
+    <string name="nav_home">Accueil</string>
+    <string name="nav_search">Rechercher</string>
+    <string name="nav_location">Localisation</string>
+    <string name="nav_prices">Prix</string>
+    <string name="nav_history">Historique</string>
+    <string name="nav_stations">Stations</string>
+    <string name="nav_settings">Paramètres</string>
+
+    <!-- Home (UC-005) -->
+    <string name="home_title">ANP</string>
+    <string name="home_location_format">%1$s, %2$s</string>
+    <string name="home_no_location_message">Aucune ville sélectionnée pour le moment.</string>
+    <string name="home_no_location_hint">Recherchez ou parcourez par État pour voir les prix des carburants.</string>
+    <string name="home_view_price_details">Voir les détails complets des prix</string>
+
+    <string name="home_empty_message">Aucune donnée de prix de carburant synchronisée pour le moment.</string>
+    <string name="home_empty_hint">Terminez l\'introduction ou synchronisez pour charger les tableaux hebdomadaires de l\'ANP.</string>
+    <string name="home_fuel_products_preview">Produits pétroliers (aperçu i18n)</string>
+    <string name="home_navigation_preview">Écrans (Phase 8)</string>
+
+    <!-- Shared states -->
+    <string name="state_loading">Chargement…</string>
+    <string name="state_error_title">Une erreur s\'est produite</string>
+    <string name="state_empty_title">Rien ici pour le moment</string>
+    <string name="screen_coming_soon">Disponible dans une future version.</string>
+
+    <!-- Actions -->
+    <string name="action_retry">Réessayer</string>
+    <string name="action_next">Suivant</string>
+    <string name="action_back">Retour</string>
+    <string name="action_cancel">Annuler</string>
+    <string name="action_switch_dark_theme">Passer au thème sombre</string>
+    <string name="action_switch_light_theme">Passer au thème clair</string>
+
+    <!-- UC-002 Onboarding -->
+    <string name="onboarding_title_welcome">Bienvenue</string>
+    <string name="onboarding_body_anp_source">Prix hebdomadaires officiels des carburants de l\'ANP (Agence nationale du pétrole, du gaz naturel et des biocarburants du Brésil).</string>
+    <string name="onboarding_title_offline">Fonctionne hors ligne</string>
+    <string name="onboarding_body_offline">Après la première synchronisation, consultez les prix moyens sans connexion Internet.</string>
+    <string name="onboarding_title_ready">Choisir la semaine d\'enquête</string>
+    <string name="onboarding_body_ready">Sélectionnez la semaine d\'enquête ANP à télécharger. Vous pouvez ignorer et synchroniser plus tard depuis l\'accueil.</string>
+    <string name="onboarding_action_get_started">Commencer</string>
+    <string name="onboarding_action_sync_now">Synchroniser maintenant</string>
+    <string name="onboarding_action_skip">Ignorer pour l\'instant</string>
+
+    <!-- UC-009 Week picker (Phase 12) -->
+    <string name="week_picker_title">Semaine d\'enquête</string>
+    <string name="week_picker_latest">Utiliser la semaine la plus récente</string>
+    <string name="week_picker_weekly_summary_line">Prix moyens hebdomadaires : Brésil, régions, États et municipalités</string>
+    <string name="week_picker_station_detail_line">Prix par station de vente au détail (carburants automobiles et GPL P13)</string>
+    <string name="week_picker_updated_at">Mis à jour %1$s</string>
+    <string name="week_picker_operational_note">Note : %1$s</string>
+    <string name="week_picker_operational_note_banner">Note opérationnelle</string>
+    <string name="week_picker_operational_note_expand">Développer la note opérationnelle</string>
+    <string name="week_picker_operational_note_collapse">Réduire la note opérationnelle</string>
+    <string name="week_picker_operational_note_title">Avis opérationnel</string>
+    <string name="week_picker_download_week">Télécharger cette semaine</string>
+    <string name="week_picker_confirm_title">Télécharger une semaine historique ?</string>
+    <string name="week_picker_confirm_message">Télécharger et importer les données ANP pour %1$s ? Cela peut prendre quelques minutes.</string>
+    <string name="active_week_label">Plus récente</string>
+    <string name="survey_week_chip_latest_suffix">· Plus récente</string>
+    <string name="a11y_survey_week_chip">Semaine d\'enquête active : %1$s. Appuyez pour modifier.</string>
+    <string name="a11y_survey_week_chip_latest">Semaine d\'enquête active : %1$s (plus récente). Appuyez pour modifier.</string>
+
+    <!-- Sync banners (BR-004, freshness) -->
+    <string name="banner_offline">Hors ligne — affichage des données en cache.</string>
+    <string name="banner_syncing">Synchronisation des tableaux de prix ANP…</string>
+    <string name="banner_stale_data">Les données peuvent être obsolètes. Appuyez sur actualiser pour synchroniser.</string>
+    <string name="banner_partial_data">Moyennes municipales disponibles ; détail par station incomplet.</string>
+    <string name="banner_sync_error">Échec de la synchronisation. Les données en cache restent disponibles.</string>
+
+    <!-- UC-001 sync -->
+    <string name="sync_progress_discovering">Recherche de nouveaux tableaux…</string>
+    <string name="sync_progress_downloading">Téléchargement…</string>
+    <string name="sync_progress_importing">Importation…</string>
+    <string name="sync_completed">Synchronisation terminée</string>
+    <string name="sync_failed">Échec de la synchronisation</string>
+    <string name="info_sync_up_to_date">Déjà à jour.</string>
+
+    <!-- Errors (AppError i18n keys) -->
+    <string name="error_sync_network">Impossible d\'accéder à l\'ANP. Vérifiez votre connexion et réessayez.</string>
+    <string name="error_sync_parse">Impossible de lire le fichier téléchargé. Réessayez plus tard.</string>
+    <string name="error_search_no_results">Aucune municipalité ne correspond à votre recherche.</string>
+    <string name="error_station_detail_missing">Les prix par station ne sont pas encore téléchargés pour cette ville.</string>
+    <string name="error_storage_full">Espace de stockage insuffisant pour importer les données ANP.</string>
+
+    <!-- Prices (UC-005) -->
+    <string name="prices_title">Prix des carburants</string>
+    <string name="prices_survey_week_label">Semaine d\'enquête : %1$s</string>
+    <string name="prices_last_sync_label">Dernière synchronisation : %1$s</string>
+    <string name="prices_average_label">Moyenne : %1$s</string>
+    <string name="prices_min_max_range">Min %1$s · Max %2$s</string>
+    <string name="prices_not_available">—</string>
+    <string name="prices_station_count">%1$d stations</string>
+    <string name="prices_anp_attribution">Source : ANP — Agence nationale du pétrole, du gaz naturel et des biocarburants</string>
+    <string name="prices_empty_municipality">Aucun prix trouvé pour cette municipalité.</string>
+    <string name="prices_empty_no_data_this_week">Cette municipalité n\'a pas de prix ANP pour la semaine d\'enquête sélectionnée.</string>
+    <string name="prices_empty_never_in_anp">Cette municipalité n\'a jamais figuré dans les rapports hebdomadaires de prix de l\'ANP.</string>
+    <string name="prices_view_history">Voir l\'historique des prix</string>
+
+    <!-- UC-006 History -->
+    <string name="history_title">Historique des prix</string>
+    <string name="history_insufficient_data">L\'historique sera disponible après d\'autres synchronisations hebdomadaires.</string>
+    <string name="history_week_label">%1$s</string>
+    <string name="history_disabled">L\'historique des prix est désactivé dans les paramètres.</string>
+    <string name="history_fuel_product_label">Produit pétrolier</string>
+
+    <!-- UC-007 Stations -->
+    <string name="stations_title">Stations</string>
+    <string name="stations_sort_by_price">Trié par prix (du plus bas au plus haut)</string>
+    <string name="stations_download_prompt">Les prix par station ne sont pas encore sur cet appareil. Téléchargez le fichier des stations ANP de cette semaine pour comparer les prix par station.</string>
+    <string name="stations_download_action">Télécharger les prix par station</string>
+    <string name="stations_empty">Aucune station n\'a signalé ce carburant dans la ville sélectionnée cette semaine.</string>
+    <string name="stations_brand_label">Enseigne : %1$s</string>
+    <string name="stations_collected_at_label">Collecté : %1$s</string>
+    <string name="prices_view_stations">Voir les prix par station</string>
+
+    <!-- FuelProduct labels -->
+    <string name="fuel_product_ethanol">Éthanol</string>
+    <string name="fuel_product_gasoline_regular">Essence ordinaire</string>
+    <string name="fuel_product_gasoline_premium">Essence premium</string>
+    <string name="fuel_product_diesel_s500">Diesel S500</string>
+    <string name="fuel_product_diesel_s10">Diesel S10</string>
+    <string name="fuel_product_cng">GNC</string>
+    <string name="fuel_product_lpg_p13">GPL (13 kg)</string>
+
+    <!-- UC-003 Location picker -->
+    <string name="location_picker_title">Sélectionner un lieu</string>
+    <string name="location_state_label">État</string>
+    <string name="location_municipality_label">Municipalités dans %1$s</string>
+    <string name="location_empty_state">Aucune municipalité avec des données de prix dans cet État. Synchronisez les tableaux ANP ou choisissez un autre État.</string>
+    <string name="location_current_selection">Actuel : %1$s (%2$s)</string>
+    <string name="location_search_state_hint">Rechercher un État</string>
+    <string name="location_search_municipality_hint">Rechercher une municipalité</string>
+    <string name="location_search_no_matches">Aucune correspondance trouvée.</string>
+    <string name="location_no_data_this_week">Aucune donnée de prix cette semaine</string>
+
+    <!-- UC-004 Search -->
+    <string name="search_municipality_hint">Rechercher une municipalité</string>
+    <string name="search_min_chars_hint">Saisissez au moins 2 caractères pour rechercher.</string>
+    <string name="search_result_format">%1$s — %2$s</string>
+    <string name="search_browse_by_state">Parcourir par État</string>
+    <string name="search_no_data_this_week">Aucune donnée de prix cette semaine</string>
+
+    <!-- Brazilian states (UC-003) -->
+    <string name="state_name_acre">Acre</string>
+    <string name="state_name_alagoas">Alagoas</string>
+    <string name="state_name_amapa">Amapá</string>
+    <string name="state_name_amazonas">Amazonas</string>
+    <string name="state_name_bahia">Bahia</string>
+    <string name="state_name_ceara">Ceará</string>
+    <string name="state_name_distrito_federal">District fédéral</string>
+    <string name="state_name_espirito_santo">Espírito Santo</string>
+    <string name="state_name_goias">Goiás</string>
+    <string name="state_name_maranhao">Maranhão</string>
+    <string name="state_name_mato_grosso">Mato Grosso</string>
+    <string name="state_name_mato_grosso_do_sul">Mato Grosso do Sul</string>
+    <string name="state_name_minas_gerais">Minas Gerais</string>
+    <string name="state_name_para">Pará</string>
+    <string name="state_name_paraiba">Paraíba</string>
+    <string name="state_name_parana">Paraná</string>
+    <string name="state_name_pernambuco">Pernambuco</string>
+    <string name="state_name_piaui">Piauí</string>
+    <string name="state_name_rio_de_janeiro">Rio de Janeiro</string>
+    <string name="state_name_rio_grande_do_norte">Rio Grande do Norte</string>
+    <string name="state_name_rio_grande_do_sul">Rio Grande do Sul</string>
+    <string name="state_name_rondonia">Rondônia</string>
+    <string name="state_name_roraima">Roraima</string>
+    <string name="state_name_santa_catarina">Santa Catarina</string>
+    <string name="state_name_sao_paulo">São Paulo</string>
+    <string name="state_name_sergipe">Sergipe</string>
+    <string name="state_name_tocantins">Tocantins</string>
+
+    <!-- UC-008 Settings -->
+    <string name="settings_title">Paramètres</string>
+    <string name="settings_language">Langue</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_portuguese">Português (Brasil)</string>
+    <string name="a11y_language_english">Anglais</string>
+    <string name="a11y_language_portuguese">Portugais</string>
+    <string name="a11y_language_chinese">Chinois</string>
+    <string name="a11y_language_spanish">Espagnol</string>
+    <string name="a11y_language_french">Français</string>
+    <string name="a11y_language_russian">Russe</string>
+    <string name="a11y_language_german">Allemand</string>
+    <string name="a11y_language_japanese">Japonais</string>
+    <string name="settings_preferences_section">Préférences</string>
+    <string name="settings_sync_station_detail">Synchroniser le détail des stations en arrière-plan</string>
+    <string name="settings_sync_wifi_only">Synchronisation automatique en Wi‑Fi uniquement</string>
+    <string name="settings_show_price_history">Afficher l\'historique des prix</string>
+    <string name="settings_retention_weeks">Conservation des données des stations</string>
+    <string name="settings_retention_weeks_option">%1$d semaines</string>
+    <string name="settings_storage_usage">Utilisation du stockage</string>
+    <string name="settings_storage_summary_rows">Lignes de résumé : %1$s</string>
+    <string name="settings_storage_station_rows">Lignes de stations : %1$s</string>
+    <string name="settings_storage_week_count">Semaines importées : %1$s</string>
+    <string name="settings_sync_section">Synchronisation</string>
+    <string name="settings_change_survey_week">Changer la semaine d\'enquête</string>
+    <string name="settings_clear_cache">Vider le cache</string>
+    <string name="settings_clear_station_cache">Vider le cache des stations</string>
+    <string name="settings_clear_all_cache">Effacer toutes les données importées</string>
+    <string name="settings_clear_cache_confirm">Cela supprime toutes les données ANP importées et réinitialise l\'introduction. Continuer ?</string>
+    <string name="settings_clear_cache_confirm_action">Tout effacer</string>
+    <string name="settings_attribution_section">Source des données</string>
+    <string name="settings_anp_attribution_link">Ouvrir la page officielle de l\'ANP</string>
+    <string name="anp_official_url" translatable="false">https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas</string>
+
+    <!-- Accessibility (Phase 9.3) -->
+    <string name="a11y_loading">Chargement du contenu</string>
+    <string name="a11y_fuel_price_card">%1$s, prix moyen %2$s</string>
+    <string name="a11y_station_price_row">%1$s, prix %2$s</string>
+    <string name="a11y_price_trend_chart">Graphique de tendance des prix</string>
+    <string name="a11y_screen_title">Écran %1$s</string>
+    <string name="a11y_week_picker_operational_note_expand">Développer l\'avis opérationnel</string>
+    <string name="a11y_week_picker_operational_note_collapse">Réduire l\'avis opérationnel</string>
+</resources>

@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anpfuel.app.R
-import com.anpfuel.app.locale.AppLocaleHolder
 import com.anpfuel.app.mapper.AppErrorMapper
 import com.anpfuel.app.ui.components.ErrorState
 import com.anpfuel.app.ui.components.LoadingState
@@ -159,21 +158,10 @@ private fun SettingsContent(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     SettingsSection(title = stringResource(R.string.settings_language)) {
-                        FlowRow(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            FilterChip(
-                                selected = uiState.preferences.localeTag == AppLocaleHolder.DEFAULT_LOCALE_TAG,
-                                onClick = { onLocaleSelected(AppLocaleHolder.DEFAULT_LOCALE_TAG) },
-                                label = { Text(text = stringResource(R.string.settings_language_english)) },
-                            )
-                            FilterChip(
-                                selected = uiState.preferences.localeTag == AppLocaleHolder.PORTUGUESE_BRAZIL_TAG,
-                                onClick = { onLocaleSelected(AppLocaleHolder.PORTUGUESE_BRAZIL_TAG) },
-                                label = { Text(text = stringResource(R.string.settings_language_portuguese)) },
-                            )
-                        }
+                        LanguageFlagGrid(
+                            selectedLocaleTag = uiState.preferences.localeTag,
+                            onLocaleSelected = onLocaleSelected,
+                        )
                     }
 
                     SettingsSection(title = stringResource(R.string.settings_preferences_section)) {

@@ -3,6 +3,7 @@ package com.anpfuel.app.ui.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anpfuel.app.locale.AppLocaleHolder
+import com.anpfuel.app.locale.AppLocales
 import com.anpfuel.application.error.AppError
 import com.anpfuel.application.error.AppErrorResolver
 import com.anpfuel.application.usecase.settings.ClearCacheUseCase
@@ -93,6 +94,9 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onLocaleSelected(localeTag: String) {
+        if (localeTag !in AppLocales.supportedLocaleTags) {
+            return
+        }
         if (_uiState.value.preferences.localeTag == localeTag) {
             return
         }

@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.anpfuel.app.locale.AppLocaleHolder
+import com.anpfuel.app.locale.AppLocales
 import com.anpfuel.data.worker.SyncWorkScheduler
 import com.anpfuel.domain.repository.UserPreferencesRepository
 import dagger.hilt.android.HiltAndroidApp
@@ -31,7 +32,9 @@ class AnpFuelApplication : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
         runBlocking(Dispatchers.IO) {
-            AppLocaleHolder.localeTag = userPreferencesRepository.getPreferences().localeTag
+            AppLocaleHolder.localeTag = AppLocales.normalizeLocaleTag(
+                userPreferencesRepository.getPreferences().localeTag,
+            )
         }
         applicationScope.launch {
             syncWorkScheduler.schedulePeriodicSync()

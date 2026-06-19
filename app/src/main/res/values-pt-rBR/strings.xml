@@ -182,6 +182,14 @@
     <string name="settings_language">Idioma</string>
     <string name="settings_language_english">English</string>
     <string name="settings_language_portuguese">Português (Brasil)</string>
+    <string name="a11y_language_english">Inglês</string>
+    <string name="a11y_language_portuguese">Português</string>
+    <string name="a11y_language_chinese">Chinês</string>
+    <string name="a11y_language_spanish">Espanhol</string>
+    <string name="a11y_language_french">Francês</string>
+    <string name="a11y_language_russian">Russo</string>
+    <string name="a11y_language_german">Alemão</string>
+    <string name="a11y_language_japanese">Japonês</string>
     <string name="settings_preferences_section">Preferências</string>
     <string name="settings_sync_station_detail">Sincronizar detalhe de postos em segundo plano</string>
     <string name="settings_sync_wifi_only">Sincronização automática apenas no Wi‑Fi</string>
@@ -201,6 +209,7 @@
     <string name="settings_clear_cache_confirm_action">Limpar tudo</string>
     <string name="settings_attribution_section">Fonte dos dados</string>
     <string name="settings_anp_attribution_link">Abrir página oficial da ANP</string>
+    <string name="anp_official_url" translatable="false">https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas</string>
 
     <!-- Accessibility (Phase 9.3) -->
     <string name="a11y_loading">Carregando conteúdo</string>
