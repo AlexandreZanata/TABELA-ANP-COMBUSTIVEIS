@@ -202,10 +202,6 @@ The listing exposes **~200+ weeks** (Jul/2022 → present, Jun/2026). v2 does **
 
 ### 12.3 Application layer
 
-### 12.4 UI — Week picker screen
-
-- [ ] **12.4.7** i18n keys: `week_picker_title`, `week_picker_latest`, `week_picker_updated_at`, `week_picker_operational_note`, `week_picker_download_week`, `active_week_label`
-
 **✅ Gate 12 — Week selection complete:**
 
 Manual script (Appendix A2) passes; user can install fresh → pick week `31/05–06/06/2026` → see prices for that week → switch to latest → re-sync.
@@ -218,14 +214,7 @@ Manual script (Appendix A2) passes; user can install fresh → pick week `31/05�
 **Duration:** ~2–3 days ⏱  
 📎 Material 3 Compose guidelines, WCAG 2.5.5 touch targets
 
-**Known gap:** No `WindowInsets` / `safeDrawing` padding in current Compose tree — content can render under status bar and gesture navigation bar.
-
-### 13.1 Foundation
-
-- [ ] **13.1.1** Create `AnpScaffold` composable: wraps Material3 `Scaffold` with `contentWindowInsets = WindowInsets.safeDrawing`; exposes `innerPadding` to content lambda
-- [ ] **13.1.2** Create `AnpTopAppBar` wrapper applying `WindowInsets.statusBars` only where full-bleed hero is not used
-- [ ] **13.1.3** Audit `MainActivity`: keep `enableEdgeToEdge()`; set `WindowCompat.setDecorFitsSystemWindows(window, false)` if not implicit
-- [ ] **13.1.4** Document pattern in `docs/architecture.md` § UI — all new screens must use `AnpScaffold`
+**Foundation (13.1) complete:** `AnpScaffold`, `AnpTopAppBar`, `MainActivity` edge-to-edge audit, `docs/architecture.md` § UI.
 
 ### 13.2 Screen-by-screen migration
 
@@ -475,4 +464,4 @@ Phase 11.4 (use cases + UI) → Gate 11
     → Phase 15 (hardening + v2.0.0) → Gate 15
 ```
 
-**Current repo status (2026-06-19):** Phase 12.4.6 SurveyWeekChip on app bars complete ✓ — next micro-step **Phase 12.4.7** i18n key audit.
+**Current repo status (2026-06-19):** Phase 12 complete ✓; Phase 13.1 foundation complete ✓ — next **Phase 13.2** screen-by-screen migration.

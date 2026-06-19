@@ -403,6 +403,21 @@ Default sync scope (v1 lean strategy):
 
 ## UI architecture
 
+### Edge-to-edge and safe areas
+
+`MainActivity` calls `enableEdgeToEdge()` and `WindowCompat.setDecorFitsSystemWindows(window, false)` so content draws behind system bars. Every screen must respect insets so text and touch targets are never clipped.
+
+| Composable | Role |
+|------------|------|
+| `AnpScaffold` | Wraps Material3 `Scaffold` with `contentWindowInsets = WindowInsets.safeDrawing`; passes `innerPadding` to the content lambda |
+| `AnpTopAppBar` | Wraps `TopAppBar` with `WindowInsets.statusBars` by default; set `applyStatusBarInsets = false` only for full-bleed hero layouts |
+
+**Rules:**
+
+- New screens and refactors **must** use `AnpTopAppBar` inside `AnpScaffold` — never raw `Scaffold` / `TopAppBar` (Phase 13.2 migrates existing screens).
+- Apply `Modifier.padding(innerPadding)` from `AnpScaffold` to scrollable content; do not add manual status-bar padding on standard screens.
+- Bottom sheets and dialogs inherit system insets from Material3; list content inside sheets needs bottom padding ≥ navigation-bar inset (Phase 13.2.8).
+
 ### ViewModel contract
 
 ```kotlin
