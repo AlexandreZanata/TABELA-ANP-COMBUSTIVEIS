@@ -6,8 +6,10 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.anpfuel.app.ui.components.LoadingState
 import com.anpfuel.app.ui.home.HomeScreen
 import com.anpfuel.app.ui.onboarding.OnboardingScreen
@@ -108,6 +110,14 @@ fun AnpNavGraph(
             HistoryScreen()
         }
         composable(Routes.STATIONS) {
+            StationsScreen()
+        }
+        composable(
+            route = Routes.STATIONS_WITH_FUEL,
+            arguments = listOf(
+                navArgument("fuelProduct") { type = NavType.StringType },
+            ),
+        ) {
             StationsScreen()
         }
         composable(Routes.SETTINGS) {

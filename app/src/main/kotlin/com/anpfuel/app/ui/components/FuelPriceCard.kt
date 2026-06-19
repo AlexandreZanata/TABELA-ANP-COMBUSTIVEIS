@@ -71,9 +71,22 @@ fun FuelPriceCard(
 fun MunicipalityPriceDetailRow(
     price: AveragePriceUiModel,
     modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
 ) {
+    val fuelLabel = stringResource(FuelProductI18n.toStringRes(price.fuelProduct))
+    val average = price.averageFormatted ?: stringResource(R.string.prices_not_available)
+    val cardDescription = stringResource(R.string.a11y_fuel_price_card, fuelLabel, average)
+
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics(mergeDescendants = true) {
+                contentDescription = cardDescription
+                if (onClick != null) {
+                    role = Role.Button
+                }
+            }
+            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
         ),

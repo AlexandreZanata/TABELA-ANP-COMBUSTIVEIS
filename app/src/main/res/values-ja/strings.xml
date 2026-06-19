@@ -110,6 +110,7 @@
     <string name="history_week_label">%1$s</string>
     <string name="history_disabled">価格履歴は設定でオフになっています。</string>
     <string name="history_fuel_product_label">燃料製品</string>
+    <string name="history_chart_bar_legend">%1$s · %2$s</string>
 
     <!-- UC-007 Stations -->
     <string name="stations_title">スタンド</string>

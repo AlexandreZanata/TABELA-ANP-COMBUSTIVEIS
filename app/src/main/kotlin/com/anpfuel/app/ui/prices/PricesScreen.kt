@@ -150,7 +150,10 @@ private fun PricesContent(
 
                 !uiState.isLoading && uiState.error == null && uiState.prices.isNotEmpty() -> {
                     uiState.prices.forEach { price ->
-                        MunicipalityPriceDetailRow(price = price)
+                        MunicipalityPriceDetailRow(
+                            price = price,
+                            onClick = { onNavigate(Routes.stations(price.fuelProduct)) },
+                        )
                     }
                     Column(
                         modifier = Modifier.fillMaxWidth(),

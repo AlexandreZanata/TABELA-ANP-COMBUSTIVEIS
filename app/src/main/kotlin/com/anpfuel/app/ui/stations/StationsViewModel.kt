@@ -18,6 +18,7 @@ import com.anpfuel.domain.valueobject.SurveyWeek
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Locale
 import javax.inject.Inject
+import androidx.lifecycle.SavedStateHandle
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -46,9 +47,16 @@ class StationsViewModel @Inject constructor(
     private val downloadStationDetailUseCase: DownloadStationDetailUseCase,
     private val selectLocationUseCase: SelectLocationUseCase,
     observeNetworkConnectivityUseCase: ObserveNetworkConnectivityUseCase,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(StationsUiState())
+    private val _uiState = MutableStateFlow(
+        StationsUiState(
+            selectedFuelProduct = savedStateHandle.get<String>(ARG_FUEL_PRODUCT)
+                ?.let { runCatching { FuelProduct.valueOf(it) }.getOrNull() }
+                ?: FuelProduct.GASOLINE_REGULAR,
+        ),
+    )
     val uiState: StateFlow<StationsUiState> = _uiState.asStateFlow()
 
     init {
@@ -184,5 +192,9 @@ class StationsViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    companion object {
+        private const val ARG_FUEL_PRODUCT = "fuelProduct"
     }
 }

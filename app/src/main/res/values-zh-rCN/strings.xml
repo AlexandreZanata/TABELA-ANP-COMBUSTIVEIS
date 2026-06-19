@@ -110,6 +110,7 @@
     <string name="history_week_label">%1$s</string>
     <string name="history_disabled">价格历史已在设置中关闭。</string>
     <string name="history_fuel_product_label">燃油产品</string>
+    <string name="history_chart_bar_legend">%1$s · %2$s</string>
 
     <!-- UC-007 Stations -->
     <string name="stations_title">加油站</string>

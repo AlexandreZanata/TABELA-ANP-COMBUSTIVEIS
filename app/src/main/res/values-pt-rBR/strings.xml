@@ -91,7 +91,7 @@
     <string name="error_storage_full">Espaço insuficiente para importar os dados da ANP.</string>
 
     <!-- Prices (UC-005) -->
-    <string name="prices_title">Preços de combustíveis</string>
+    <string name="prices_title">Preços</string>
     <string name="prices_survey_week_label">Semana de pesquisa: %1$s</string>
     <string name="prices_last_sync_label">Última sincronização: %1$s</string>
     <string name="prices_average_label">Média: %1$s</string>
@@ -110,6 +110,7 @@
     <string name="history_week_label">%1$s</string>
     <string name="history_disabled">O histórico de preços está desativado nas configurações.</string>
     <string name="history_fuel_product_label">Combustível</string>
+    <string name="history_chart_bar_legend">%1$s · %2$s</string>
 
     <!-- UC-007 Stations -->
     <string name="stations_title">Postos</string>
