@@ -71,6 +71,7 @@ class AccessibilityUiTest {
                         onNavigate = {},
                         onRefresh = {},
                         onRetry = {},
+                        onWeekChanged = {},
                     )
                 }
             }

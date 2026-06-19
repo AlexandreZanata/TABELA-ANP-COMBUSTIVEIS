@@ -48,6 +48,7 @@ class HomeScreenTest {
                     onNavigate = {},
                     onRefresh = {},
                     onRetry = {},
+                    onWeekChanged = {},
                 )
             }
         }
@@ -71,6 +72,7 @@ class HomeScreenTest {
                     onNavigate = {},
                     onRefresh = {},
                     onRetry = {},
+                    onWeekChanged = {},
                 )
             }
         }

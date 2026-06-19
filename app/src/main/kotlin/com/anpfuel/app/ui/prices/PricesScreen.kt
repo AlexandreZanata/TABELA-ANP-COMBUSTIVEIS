@@ -9,10 +9,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
+import com.anpfuel.app.ui.components.AnpScaffold
+import com.anpfuel.app.ui.components.AnpTopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -75,11 +75,11 @@ private fun PricesContent(
     onWeekChanged: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Scaffold(
+    AnpScaffold(
         modifier = modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            TopAppBar(
+            AnpTopAppBar(
                 title = { Text(text = stringResource(R.string.prices_title)) },
                 actions = {
                     SurveyWeekChipAction(onWeekChanged = onWeekChanged)

@@ -17,10 +17,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import com.anpfuel.app.ui.components.AnpScaffold
+import com.anpfuel.app.ui.components.AnpTopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -82,11 +82,11 @@ internal fun LocationPickerContent(
     val step = uiState.step
     val showBackToStates = step is LocationPickerStep.MunicipalityList
 
-    Scaffold(
+    AnpScaffold(
         modifier = modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            TopAppBar(
+            AnpTopAppBar(
                 title = {
                     Text(text = stringResource(R.string.location_picker_title))
                 },

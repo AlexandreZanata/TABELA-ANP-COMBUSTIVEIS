@@ -414,7 +414,7 @@ Default sync scope (v1 lean strategy):
 
 **Rules:**
 
-- New screens and refactors **must** use `AnpTopAppBar` inside `AnpScaffold` — never raw `Scaffold` / `TopAppBar` (Phase 13.2 migrates existing screens).
+- New screens and refactors **must** use `AnpTopAppBar` inside `AnpScaffold` — never raw `Scaffold` / `TopAppBar` (all navigation destinations migrated in Phase 13.2).
 - Apply `Modifier.padding(innerPadding)` from `AnpScaffold` to scrollable content; do not add manual status-bar padding on standard screens.
 - Bottom sheets and dialogs inherit system insets from Material3; list content inside sheets needs bottom padding ≥ navigation-bar inset (Phase 13.2.8).
 

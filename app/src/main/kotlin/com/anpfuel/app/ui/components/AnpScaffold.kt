@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 
 /**
  * App-wide [Scaffold] that applies [WindowInsets.safeDrawing] to content so edge-to-edge
- * layouts never clip under system bars. Phase 13.2 migrates each screen to this wrapper.
+ * layouts never clip under system bars. All navigation screens use this wrapper.
  */
 @Composable
 fun AnpScaffold(
