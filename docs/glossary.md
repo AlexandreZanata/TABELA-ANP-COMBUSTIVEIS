@@ -22,6 +22,9 @@
 | **MunicipalityLocationKey** | Stable identity pair (`state` + `municipality`) for catalog matching and availability checks. |
 | **DataAvailability** | Query-time annotation: `HAS_DATA`, `NO_DATA_THIS_WEEK`, or `NEVER_IN_ANP`. |
 | **SearchMatchType** | FTS match quality tier for ranking: `EXACT_PREFIX`, `ACCENT_NORMALIZED`, `TYPO_TOLERANT`, `SUBSTRING`. |
+| **SurveyWeekCatalogEntry** | Metadata for one ANP listing week block: `surveyWeek`, summary/station URLs, optional `publishedAt`, optional `operationalNote` (v2). |
+| **SurveyWeekSelectionMode** | How the user chose a week in UC-009: `LATEST` or `SPECIFIC`. |
+| **ActiveSurveyWeek** | User preference (`UserPreferences.activeSurveyWeek`) for the week currently displayed and synced (BR-019). |
 
 ## FuelProduct Enum
 
@@ -58,6 +61,7 @@
 | `StationDetailRequested` | User requests on-demand station-level download |
 | `PreferencesUpdated` | User changes a local preference |
 | `CacheCleared` | User clears local data (`ALL` or `STATION_DETAIL_ONLY`) |
+| `SurveyWeekSelected` | User selects a survey week for sync and display (UC-009) |
 
 ## Business Rules
 
@@ -162,6 +166,18 @@
 **WHEN** FTS runs  
 **THEN** rank matches as: exact prefix > accent-normalized prefix > typo-tolerant token prefix > substring  
 **AND** always tie-break by state abbreviation (alphabetical)
+
+### BR-018 — Week Selection Before Sync
+**GIVEN** user opens the app or requests first sync  
+**WHEN** `UserPreferences.activeSurveyWeek` is null  
+**THEN** show week picker before download starts  
+**AND** do not trigger UC-001 until a week is selected
+
+### BR-019 — Active Survey Week
+**GIVEN** user selected week W and summary data for W is imported  
+**WHEN** any price screen resolves the display week  
+**THEN** use W instead of BR-006 default-latest  
+**AND** keep W until user changes `activeSurveyWeek` or clears cache
 
 ## Acronyms
 

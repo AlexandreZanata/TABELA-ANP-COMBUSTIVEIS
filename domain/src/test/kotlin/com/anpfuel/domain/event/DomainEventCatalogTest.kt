@@ -6,6 +6,7 @@ import com.anpfuel.domain.valueobject.DomainId
 import com.anpfuel.domain.valueobject.FuelProduct
 import com.anpfuel.domain.valueobject.PriceTableType
 import com.anpfuel.domain.valueobject.SurveyWeek
+import com.anpfuel.domain.valueobject.SurveyWeekSelectionMode
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -48,6 +49,7 @@ class DomainEventCatalogTest {
                 is StationDetailRequested -> "StationDetailRequested"
                 is PreferencesUpdated -> "PreferencesUpdated"
                 is CacheCleared -> "CacheCleared"
+                is SurveyWeekSelected -> "SurveyWeekSelected"
             }
             assertTrue(name in GLOSSARY_EVENT_NAMES)
         }
@@ -156,6 +158,14 @@ class DomainEventCatalogTest {
                 id = id,
                 timestamp = timestamp,
             ),
+            SurveyWeekSelected.create(
+                payload = SurveyWeekSelected.Payload(
+                    surveyWeek = surveyWeek,
+                    selectionMode = SurveyWeekSelectionMode.SPECIFIC,
+                ),
+                id = id,
+                timestamp = timestamp,
+            ),
         )
     }
 
@@ -171,6 +181,7 @@ class DomainEventCatalogTest {
         is StationDetailRequested -> event.payload
         is PreferencesUpdated -> event.payload
         is CacheCleared -> event.payload
+        is SurveyWeekSelected -> event.payload
     }
 
     private companion object {
@@ -186,6 +197,7 @@ class DomainEventCatalogTest {
             "StationDetailRequested",
             "PreferencesUpdated",
             "CacheCleared",
+            "SurveyWeekSelected",
         )
     }
 }

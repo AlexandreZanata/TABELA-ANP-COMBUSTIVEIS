@@ -188,15 +188,6 @@ Manual: search 10 cities including homonyms (e.g. "Bom Jesus" in multiple states
 
 The listing exposes **~200+ weeks** (Jul/2022 → present, Jun/2026). v2 does **not** bulk-download all weeks on first launch; user picks one week (or "latest") and may add more later.
 
-### 12.1 Domain & use case
-
-- [ ] **12.1.1** Create `docs/use-cases/uc-009-select-survey-week.md` — actor, preconditions, main/alternative flows
-- [ ] **12.1.2** Add `SurveyWeekCatalogEntry` model: `surveyWeek`, `summaryUrl`, `stationUrl`, `publishedAt` (nullable), `operationalNote` (nullable)
-- [ ] **12.1.3** Add domain event `SurveyWeekSelected(surveyWeek, selectionMode: LATEST | SPECIFIC)`
-- [ ] **12.1.4** Document **BR-018 — Week selection before sync**: GIVEN user opens app WHEN no active week preference THEN show week picker before download starts
-- [ ] **12.1.5** Document **BR-019 — Active survey week**: GIVEN user selects week W WHEN browsing prices THEN all screens use W until user changes it (overrides BR-006 default-latest for display)
-- [ ] **12.1.6** Add `activeSurveyWeek` to user preferences (DataStore)
-
 ### 12.2 Data layer — listing scraper enrichment 🔬
 
 - [ ] **12.2.1** Extend `AnpListingScraper` to parse week **section headers** (`dd/MM/yyyy a dd/MM/yyyy`) and group URLs under each week
@@ -500,4 +491,4 @@ Phase 11.4 (use cases + UI) → Gate 11
     → Phase 15 (hardening + v2.0.0) → Gate 15
 ```
 
-**Current repo status (2026-06-18):** v1 complete (Phases 0–10, signed release validated via `./gradlew validateReleaseBuild`). **v2 in progress** — Phase 11.4 UI complete; next micro-step: **Phase 12.1** survey week catalog POC.
+**Current repo status (2026-06-18):** Phase 12.1 domain & UC-009 complete ✓ — next micro-step **Phase 12.2.1** extend `AnpListingScraper` week section headers.

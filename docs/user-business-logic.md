@@ -127,6 +127,7 @@ Stored on device only. No cloud sync in v1.
 | `stationDetailRetentionWeeks` | int | `12` | BR-013 |
 | `autoSyncOnWifi` | boolean | `true` | BR-014 |
 | `showPriceHistory` | boolean | `true` | UC-006 |
+| `activeSurveyWeek` | `SurveyWeek?` | null | BR-018, BR-019, UC-009 |
 
 ---
 
@@ -172,6 +173,7 @@ Detailed specs live in `docs/use-cases/`. **Do not implement undocumented use ca
 | UC-006 | View price history | User | [uc-006-view-price-history.md](use-cases/uc-006-view-price-history.md) |
 | UC-007 | View station prices | User | [uc-007-view-station-prices.md](use-cases/uc-007-view-station-prices.md) |
 | UC-008 | Manage settings and storage | User | [uc-008-manage-settings.md](use-cases/uc-008-manage-settings.md) |
+| UC-009 | Select survey week | User | [uc-009-select-survey-week.md](use-cases/uc-009-select-survey-week.md) |
 
 ---
 
@@ -196,6 +198,10 @@ Rules referenced by use cases. Full list maintained in [glossary.md](glossary.md
 | BR-013 | Station detail retention follows rolling window preference |
 | BR-014 | Background sync respects Wi‑Fi-only preference |
 | BR-015 | Only one active `SyncJob` at a time |
+| BR-016 | Municipality catalog completeness (IBGE baseline) |
+| BR-017 | Intelligent search ranking tiers |
+| BR-018 | Week selection required before first sync when no active week |
+| BR-019 | Active survey week overrides default-latest display |
 
 ---
 
@@ -209,6 +215,7 @@ Rules referenced by use cases. Full list maintained in [glossary.md](glossary.md
 | `StationDetailRequested` | UC-007 | surveyWeekId, municipality, state |
 | `PreferencesUpdated` | UC-008 | changed keys |
 | `CacheCleared` | UC-008 | scope: `ALL` \| `STATION_DETAIL_ONLY` |
+| `SurveyWeekSelected` | UC-009 | surveyWeek, selectionMode: `LATEST` \| `SPECIFIC` |
 
 ---
 
