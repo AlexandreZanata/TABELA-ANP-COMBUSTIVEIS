@@ -51,6 +51,8 @@
     <!-- UC-009 Week picker (Phase 12) -->
     <string name="week_picker_title">Semana de pesquisa</string>
     <string name="week_picker_latest">Usar semana mais recente</string>
+    <string name="week_picker_weekly_summary_line">Preços médios semanais: Brasil, regiões, estados e municípios</string>
+    <string name="week_picker_station_detail_line">Preços por posto revendedor (combustíveis automotivos e GLP P13)</string>
     <string name="week_picker_updated_at">Atualizado em %1$s</string>
     <string name="week_picker_operational_note">Nota: %1$s</string>
     <string name="week_picker_download_week">Baixar esta semana</string>
@@ -178,6 +180,7 @@
     <string name="settings_storage_station_rows">Linhas de postos: %1$s</string>
     <string name="settings_storage_week_count">Semanas importadas: %1$s</string>
     <string name="settings_sync_section">Sincronização</string>
+    <string name="settings_change_survey_week">Alterar semana de pesquisa</string>
     <string name="settings_clear_cache">Limpar cache</string>
     <string name="settings_clear_station_cache">Limpar cache de postos</string>
     <string name="settings_clear_all_cache">Limpar todos os dados importados</string>

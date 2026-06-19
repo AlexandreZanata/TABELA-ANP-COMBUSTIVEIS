@@ -17,6 +17,7 @@ import com.anpfuel.app.ui.prices.PricesScreen
 import com.anpfuel.app.ui.settings.SettingsScreen
 import com.anpfuel.app.ui.stations.StationsScreen
 import com.anpfuel.app.ui.search.SearchScreen
+import com.anpfuel.app.ui.weekpicker.WeekPickerRoute
 import com.anpfuel.app.viewmodel.AppStartViewModel
 
 @Composable
@@ -115,6 +116,17 @@ fun AnpNavGraph(
                     navController.navigate(Routes.ONBOARDING) {
                         popUpTo(Routes.HOME) { inclusive = true }
                     }
+                },
+                onNavigateToWeekPicker = {
+                    navController.navigate(Routes.WEEK_PICKER)
+                },
+            )
+        }
+        composable(Routes.WEEK_PICKER) {
+            WeekPickerRoute(
+                onNavigateBack = navController::popBackStack,
+                onWeekSelected = {
+                    navController.popBackStack()
                 },
             )
         }

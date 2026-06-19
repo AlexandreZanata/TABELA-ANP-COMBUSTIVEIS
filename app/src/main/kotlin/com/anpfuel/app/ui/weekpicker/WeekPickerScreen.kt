@@ -19,8 +19,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,6 +43,33 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Locale
+
+@Composable
+fun WeekPickerRoute(
+    onNavigateBack: () -> Unit,
+    onWeekSelected: () -> Unit = onNavigateBack,
+    modifier: Modifier = Modifier,
+    viewModel: WeekPickerViewModel = hiltViewModel(),
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(viewModel) {
+        viewModel.navigation.collect { destination ->
+            when (destination) {
+                WeekPickerNavigation.Completed -> onWeekSelected()
+            }
+        }
+    }
+
+    WeekPickerScreen(
+        uiState = uiState,
+        onRetryCatalog = viewModel::loadCatalog,
+        onUseLatestWeek = viewModel::useLatestWeek,
+        onRetrySync = viewModel::retrySync,
+        onNavigateBack = onNavigateBack,
+        modifier = modifier,
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -101,6 +132,13 @@ fun WeekPickerContent(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         when {
+            uiState.isSyncing -> {
+                LoadingState(
+                    message = stringResource(R.string.sync_progress_discovering),
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+
             uiState.isLoadingCatalog -> {
                 LoadingState(
                     message = stringResource(R.string.sync_progress_discovering),
@@ -117,9 +155,14 @@ fun WeekPickerContent(
             }
 
             else -> {
-                if (onUseLatestWeek != null && uiState.catalog.isNotEmpty()) {
+                if (
+                    uiState.showLatestCta &&
+                    onUseLatestWeek != null &&
+                    uiState.catalog.isNotEmpty()
+                ) {
                     Button(
                         onClick = onUseLatestWeek,
+                        enabled = !uiState.isSyncing,
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text(text = stringResource(R.string.week_picker_latest))
@@ -279,6 +322,7 @@ private fun WeekPickerContentPreview() {
             ),
             onRetryCatalog = {},
             onNavigateBack = {},
+            onUseLatestWeek = {},
         )
     }
 }

@@ -48,6 +48,7 @@ import java.text.NumberFormat
 @Composable
 fun SettingsScreen(
     onNavigateToOnboarding: () -> Unit,
+    onNavigateToWeekPicker: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
@@ -76,6 +77,7 @@ fun SettingsScreen(
         onConfirmClearAllCache = viewModel::confirmClearAllCache,
         onDismissClearAllDialog = viewModel::dismissClearAllDialog,
         onRetry = viewModel::load,
+        onNavigateToWeekPicker = onNavigateToWeekPicker,
         modifier = modifier,
     )
 }
@@ -95,6 +97,7 @@ private fun SettingsContent(
     onConfirmClearAllCache: () -> Unit,
     onDismissClearAllDialog: () -> Unit,
     onRetry: () -> Unit,
+    onNavigateToWeekPicker: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -253,6 +256,12 @@ private fun SettingsContent(
                                 ),
                             )
                         }
+                        OutlinedButton(
+                            onClick = onNavigateToWeekPicker,
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(text = stringResource(R.string.settings_change_survey_week))
+                        }
                         uiState.syncMessage?.let { messageKey ->
                             if (messageKey == SettingsViewModel.SYNC_COMPLETED_MESSAGE) {
                                 Text(
@@ -397,6 +406,7 @@ private fun SettingsScreenPreview() {
             onConfirmClearAllCache = {},
             onDismissClearAllDialog = {},
             onRetry = {},
+            onNavigateToWeekPicker = {},
         )
     }
 }
