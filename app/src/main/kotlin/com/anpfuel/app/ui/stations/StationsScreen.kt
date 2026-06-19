@@ -28,9 +28,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anpfuel.app.R
 import com.anpfuel.app.mapper.AppErrorMapper
+import com.anpfuel.app.mapper.FuelProductI18n
 import com.anpfuel.app.ui.components.AnpAttributionFooter
 import com.anpfuel.app.ui.components.EmptyState
 import com.anpfuel.app.ui.components.ErrorState
+import com.anpfuel.app.ui.components.FuelProductIcon
 import com.anpfuel.app.ui.components.FuelProductLabel
 import com.anpfuel.app.ui.components.LoadingState
 import com.anpfuel.app.ui.components.OfflineBanner
@@ -111,7 +113,16 @@ private fun StationsContent(
                     FilterChip(
                         selected = uiState.selectedFuelProduct == product,
                         onClick = { onFuelProductSelected(product) },
-                        label = { FuelProductLabel(product = product) },
+                        label = {
+                            Text(text = stringResource(FuelProductI18n.toStringRes(product)))
+                        },
+                        leadingIcon = {
+                            FuelProductIcon(
+                                product = product,
+                                size = 18.dp,
+                                contentDescription = null,
+                            )
+                        },
                         enabled = !uiState.isDownloading,
                     )
                 }
@@ -192,6 +203,10 @@ private fun StationsContent(
                             color = MaterialTheme.colorScheme.onBackground,
                         )
                     }
+                    FuelProductLabel(
+                        product = uiState.selectedFuelProduct,
+                        modifier = Modifier.padding(top = 4.dp),
+                    )
                     Text(
                         text = stringResource(R.string.stations_sort_by_price),
                         style = MaterialTheme.typography.bodyMedium,

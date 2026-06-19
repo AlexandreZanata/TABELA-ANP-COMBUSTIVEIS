@@ -115,10 +115,10 @@ fun MunicipalityPriceDetailRow(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Light")
 @Composable
-private fun FuelPriceCardPreview() {
-    AnpFuelTheme {
+private fun FuelPriceCardLightPreview() {
+    AnpFuelTheme(darkTheme = false, dynamicColor = false) {
         FuelPriceCard(
             price = AveragePriceUiModel(
                 fuelProduct = FuelProduct.ETHANOL,
@@ -126,6 +126,20 @@ private fun FuelPriceCardPreview() {
                 minimumFormatted = "R$ 3,10",
                 maximumFormatted = "R$ 3,80",
                 stationCount = 42,
+            ),
+            onClick = {},
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Dark")
+@Composable
+private fun FuelPriceCardDarkPreview() {
+    AnpFuelTheme(darkTheme = true, dynamicColor = false) {
+        FuelPriceCard(
+            price = AveragePriceUiModel(
+                fuelProduct = FuelProduct.GASOLINE_PREMIUM,
+                averageFormatted = "R$ 5,89",
             ),
             onClick = {},
         )
