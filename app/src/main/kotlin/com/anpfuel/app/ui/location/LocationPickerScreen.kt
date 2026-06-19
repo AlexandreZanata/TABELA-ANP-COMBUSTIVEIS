@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import com.anpfuel.app.ui.components.AnpScaffold
@@ -65,6 +66,8 @@ fun LocationPickerScreen(
         onMunicipalitySelected = viewModel::onMunicipalitySelected,
         onBackToStates = viewModel::onBackToStates,
         onRetry = viewModel::loadStates,
+        onStateSearchQueryChange = viewModel::onStateSearchQueryChange,
+        onMunicipalitySearchQueryChange = viewModel::onMunicipalitySearchQueryChange,
         modifier = modifier,
     )
 }
@@ -77,6 +80,8 @@ internal fun LocationPickerContent(
     onMunicipalitySelected: (String) -> Unit,
     onBackToStates: () -> Unit,
     onRetry: () -> Unit,
+    onStateSearchQueryChange: (String) -> Unit,
+    onMunicipalitySearchQueryChange: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val step = uiState.step
@@ -125,8 +130,10 @@ internal fun LocationPickerContent(
                 step is LocationPickerStep.StateList -> {
                     StateListContent(
                         states = uiState.states,
+                        searchQuery = uiState.stateSearchQuery,
                         preferredLocation = uiState.preferredLocation,
                         onStateSelected = onStateSelected,
+                        onSearchQueryChange = onStateSearchQueryChange,
                     )
                 }
 
@@ -134,6 +141,7 @@ internal fun LocationPickerContent(
                     MunicipalityListContent(
                         state = step.state,
                         municipalities = uiState.municipalities,
+                        searchQuery = uiState.municipalitySearchQuery,
                         isLoading = uiState.isLoading,
                         isEmpty = uiState.municipalitiesEmpty,
                         preferredMunicipality = uiState.preferredLocation
@@ -141,6 +149,7 @@ internal fun LocationPickerContent(
                             ?.municipality,
                         onMunicipalitySelected = onMunicipalitySelected,
                         onRetry = { onStateSelected(step.state) },
+                        onSearchQueryChange = onMunicipalitySearchQueryChange,
                         errorMessage = uiState.errorMessage,
                     )
                 }
@@ -156,10 +165,26 @@ internal fun LocationPickerContent(
 @Composable
 private fun StateListContent(
     states: List<BrazilianState>,
+    searchQuery: String,
     preferredLocation: com.anpfuel.application.usecase.location.PreferredLocation?,
     onStateSelected: (BrazilianState) -> Unit,
+    onSearchQueryChange: (String) -> Unit,
 ) {
+    val stateLabels = states.associateWith { state ->
+        stringResource(BrazilianStateI18n.toStringRes(state))
+    }
+    val filteredStates = LocationPickerFilter.filterStates(
+        states = states,
+        query = searchQuery,
+        stateLabel = stateLabels::getValue,
+    )
+
     Column(modifier = Modifier.fillMaxSize()) {
+        LocationPickerSearchField(
+            value = searchQuery,
+            onValueChange = onSearchQueryChange,
+            label = stringResource(R.string.location_search_state_hint),
+        )
         Text(
             text = stringResource(R.string.location_state_label),
             style = MaterialTheme.typography.titleSmall,
@@ -178,37 +203,73 @@ private fun StateListContent(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
             )
         }
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(states, key = { it.name }) { state ->
-                ListItem(
-                    headlineContent = {
-                        Text(text = stringResource(BrazilianStateI18n.toStringRes(state)))
-                    },
-                    supportingContent = {
-                        Text(text = state.abbreviation)
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onStateSelected(state) },
-                )
-                HorizontalDivider()
+        if (filteredStates.isEmpty()) {
+            EmptyState(
+                message = stringResource(R.string.location_search_no_matches),
+                modifier = Modifier.fillMaxWidth(),
+            )
+        } else {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(filteredStates, key = { it.name }) { state ->
+                    ListItem(
+                        headlineContent = {
+                            Text(text = stateLabels.getValue(state))
+                        },
+                        supportingContent = {
+                            Text(text = state.abbreviation)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onStateSelected(state) },
+                    )
+                    HorizontalDivider()
+                }
             }
         }
     }
 }
 
 @Composable
+private fun LocationPickerSearchField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier,
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        label = { Text(text = label) },
+        singleLine = true,
+    )
+}
+
+@Composable
 internal fun MunicipalityListContent(
     state: BrazilianState,
     municipalities: List<CatalogMunicipalityItem>,
+    searchQuery: String,
     isLoading: Boolean,
     isEmpty: Boolean,
     preferredMunicipality: String?,
     onMunicipalitySelected: (String) -> Unit,
     onRetry: () -> Unit,
+    onSearchQueryChange: (String) -> Unit,
     errorMessage: String?,
 ) {
+    val filteredMunicipalities = remember(municipalities, searchQuery) {
+        LocationPickerFilter.filterMunicipalities(municipalities, searchQuery)
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
+        LocationPickerSearchField(
+            value = searchQuery,
+            onValueChange = onSearchQueryChange,
+            label = stringResource(R.string.location_search_municipality_hint),
+        )
         Text(
             text = stringResource(
                 R.string.location_municipality_label,
@@ -239,8 +300,17 @@ internal fun MunicipalityListContent(
                 )
             }
 
+            filteredMunicipalities.isEmpty() -> {
+                EmptyState(
+                    message = stringResource(R.string.location_search_no_matches),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+
             else -> {
-                val sections = remember(municipalities) { groupMunicipalitiesBySectionLetter(municipalities) }
+                val sections = remember(filteredMunicipalities) {
+                    groupMunicipalitiesBySectionLetter(filteredMunicipalities)
+                }
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     sections.forEach { section ->
                         item(key = "header-${section.letter}") {
@@ -277,6 +347,8 @@ private fun LocationPickerStatesPreview() {
             onMunicipalitySelected = {},
             onBackToStates = {},
             onRetry = {},
+            onStateSearchQueryChange = {},
+            onMunicipalitySearchQueryChange = {},
         )
     }
 }

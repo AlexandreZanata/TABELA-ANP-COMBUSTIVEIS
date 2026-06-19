@@ -13,10 +13,14 @@ import java.util.Locale
 object PriceFormatter {
 
     private val currency = Currency.getInstance("BRL")
+    private val brazilianRealLocale: Locale = Locale.forLanguageTag("pt-BR")
 
-    fun formatAmount(amount: PriceAmount?, locale: Locale): String? {
+    /**
+     * Formats ANP fuel prices in Brazilian Real (BRL) regardless of UI locale.
+     */
+    fun formatAmount(amount: PriceAmount?, @Suppress("UNUSED_PARAMETER") locale: Locale): String? {
         amount ?: return null
-        val formatter = NumberFormat.getCurrencyInstance(locale).apply {
+        val formatter = NumberFormat.getCurrencyInstance(brazilianRealLocale).apply {
             this.currency = currency
             minimumFractionDigits = 2
             maximumFractionDigits = 2

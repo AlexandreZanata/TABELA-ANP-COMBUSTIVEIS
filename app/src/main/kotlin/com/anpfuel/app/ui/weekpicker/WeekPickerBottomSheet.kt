@@ -2,12 +2,11 @@ package com.anpfuel.app.ui.weekpicker
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -74,7 +73,7 @@ fun WeekPickerBottomSheet(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val locale = LocalConfiguration.current.locales[0]
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
-    val maxSheetHeight = LocalConfiguration.current.screenHeightDp.dp * 0.9f
+    val maxSheetHeight = LocalConfiguration.current.screenHeightDp.dp * 0.92f
 
     LaunchedEffect(viewModel) {
         viewModel.navigation.collect { destination ->
@@ -89,12 +88,14 @@ fun WeekPickerBottomSheet(
             onDismissRequest = onDismiss,
             sheetState = sheetState,
             modifier = modifier,
+            contentWindowInsets = { WindowInsets(0) },
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(max = maxSheetHeight)
-                    .windowInsetsPadding(WindowInsets.navigationBars)
+                    .fillMaxHeight()
+                    .navigationBarsPadding()
                     .padding(bottom = 16.dp),
             ) {
                 Text(
@@ -113,7 +114,7 @@ fun WeekPickerBottomSheet(
                     onRetrySync = viewModel::retrySync,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(maxSheetHeight - 56.dp),
+                        .weight(1f),
                 )
             }
         }

@@ -27,6 +27,8 @@ data class LocationPickerUiState(
     val step: LocationPickerStep = LocationPickerStep.StateList,
     val states: List<BrazilianState> = emptyList(),
     val municipalities: List<CatalogMunicipalityItem> = emptyList(),
+    val stateSearchQuery: String = "",
+    val municipalitySearchQuery: String = "",
     val preferredLocation: PreferredLocation? = null,
     val isSaving: Boolean = false,
     val errorMessage: String? = null,
@@ -54,9 +56,24 @@ class LocationPickerViewModel @Inject constructor(
         loadStates()
     }
 
+    fun onStateSearchQueryChange(query: String) {
+        _uiState.update { it.copy(stateSearchQuery = query) }
+    }
+
+    fun onMunicipalitySearchQueryChange(query: String) {
+        _uiState.update { it.copy(municipalitySearchQuery = query) }
+    }
+
     fun loadStates() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, errorMessage = null, step = LocationPickerStep.StateList) }
+            _uiState.update {
+                it.copy(
+                    isLoading = true,
+                    errorMessage = null,
+                    step = LocationPickerStep.StateList,
+                    municipalitySearchQuery = "",
+                )
+            }
             runCatching {
                 val preferred = selectLocationUseCase.getPreferredLocation()
                 val result = selectLocationUseCase.getStatesWithData()
@@ -83,6 +100,7 @@ class LocationPickerViewModel @Inject constructor(
                     errorMessage = null,
                     step = LocationPickerStep.MunicipalityList(state),
                     municipalities = emptyList<CatalogMunicipalityItem>(),
+                    municipalitySearchQuery = "",
                 )
             }
             runCatching {
@@ -106,6 +124,7 @@ class LocationPickerViewModel @Inject constructor(
             it.copy(
                 step = LocationPickerStep.StateList,
                 municipalities = emptyList<CatalogMunicipalityItem>(),
+                municipalitySearchQuery = "",
                 errorMessage = null,
             )
         }

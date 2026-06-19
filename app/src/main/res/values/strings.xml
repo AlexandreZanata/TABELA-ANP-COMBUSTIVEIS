@@ -136,6 +136,9 @@
     <string name="location_municipality_label">Municipalities in %1$s</string>
     <string name="location_empty_state">No municipalities with price data for this state. Sync ANP tables or choose another state.</string>
     <string name="location_current_selection">Current: %1$s (%2$s)</string>
+    <string name="location_search_state_hint">Search state</string>
+    <string name="location_search_municipality_hint">Search municipality</string>
+    <string name="location_search_no_matches">No matches found.</string>
     <string name="location_no_data_this_week">No price data for this week</string>
 
     <!-- UC-004 Search -->
