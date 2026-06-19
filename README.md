@@ -8,18 +8,6 @@ Open-source Android app to browse Brazilian ANP (National Petroleum Agency) week
 
 **100% open source and free to use** under the [MIT License](LICENSE). The only requirement when reusing or redistributing this project is to **reference the original source** — see [docs/license.md](docs/license.md).
 
-## Screenshots (v2.0.0)
-
-| Week picker | Home with fuel icons |
-|-------------|----------------------|
-| *Capture:* [docs/screenshots/v2/week-picker.png](docs/screenshots/v2/week-picker.png) | *Capture:* [docs/screenshots/v2/home-fuel-icons.png](docs/screenshots/v2/home-fuel-icons.png) |
-
-| National search | Safe areas (edge-to-edge) |
-|-----------------|---------------------------|
-| *Capture:* [docs/screenshots/v2/search-national.png](docs/screenshots/v2/search-national.png) | *Capture:* [docs/screenshots/v2/safe-area.png](docs/screenshots/v2/safe-area.png) |
-
-Capture instructions: **[docs/screenshots/v2/README.md](docs/screenshots/v2/README.md)**. Automated layout validation: `FuelProductIconScreenshotTest`, `SafeAreaScreenshotMatrixTest`.
-
 ## Features
 
 - **Survey week picker** — choose latest or any historical ANP week (gov.br catalog parity)
