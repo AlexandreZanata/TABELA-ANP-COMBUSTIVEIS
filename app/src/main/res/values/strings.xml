@@ -42,11 +42,19 @@
     <string name="onboarding_body_anp_source">Official weekly fuel prices from ANP (Brazilian National Agency of Petroleum, Natural Gas and Biofuels).</string>
     <string name="onboarding_title_offline">Works offline</string>
     <string name="onboarding_body_offline">After the first sync, browse average prices without an internet connection.</string>
-    <string name="onboarding_title_ready">Ready to sync</string>
-    <string name="onboarding_body_ready">Download the latest ANP tables to your device. You can skip and sync later from home.</string>
+    <string name="onboarding_title_ready">Choose a survey week</string>
+    <string name="onboarding_body_ready">Select which ANP survey week to download. You can skip and sync later from home.</string>
     <string name="onboarding_action_get_started">Get started</string>
     <string name="onboarding_action_sync_now">Sync now</string>
     <string name="onboarding_action_skip">Skip for now</string>
+
+    <!-- UC-009 Week picker (Phase 12) -->
+    <string name="week_picker_title">Survey week</string>
+    <string name="week_picker_latest">Use latest week</string>
+    <string name="week_picker_updated_at">Updated %1$s</string>
+    <string name="week_picker_operational_note">Note: %1$s</string>
+    <string name="week_picker_download_week">Download this week</string>
+    <string name="active_week_label">Latest</string>
 
     <!-- Sync banners (BR-004, freshness) -->
     <string name="banner_offline">Offline — showing cached data.</string>

@@ -42,11 +42,19 @@
     <string name="onboarding_body_anp_source">Preços semanais oficiais da ANP (Agência Nacional do Petróleo, Gás Natural e Biocombustíveis).</string>
     <string name="onboarding_title_offline">Funciona offline</string>
     <string name="onboarding_body_offline">Após a primeira sincronização, consulte preços médios sem conexão com a internet.</string>
-    <string name="onboarding_title_ready">Pronto para sincronizar</string>
-    <string name="onboarding_body_ready">Baixe as tabelas mais recentes da ANP para o dispositivo. Você pode pular e sincronizar depois na tela inicial.</string>
+    <string name="onboarding_title_ready">Escolha a semana de pesquisa</string>
+    <string name="onboarding_body_ready">Selecione qual semana da ANP baixar. Você pode pular e sincronizar depois na tela inicial.</string>
     <string name="onboarding_action_get_started">Começar</string>
     <string name="onboarding_action_sync_now">Sincronizar agora</string>
     <string name="onboarding_action_skip">Pular por enquanto</string>
+
+    <!-- UC-009 Week picker (Phase 12) -->
+    <string name="week_picker_title">Semana de pesquisa</string>
+    <string name="week_picker_latest">Usar semana mais recente</string>
+    <string name="week_picker_updated_at">Atualizado em %1$s</string>
+    <string name="week_picker_operational_note">Nota: %1$s</string>
+    <string name="week_picker_download_week">Baixar esta semana</string>
+    <string name="active_week_label">Mais recente</string>
 
     <!-- Sync banners (BR-004, freshness) -->
     <string name="banner_offline">Offline — exibindo dados em cache.</string>

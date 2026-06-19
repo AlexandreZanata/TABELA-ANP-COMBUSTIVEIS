@@ -4,6 +4,7 @@ import com.anpfuel.application.usecase.location.SearchMunicipalityUseCase
 import com.anpfuel.application.usecase.location.SelectLocationUseCase
 import com.anpfuel.application.usecase.network.ObserveNetworkConnectivityUseCase
 import com.anpfuel.application.usecase.onboarding.CompleteOnboardingUseCase
+import com.anpfuel.application.usecase.onboarding.OnboardingSelectWeekAndSyncUseCase
 import com.anpfuel.application.usecase.readiness.GetDataReadinessUseCase
 import com.anpfuel.application.usecase.price.GetMunicipalityPricesUseCase
 import com.anpfuel.application.usecase.price.GetPriceHistoryUseCase
@@ -127,6 +128,18 @@ object UseCaseModule {
     ): CompleteOnboardingUseCase = CompleteOnboardingUseCase(
         userPreferencesRepository = userPreferencesRepository,
         priceTableRepository = priceTableRepository,
+    )
+
+    @Provides
+    @Singleton
+    fun provideOnboardingSelectWeekAndSyncUseCase(
+        selectSurveyWeekUseCase: SelectSurveyWeekUseCase,
+        syncPriceTablesUseCase: SyncPriceTablesUseCase,
+        completeOnboardingUseCase: CompleteOnboardingUseCase,
+    ): OnboardingSelectWeekAndSyncUseCase = OnboardingSelectWeekAndSyncUseCase(
+        selectSurveyWeekUseCase = selectSurveyWeekUseCase,
+        syncPriceTablesUseCase = syncPriceTablesUseCase,
+        completeOnboardingUseCase = completeOnboardingUseCase,
     )
 
     @Provides

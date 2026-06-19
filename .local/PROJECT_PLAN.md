@@ -202,8 +202,6 @@ The listing exposes **~200+ weeks** (Jul/2022 → present, Jun/2026). v2 does **
 
 ### 12.3 Application layer
 
-- [ ] **12.3.4** Extend UC-002 onboarding: after intro slides → **week picker** → sync selected week → location/home
-
 ### 12.4 UI — Week picker screen
 
 - [ ] **12.4.1** **WeekPickerScreen** (Compose): scrollable list grouped like gov.br — each row shows date range, "Latest" chip on first entry, updated-at subtitle
@@ -483,4 +481,4 @@ Phase 11.4 (use cases + UI) → Gate 11
     → Phase 15 (hardening + v2.0.0) → Gate 15
 ```
 
-**Current repo status (2026-06-18):** Phase 12.3.3 targeted sync complete ✓ — next micro-step **Phase 12.3.4** extend UC-002 onboarding with week picker.
+**Current repo status (2026-06-19):** Phase 12.3.4 onboarding week selection complete ✓ — next micro-step **Phase 12.4.1** WeekPickerScreen.

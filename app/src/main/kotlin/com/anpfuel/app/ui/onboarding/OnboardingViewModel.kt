@@ -2,14 +2,16 @@ package com.anpfuel.app.ui.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.anpfuel.app.navigation.Routes
 import com.anpfuel.application.error.AppError
 import com.anpfuel.application.usecase.onboarding.CompleteOnboardingResult
 import com.anpfuel.application.usecase.onboarding.CompleteOnboardingUseCase
-import com.anpfuel.application.usecase.sync.SyncPriceTablesUseCase
-import com.anpfuel.domain.event.SyncJobOutcome
-import com.anpfuel.domain.event.SyncRequestSource
+import com.anpfuel.application.usecase.onboarding.OnboardingSelectWeekAndSyncResult
+import com.anpfuel.application.usecase.onboarding.OnboardingSelectWeekAndSyncUseCase
+import com.anpfuel.application.usecase.sync.DiscoverSurveyWeekCatalogOutcome
+import com.anpfuel.application.usecase.sync.DiscoverSurveyWeekCatalogUseCase
+import com.anpfuel.domain.model.SurveyWeekCatalogEntry
 import com.anpfuel.domain.repository.UserPreferencesRepository
+import com.anpfuel.domain.valueobject.SurveyWeekSelectionMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,11 +23,22 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+enum class OnboardingStep {
+    INTRO,
+    WEEK_PICKER,
+    SYNCING,
+}
+
 data class OnboardingUiState(
+    val step: OnboardingStep = OnboardingStep.INTRO,
     val pageIndex: Int = 0,
     val pageCount: Int = OnboardingViewModel.PAGE_COUNT,
-    val isSyncing: Boolean = false,
+    val catalog: List<SurveyWeekCatalogEntry> = emptyList(),
+    val isLoadingCatalog: Boolean = false,
+    val catalogError: AppError? = null,
     val error: AppError? = null,
+    val pendingWeekSelection: SurveyWeekCatalogEntry? = null,
+    val pendingSelectionMode: SurveyWeekSelectionMode? = null,
 ) {
     val isOnLastPage: Boolean
         get() = pageIndex == pageCount - 1
@@ -38,7 +51,8 @@ sealed interface OnboardingNavigation {
 
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
-    private val syncPriceTablesUseCase: SyncPriceTablesUseCase,
+    private val discoverSurveyWeekCatalogUseCase: DiscoverSurveyWeekCatalogUseCase,
+    private val onboardingSelectWeekAndSyncUseCase: OnboardingSelectWeekAndSyncUseCase,
     private val completeOnboardingUseCase: CompleteOnboardingUseCase,
     private val userPreferencesRepository: UserPreferencesRepository,
 ) : ViewModel() {
@@ -73,28 +87,61 @@ class OnboardingViewModel @Inject constructor(
         _uiState.update { it.copy(pageIndex = index.coerceIn(0, it.pageCount - 1), error = null) }
     }
 
-    fun startSync() {
-        if (_uiState.value.isSyncing) {
+    fun proceedToWeekPicker() {
+        if (_uiState.value.isLoadingCatalog || _uiState.value.step == OnboardingStep.SYNCING) {
             return
         }
 
         viewModelScope.launch {
-            _uiState.update { it.copy(isSyncing = true, error = null) }
+            _uiState.update {
+                it.copy(
+                    step = OnboardingStep.WEEK_PICKER,
+                    isLoadingCatalog = true,
+                    catalogError = null,
+                    error = null,
+                )
+            }
 
-            val syncResult = syncPriceTablesUseCase(SyncRequestSource.FIRST_LAUNCH)
-            when (syncResult.outcome) {
-                SyncJobOutcome.FAILED -> {
+            when (val outcome = discoverSurveyWeekCatalogUseCase()) {
+                is DiscoverSurveyWeekCatalogOutcome.Success -> {
                     _uiState.update {
                         it.copy(
-                            isSyncing = false,
-                            error = syncResult.error ?: AppError.SyncNetworkError,
+                            catalog = outcome.catalog,
+                            isLoadingCatalog = false,
+                            catalogError = null,
                         )
                     }
-                    return@launch
                 }
-                else -> handleSyncCompletion(syncResult)
+
+                is DiscoverSurveyWeekCatalogOutcome.Failure -> {
+                    _uiState.update {
+                        it.copy(
+                            isLoadingCatalog = false,
+                            catalogError = outcome.error,
+                        )
+                    }
+                }
             }
         }
+    }
+
+    fun retryCatalogDiscovery() {
+        proceedToWeekPicker()
+    }
+
+    fun useLatestWeekAndSync() {
+        val latestEntry = _uiState.value.catalog.firstOrNull() ?: return
+        selectWeekAndSync(latestEntry, SurveyWeekSelectionMode.LATEST)
+    }
+
+    fun selectWeekAndSync(entry: SurveyWeekCatalogEntry) {
+        selectWeekAndSync(entry, SurveyWeekSelectionMode.SPECIFIC)
+    }
+
+    fun retrySync() {
+        val entry = _uiState.value.pendingWeekSelection ?: return
+        val mode = _uiState.value.pendingSelectionMode ?: SurveyWeekSelectionMode.SPECIFIC
+        selectWeekAndSync(entry, mode)
     }
 
     fun skipSync() {
@@ -104,10 +151,58 @@ class OnboardingViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleSyncCompletion(
-        syncResult: com.anpfuel.application.usecase.sync.SyncPriceTablesResult,
+    fun backToIntro() {
+        _uiState.update {
+            it.copy(
+                step = OnboardingStep.INTRO,
+                catalogError = null,
+                error = null,
+            )
+        }
+    }
+
+    private fun selectWeekAndSync(
+        entry: SurveyWeekCatalogEntry,
+        selectionMode: SurveyWeekSelectionMode,
     ) {
-        when (completeOnboardingUseCase.completeAfterSync(syncResult)) {
+        if (_uiState.value.step == OnboardingStep.SYNCING) {
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    step = OnboardingStep.SYNCING,
+                    error = null,
+                    pendingWeekSelection = entry,
+                    pendingSelectionMode = selectionMode,
+                )
+            }
+
+            when (
+                val result = onboardingSelectWeekAndSyncUseCase(
+                    surveyWeek = entry.surveyWeek,
+                    selectionMode = selectionMode,
+                )
+            ) {
+                is OnboardingSelectWeekAndSyncResult.SyncFailed -> {
+                    _uiState.update {
+                        it.copy(
+                            step = OnboardingStep.WEEK_PICKER,
+                            error = result.error,
+                        )
+                    }
+                }
+
+                is OnboardingSelectWeekAndSyncResult.Completed -> {
+                    handleOnboardingCompletion(result.onboardingResult)
+                }
+            }
+        }
+    }
+
+    private suspend fun handleOnboardingCompletion(onboardingResult: CompleteOnboardingResult) {
+        when (onboardingResult) {
             CompleteOnboardingResult.Completed,
             CompleteOnboardingResult.AlreadyCompleted,
             -> navigateAfterCompletion()
@@ -115,20 +210,20 @@ class OnboardingViewModel @Inject constructor(
             CompleteOnboardingResult.NotReady -> {
                 _uiState.update {
                     it.copy(
-                        isSyncing = false,
-                        error = syncResult.error ?: AppError.SyncNetworkError,
+                        step = OnboardingStep.WEEK_PICKER,
+                        error = AppError.SyncNetworkError,
                     )
                 }
             }
 
             CompleteOnboardingResult.Skipped -> {
-                _uiState.update { it.copy(isSyncing = false) }
+                _uiState.update { it.copy(step = OnboardingStep.WEEK_PICKER) }
             }
         }
     }
 
     private suspend fun navigateAfterCompletion() {
-        _uiState.update { it.copy(isSyncing = false, error = null) }
+        _uiState.update { it.copy(step = OnboardingStep.SYNCING, error = null) }
         val preferences = userPreferencesRepository.getPreferences()
         val destination = if (preferences.preferredMunicipality.isNullOrBlank()) {
             OnboardingNavigation.ToLocation
