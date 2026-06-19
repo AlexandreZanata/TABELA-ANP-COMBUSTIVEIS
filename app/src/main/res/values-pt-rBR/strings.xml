@@ -56,6 +56,10 @@
     <string name="week_picker_station_detail_line">Preços por posto revendedor (combustíveis automotivos e GLP P13)</string>
     <string name="week_picker_updated_at">Atualizado em %1$s</string>
     <string name="week_picker_operational_note">Nota: %1$s</string>
+    <string name="week_picker_operational_note_title">Aviso operacional</string>
+    <string name="week_picker_operational_note_banner">Nota operacional</string>
+    <string name="week_picker_operational_note_expand">Expandir nota operacional</string>
+    <string name="week_picker_operational_note_collapse">Recolher nota operacional</string>
     <string name="week_picker_download_week">Baixar esta semana</string>
     <string name="week_picker_confirm_title">Baixar semana histórica?</string>
     <string name="week_picker_confirm_message">Baixar e importar dados da ANP para %1$s? Isso pode levar alguns minutos.</string>
@@ -198,4 +202,6 @@
     <string name="a11y_station_price_row">%1$s, preço %2$s</string>
     <string name="a11y_price_trend_chart">Gráfico de tendência de preços</string>
     <string name="a11y_screen_title">Tela %1$s</string>
+    <string name="a11y_week_picker_operational_note_expand">Expandir aviso operacional</string>
+    <string name="a11y_week_picker_operational_note_collapse">Recolher aviso operacional</string>
 </resources>

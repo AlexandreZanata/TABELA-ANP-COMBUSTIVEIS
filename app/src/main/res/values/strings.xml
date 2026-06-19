@@ -56,6 +56,10 @@
     <string name="week_picker_station_detail_line">Prices per retail station (automotive fuels and LPG P13)</string>
     <string name="week_picker_updated_at">Updated %1$s</string>
     <string name="week_picker_operational_note">Note: %1$s</string>
+    <string name="week_picker_operational_note_banner">Operational note</string>
+    <string name="week_picker_operational_note_expand">Expand operational note</string>
+    <string name="week_picker_operational_note_collapse">Collapse operational note</string>
+    <string name="week_picker_operational_note_title">Operational notice</string>
     <string name="week_picker_download_week">Download this week</string>
     <string name="week_picker_confirm_title">Download historical week?</string>
     <string name="week_picker_confirm_message">Download and import ANP data for %1$s? This may take a few minutes.</string>
@@ -199,4 +203,6 @@
     <string name="a11y_station_price_row">%1$s, price %2$s</string>
     <string name="a11y_price_trend_chart">Price trend chart</string>
     <string name="a11y_screen_title">%1$s screen</string>
+    <string name="a11y_week_picker_operational_note_expand">Expand operational notice</string>
+    <string name="a11y_week_picker_operational_note_collapse">Collapse operational notice</string>
 </resources>

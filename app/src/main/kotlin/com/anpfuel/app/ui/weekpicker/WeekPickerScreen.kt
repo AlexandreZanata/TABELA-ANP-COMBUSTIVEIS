@@ -247,7 +247,12 @@ fun WeekPickerConfirmDialog(
         onDismissRequest = onDismiss,
         title = { Text(text = stringResource(R.string.week_picker_confirm_title)) },
         text = {
-            Text(text = stringResource(R.string.week_picker_confirm_message, weekLabel))
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(text = stringResource(R.string.week_picker_confirm_message, weekLabel))
+                entry.operationalNote?.let { note ->
+                    OperationalNoteBanner(note = note)
+                }
+            }
         },
         confirmButton = {
             TextButton(onClick = onConfirm) {
@@ -270,68 +275,69 @@ fun WeekPickerRow(
     onClick: (() -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
-    val rowModifier = if (onClick != null) {
-        modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-    } else {
-        modifier.fillMaxWidth()
-    }
-
-    Column(
-        modifier = rowModifier.padding(vertical = 12.dp, horizontal = 8.dp),
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+    Column(modifier = modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .then(
+                    if (onClick != null) {
+                        Modifier.clickable(onClick = onClick)
+                    } else {
+                        Modifier
+                    },
+                )
+                .padding(vertical = 12.dp, horizontal = 8.dp),
         ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(
+                    text = SurveyWeekFormatter.formatRange(entry.surveyWeek, locale),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                if (isLatest) {
+                    AssistChip(
+                        onClick = onClick ?: {},
+                        enabled = onClick != null,
+                        label = { Text(text = stringResource(R.string.active_week_label)) },
+                    )
+                }
+            }
+
             Text(
-                text = SurveyWeekFormatter.formatRange(entry.surveyWeek, locale),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface,
+                text = "• ${stringResource(R.string.week_picker_weekly_summary_line)}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(start = 8.dp, top = 8.dp),
             )
-            if (isLatest) {
-                AssistChip(
-                    onClick = onClick ?: {},
-                    enabled = onClick != null,
-                    label = { Text(text = stringResource(R.string.active_week_label)) },
+
+            Text(
+                text = "• ${stringResource(R.string.week_picker_station_detail_line)}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(start = 8.dp, top = 4.dp),
+            )
+
+            entry.publishedAt?.let { publishedAt ->
+                val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(locale)
+                Text(
+                    text = stringResource(
+                        R.string.week_picker_updated_at,
+                        publishedAt.format(formatter),
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(start = 16.dp, top = 4.dp),
                 )
             }
         }
 
-        Text(
-            text = "• ${stringResource(R.string.week_picker_weekly_summary_line)}",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(start = 8.dp, top = 8.dp),
-        )
-
-        Text(
-            text = "• ${stringResource(R.string.week_picker_station_detail_line)}",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(start = 8.dp, top = 4.dp),
-        )
-
-        entry.publishedAt?.let { publishedAt ->
-            val formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(locale)
-            Text(
-                text = stringResource(
-                    R.string.week_picker_updated_at,
-                    publishedAt.format(formatter),
-                ),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(start = 16.dp, top = 4.dp),
-            )
-        }
-
         entry.operationalNote?.let { note ->
-            Text(
-                text = stringResource(R.string.week_picker_operational_note, note),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.tertiary,
-                modifier = Modifier.padding(start = 8.dp, top = 8.dp),
+            OperationalNoteBanner(
+                note = note,
+                modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
             )
         }
     }
@@ -357,6 +363,8 @@ private fun WeekPickerContentPreview() {
                         summaryUrl = "https://example.com/summary-older.xlsx",
                         stationUrl = "https://example.com/station-older.xlsx",
                         publishedAt = LocalDate.parse("2026-01-02"),
+                        operationalNote =
+                            "Os preços médios de Belo Horizonte não foram publicados entre 26/04/2026 e 16/05/2026.",
                     ),
                 ),
             ),
