@@ -3,7 +3,6 @@ package com.anpfuel.application.usecase.sync
 import com.anpfuel.domain.event.PriceTableImported
 import com.anpfuel.domain.event.StationDetailRequested
 import com.anpfuel.domain.event.SyncJobOutcome
-import com.anpfuel.domain.exception.DomainException
 import com.anpfuel.domain.model.PriceTable
 import com.anpfuel.domain.repository.AveragePriceRepository
 import com.anpfuel.domain.repository.DomainEventPublisher
@@ -23,7 +22,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import java.io.IOException
 
 class DownloadStationDetailUseCaseTest {
@@ -92,16 +90,28 @@ class DownloadStationDetailUseCaseTest {
     }
 
     @Test
-    fun rejectsConcurrentDownloadPerBr015() = runTest {
+    fun recoversOrphanedActiveSyncStateBeforeStartingDownload() = runTest {
         syncState = SyncJobState.IMPORTING
+        val stationTable = PriceTable.create(
+            surveyWeek = surveyWeek,
+            tableType = PriceTableType.STATION_DETAIL,
+            sourceUrl = stationUrl,
+        )
+        val downloaded = stationTable.copy(checksum = "station-sha")
+        val importPayload = PriceTableImported.Payload(
+            surveyWeekId = DomainId.forSurveyWeek(surveyWeek),
+            tableType = PriceTableType.STATION_DETAIL,
+            rowCount = 19676,
+        )
 
-        assertThrows<DomainException> {
-            kotlinx.coroutines.runBlocking {
-                useCase.invoke(state = state, municipality = municipality)
-            }
-        }
+        coEvery { priceTableSyncGateway.discoverPriceTables() } returns listOf(stationTable)
+        coEvery { priceTableSyncGateway.downloadPriceTable(stationTable) } returns downloaded
+        coEvery { priceTableSyncGateway.importStationDetail(downloaded) } returns importPayload
 
-        coVerify(exactly = 0) { priceTableSyncGateway.discoverPriceTables() }
+        val result = useCase.invoke(state = state, municipality = municipality)
+
+        assertEquals(SyncJobOutcome.SUCCESS, result.outcome)
+        coVerify(exactly = 1) { priceTableSyncGateway.discoverPriceTables() }
     }
 
     @Test
