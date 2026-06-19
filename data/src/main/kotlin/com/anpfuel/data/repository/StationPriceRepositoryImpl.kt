@@ -5,6 +5,7 @@ import com.anpfuel.data.local.dao.SurveyWeekDao
 import com.anpfuel.data.mapper.EntityDomainMapper
 import com.anpfuel.domain.model.StationPrice
 import com.anpfuel.domain.repository.StationPriceRepository
+import com.anpfuel.domain.rule.MunicipalitySearchTextNormalizer
 import com.anpfuel.domain.valueobject.BrazilianState
 import com.anpfuel.domain.valueobject.DomainId
 import com.anpfuel.domain.valueobject.FuelProduct
@@ -28,7 +29,7 @@ class StationPriceRepositoryImpl @Inject constructor(
         return stationPriceDao.findByLocationAndProduct(
             surveyWeekId = surveyWeekId,
             state = state.abbreviation,
-            municipality = municipality.trim(),
+            municipality = normalizeMunicipality(municipality),
             fuelProduct = fuelProduct.name,
         ).map { entity ->
             EntityDomainMapper.toStationPrice(entity, surveyWeek)
@@ -44,7 +45,7 @@ class StationPriceRepositoryImpl @Inject constructor(
         return stationPriceDao.countByLocation(
             surveyWeekId = surveyWeekId,
             state = state.abbreviation,
-            municipality = municipality.trim(),
+            municipality = normalizeMunicipality(municipality),
         ) > 0
     }
 
@@ -67,4 +68,7 @@ class StationPriceRepositoryImpl @Inject constructor(
             surveyWeekDao.clearStationImportedAt(weekId)
         }
     }
+
+    private fun normalizeMunicipality(municipality: String): String =
+        MunicipalitySearchTextNormalizer.normalize(municipality)
 }

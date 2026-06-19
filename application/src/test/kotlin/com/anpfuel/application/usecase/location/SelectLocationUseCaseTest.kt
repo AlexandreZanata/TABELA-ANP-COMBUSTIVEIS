@@ -2,8 +2,8 @@ package com.anpfuel.application.usecase.location
 
 import com.anpfuel.domain.event.CitySelected
 import com.anpfuel.domain.exception.DomainException
+import com.anpfuel.domain.model.PriceSurvey
 import com.anpfuel.domain.model.UserPreferences
-import com.anpfuel.domain.repository.AveragePriceRepository
 import com.anpfuel.domain.repository.DomainEventPublisher
 import com.anpfuel.domain.repository.MunicipalityCatalogRepository
 import com.anpfuel.domain.repository.PriceTableRepository
@@ -28,7 +28,6 @@ import org.junit.jupiter.api.assertThrows
 class SelectLocationUseCaseTest {
 
     private val municipalityCatalogRepository = mockk<MunicipalityCatalogRepository>()
-    private val averagePriceRepository = mockk<AveragePriceRepository>()
     private val priceTableRepository = mockk<PriceTableRepository>()
     private val userPreferencesRepository = mockk<UserPreferencesRepository>()
     private val eventPublisher = mockk<DomainEventPublisher>()
@@ -48,14 +47,23 @@ class SelectLocationUseCaseTest {
     fun setUp() {
         useCase = SelectLocationUseCase(
             municipalityCatalogRepository = municipalityCatalogRepository,
-            averagePriceRepository = averagePriceRepository,
             priceTableRepository = priceTableRepository,
             userPreferencesRepository = userPreferencesRepository,
             eventPublisher = eventPublisher,
         )
 
         coEvery { priceTableRepository.countImportedSurveyWeeks() } returns 1
-        coEvery { averagePriceRepository.getLatestImportedSurveyWeek() } returns surveyWeek
+        coEvery { priceTableRepository.getImportedPriceSurveys() } returns listOf(
+            PriceSurvey.restore(
+                id = DomainId.forSurveyWeek(surveyWeek),
+                surveyWeek = surveyWeek,
+                summaryImportedAt = java.time.Instant.parse("2026-06-14T10:00:00Z"),
+                stationImportedAt = null,
+            ),
+        )
+        coEvery { userPreferencesRepository.getPreferences() } returns UserPreferences()
+        coEvery { municipalityCatalogRepository.getLocationKeysWithDataForWeek(any()) } returns emptySet()
+        coEvery { municipalityCatalogRepository.getLocationKeysEverInAnp() } returns emptySet()
         coEvery { eventPublisher.publish(any()) } returns Unit
     }
 
@@ -75,20 +83,21 @@ class SelectLocationUseCaseTest {
 
     @Test
     fun listsCatalogMunicipalitiesWithDataAvailability() = runTest {
+        val campinasEntry = MunicipalityCatalogEntry(
+            state = state,
+            municipality = "CAMPINAS",
+            ibgeCode = "3509502",
+        )
         coEvery { municipalityCatalogRepository.getCatalogMunicipalities(state) } returns listOf(
             catalogEntry,
-            MunicipalityCatalogEntry(
-                state = state,
-                municipality = "CAMPINAS",
-                ibgeCode = "3509502",
-            ),
+            campinasEntry,
         )
         coEvery {
-            municipalityCatalogRepository.resolveDataAvailability(state, municipality, surveyWeek)
-        } returns DataAvailability.HAS_DATA
+            municipalityCatalogRepository.getLocationKeysWithDataForWeek(surveyWeek)
+        } returns setOf(catalogEntry.locationKey)
         coEvery {
-            municipalityCatalogRepository.resolveDataAvailability(state, "CAMPINAS", surveyWeek)
-        } returns DataAvailability.NO_DATA_THIS_WEEK
+            municipalityCatalogRepository.getLocationKeysEverInAnp()
+        } returns setOf(catalogEntry.locationKey, campinasEntry.locationKey)
 
         val result = useCase.getMunicipalities(state)
 
@@ -101,6 +110,8 @@ class SelectLocationUseCaseTest {
             ),
             result.municipalities,
         )
+        coVerify(exactly = 1) { municipalityCatalogRepository.getLocationKeysWithDataForWeek(surveyWeek) }
+        coVerify(exactly = 1) { municipalityCatalogRepository.getLocationKeysEverInAnp() }
     }
 
     @Test

@@ -169,26 +169,24 @@ object UseCaseModule {
     fun provideSearchMunicipalityUseCase(
         municipalitySearchRepository: MunicipalitySearchRepository,
         municipalityCatalogRepository: MunicipalityCatalogRepository,
-        averagePriceRepository: AveragePriceRepository,
         priceTableRepository: PriceTableRepository,
+        userPreferencesRepository: UserPreferencesRepository,
     ): SearchMunicipalityUseCase = SearchMunicipalityUseCase(
         municipalitySearchRepository = municipalitySearchRepository,
         municipalityCatalogRepository = municipalityCatalogRepository,
-        averagePriceRepository = averagePriceRepository,
         priceTableRepository = priceTableRepository,
+        userPreferencesRepository = userPreferencesRepository,
     )
 
     @Provides
     @Singleton
     fun provideSelectLocationUseCase(
         municipalityCatalogRepository: MunicipalityCatalogRepository,
-        averagePriceRepository: AveragePriceRepository,
         priceTableRepository: PriceTableRepository,
         userPreferencesRepository: UserPreferencesRepository,
         eventPublisher: DomainEventPublisher,
     ): SelectLocationUseCase = SelectLocationUseCase(
         municipalityCatalogRepository = municipalityCatalogRepository,
-        averagePriceRepository = averagePriceRepository,
         priceTableRepository = priceTableRepository,
         userPreferencesRepository = userPreferencesRepository,
         eventPublisher = eventPublisher,

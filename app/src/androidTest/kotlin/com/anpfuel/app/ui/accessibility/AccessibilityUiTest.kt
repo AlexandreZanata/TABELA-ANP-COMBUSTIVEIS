@@ -84,7 +84,7 @@ class AccessibilityUiTest {
             }
         }
 
-        composeTestRule.onNodeWithText("ANP Fuel Prices").assertIsDisplayed()
+        composeTestRule.onNodeWithText("ANP").assertIsDisplayed()
         composeTestRule.onNodeWithText("No fuel price data synced yet.").assertIsDisplayed()
     }
 

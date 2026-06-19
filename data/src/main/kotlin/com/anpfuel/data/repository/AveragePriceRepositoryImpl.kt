@@ -5,6 +5,7 @@ import com.anpfuel.data.local.dao.SurveyWeekDao
 import com.anpfuel.data.mapper.EntityDomainMapper
 import com.anpfuel.domain.model.AveragePrice
 import com.anpfuel.domain.repository.AveragePriceRepository
+import com.anpfuel.domain.rule.MunicipalitySearchTextNormalizer
 import com.anpfuel.domain.valueobject.BrazilianState
 import com.anpfuel.domain.valueobject.DomainId
 import com.anpfuel.domain.valueobject.FuelProduct
@@ -34,7 +35,7 @@ class AveragePriceRepositoryImpl @Inject constructor(
         return averagePriceDao.findByLocation(
             surveyWeekId = surveyWeekId,
             state = state.abbreviation,
-            municipality = municipality.trim(),
+            municipality = normalizeMunicipality(municipality),
         ).map { entity ->
             EntityDomainMapper.toAveragePrice(entity, surveyWeek)
         }
@@ -47,7 +48,7 @@ class AveragePriceRepositoryImpl @Inject constructor(
     ): List<AveragePrice> =
         averagePriceDao.findPriceHistory(
             state = state.abbreviation,
-            municipality = municipality.trim(),
+            municipality = normalizeMunicipality(municipality),
             fuelProduct = fuelProduct.name,
         ).map { entity ->
             val surveyWeekEntity = requireNotNull(
@@ -76,4 +77,7 @@ class AveragePriceRepositoryImpl @Inject constructor(
             state = state.abbreviation,
         )
     }
+
+    private fun normalizeMunicipality(municipality: String): String =
+        MunicipalitySearchTextNormalizer.normalize(municipality)
 }

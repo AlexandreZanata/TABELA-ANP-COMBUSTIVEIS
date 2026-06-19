@@ -6,6 +6,7 @@ import com.anpfuel.domain.repository.AveragePriceRepository
 import com.anpfuel.domain.repository.MunicipalityCatalogRepository
 import com.anpfuel.domain.repository.PriceTableRepository
 import com.anpfuel.domain.repository.UserPreferencesRepository
+import com.anpfuel.domain.rule.ActiveSurveyWeekRule
 import com.anpfuel.domain.rule.EmptyMunicipalityResultRule
 import com.anpfuel.domain.rule.SearchRequiresImportedDataRule
 import com.anpfuel.domain.valueobject.BrazilianState
@@ -46,7 +47,7 @@ class GetMunicipalityPricesUseCase(
         val resolvedState = state ?: requirePreferredState()
         val resolvedMunicipality = municipality?.trim()?.takeIf { it.isNotBlank() }
             ?: requirePreferredMunicipality()
-        val resolvedSurveyWeek = surveyWeek ?: requireLatestSurveyWeek()
+        val resolvedSurveyWeek = surveyWeek ?: resolveDisplaySurveyWeek()
 
         val prices = averagePriceRepository.getPricesByMunicipality(
             state = resolvedState,
@@ -84,7 +85,12 @@ class GetMunicipalityPricesUseCase(
             ?: throw DomainException("Preferred municipality is not set")
     }
 
-    private suspend fun requireLatestSurveyWeek(): SurveyWeek =
-        averagePriceRepository.getLatestImportedSurveyWeek()
-            ?: throw DomainException("BR-006: No successfully imported SurveyWeek is available")
+    private suspend fun resolveDisplaySurveyWeek(): SurveyWeek {
+        val preferences = userPreferencesRepository.getPreferences()
+        val importedSurveys = priceTableRepository.getImportedPriceSurveys()
+        return ActiveSurveyWeekRule.resolveDisplayWeek(
+            activeSurveyWeek = preferences.activeSurveyWeek,
+            importedSurveys = importedSurveys,
+        ) ?: throw DomainException("BR-006: No successfully imported SurveyWeek is available")
+    }
 }

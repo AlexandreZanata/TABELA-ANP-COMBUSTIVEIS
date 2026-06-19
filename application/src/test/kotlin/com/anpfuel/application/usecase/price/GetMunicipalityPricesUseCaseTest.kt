@@ -2,6 +2,7 @@ package com.anpfuel.application.usecase.price
 
 import com.anpfuel.domain.exception.DomainException
 import com.anpfuel.domain.model.AveragePrice
+import com.anpfuel.domain.model.PriceSurvey
 import com.anpfuel.domain.model.UserPreferences
 import com.anpfuel.domain.repository.AveragePriceRepository
 import com.anpfuel.domain.repository.MunicipalityCatalogRepository
@@ -49,6 +50,14 @@ class GetMunicipalityPricesUseCaseTest {
         )
 
         coEvery { priceTableRepository.countImportedSurveyWeeks() } returns 1
+        coEvery { priceTableRepository.getImportedPriceSurveys() } returns listOf(
+            PriceSurvey.restore(
+                id = DomainId.forSurveyWeek(surveyWeek),
+                surveyWeek = surveyWeek,
+                summaryImportedAt = java.time.Instant.parse("2026-06-14T10:00:00Z"),
+                stationImportedAt = null,
+            ),
+        )
         coEvery { averagePriceRepository.getLatestImportedSurveyWeek() } returns surveyWeek
         coEvery { userPreferencesRepository.getPreferences() } returns UserPreferences(
             preferredState = state,
@@ -58,7 +67,7 @@ class GetMunicipalityPricesUseCaseTest {
     }
 
     @Test
-    fun br006UsesLatestImportedSurveyWeekByDefault() = runTest {
+    fun br006FallsBackToLatestImportedSurveyWeekWhenNoActivePreference() = runTest {
         val prices = listOf(createAveragePrice(FuelProduct.ETHANOL))
         coEvery {
             averagePriceRepository.getPricesByMunicipality(state, municipality, surveyWeek)
@@ -69,7 +78,42 @@ class GetMunicipalityPricesUseCaseTest {
         assertEquals(surveyWeek, result.surveyWeek)
         assertEquals(prices, result.prices)
         assertEquals(DataAvailability.HAS_DATA, result.dataAvailability)
-        coVerify(exactly = 1) { averagePriceRepository.getLatestImportedSurveyWeek() }
+        coVerify(exactly = 1) { priceTableRepository.getImportedPriceSurveys() }
+        coVerify(exactly = 0) { averagePriceRepository.getLatestImportedSurveyWeek() }
+    }
+
+    @Test
+    fun br019UsesActiveSurveyWeekWhenImportedLocally() = runTest {
+        val olderWeek = SurveyWeek.fromIsoDates("2026-05-31", "2026-06-06")
+        val latestWeek = SurveyWeek.fromIsoDates("2026-06-07", "2026-06-13")
+        coEvery { userPreferencesRepository.getPreferences() } returns UserPreferences(
+            preferredState = state,
+            preferredMunicipality = municipality,
+            activeSurveyWeek = olderWeek,
+        )
+        coEvery { priceTableRepository.getImportedPriceSurveys() } returns listOf(
+            PriceSurvey.restore(
+                id = DomainId.forSurveyWeek(olderWeek),
+                surveyWeek = olderWeek,
+                summaryImportedAt = java.time.Instant.parse("2026-06-07T10:00:00Z"),
+                stationImportedAt = null,
+            ),
+            PriceSurvey.restore(
+                id = DomainId.forSurveyWeek(latestWeek),
+                surveyWeek = latestWeek,
+                summaryImportedAt = java.time.Instant.parse("2026-06-14T10:00:00Z"),
+                stationImportedAt = null,
+            ),
+        )
+        val prices = listOf(createAveragePrice(FuelProduct.ETHANOL, week = olderWeek))
+        coEvery {
+            averagePriceRepository.getPricesByMunicipality(state, municipality, olderWeek)
+        } returns prices
+
+        val result = useCase.invoke()
+
+        assertEquals(olderWeek, result.surveyWeek)
+        assertEquals(prices, result.prices)
     }
 
     @Test

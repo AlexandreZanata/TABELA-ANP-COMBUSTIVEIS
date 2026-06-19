@@ -3,16 +3,20 @@ package com.anpfuel.app.support
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.work.WorkManager
 import com.anpfuel.data.local.AnpFuelDatabase
 import com.anpfuel.data.local.AnpFuelDatabaseMigrations
 import com.anpfuel.data.local.entity.AveragePriceEntity
 import com.anpfuel.data.local.entity.SurveyWeekEntity
+import com.anpfuel.data.local.preferences.SyncStateDataStore
 import com.anpfuel.data.local.preferences.UserPreferencesDataStore
 import com.anpfuel.domain.model.UserPreferences
+import com.anpfuel.domain.state.SyncJobState
 import com.anpfuel.domain.valueobject.BrazilianState
 import com.anpfuel.domain.valueobject.DomainId
 import com.anpfuel.domain.valueobject.SurveyWeek
 import java.io.File
+import kotlinx.coroutines.runBlocking
 
 /**
  * Seeds on-device preferences and Room data for instrumented app flows.
@@ -25,16 +29,38 @@ object InstrumentedAppDataSeeder {
 
     suspend fun seedReturningUserHomeState(context: Context) {
         clearAppStorage(context)
+        seedPostSyncState(
+            context = context,
+            municipality = "Curitiba",
+            state = BrazilianState.PARANA,
+            surveyWeek = SurveyWeek.fromIsoDates("2026-06-07", "2026-06-13"),
+        )
+    }
 
-        val surveyWeek = SurveyWeek.fromIsoDates("2026-06-07", "2026-06-13")
+    suspend fun seedAppendixA2PostSyncState(context: Context) {
+        clearAppStorage(context)
+        seedPostSyncState(
+            context = context,
+            municipality = "Curitiba",
+            state = BrazilianState.PARANA,
+            surveyWeek = SurveyWeek.fromIsoDates("2026-06-07", "2026-06-13"),
+        )
+    }
+
+    private suspend fun seedPostSyncState(
+        context: Context,
+        municipality: String,
+        state: BrazilianState,
+        surveyWeek: SurveyWeek,
+    ) {
         val surveyWeekId = DomainId.forSurveyWeek(surveyWeek).value
 
         UserPreferencesDataStore(context).write(
             UserPreferences(
                 onboardingCompleted = true,
                 activeSurveyWeek = surveyWeek,
-                preferredMunicipality = "Curitiba",
-                preferredState = BrazilianState.PARANA,
+                preferredMunicipality = municipality,
+                preferredState = state,
             ),
         )
 
@@ -60,10 +86,10 @@ object InstrumentedAppDataSeeder {
             database.averagePriceDao().insertAll(
                 listOf(
                     AveragePriceEntity(
-                        id = "avg-curitiba-ethanol",
+                        id = "avg-$municipality-ethanol",
                         surveyWeekId = surveyWeekId,
-                        state = "PR",
-                        municipality = "CURITIBA",
+                        state = state.abbreviation,
+                        municipality = municipality.uppercase(),
                         fuelProduct = "ETHANOL",
                         stationCount = 42,
                         unit = "R$/l",
@@ -72,19 +98,46 @@ object InstrumentedAppDataSeeder {
                         maxPrice = 3.80,
                         stdDev = 0.12,
                     ),
+                    AveragePriceEntity(
+                        id = "avg-$municipality-gasoline",
+                        surveyWeekId = surveyWeekId,
+                        state = state.abbreviation,
+                        municipality = municipality.uppercase(),
+                        fuelProduct = "GASOLINE_REGULAR",
+                        stationCount = 38,
+                        unit = "R$/l",
+                        avgPrice = 5.89,
+                        minPrice = 5.50,
+                        maxPrice = 6.20,
+                        stdDev = 0.15,
+                    ),
                 ),
             )
         } finally {
             database.close()
         }
+
+        SyncStateDataStore(context).writeState(SyncJobState.COMPLETED)
     }
 
     fun clearAppStorage(context: Context) {
         context.deleteDatabase(DATABASE_NAME)
-        context.filesDir.resolve("datastore/user_preferences.preferences_pb").delete()
+        deleteDatastoreFiles(context, "user_preferences")
+        deleteDatastoreFiles(context, "sync_state")
         context.getDatabasePath(DATABASE_NAME).parentFile
             ?.listFiles()
             ?.filter { it.name.startsWith(DATABASE_NAME) }
+            ?.forEach(File::delete)
+        runCatching { WorkManager.getInstance(context).cancelAllWork() }
+        runBlocking {
+            SyncStateDataStore(context).writeState(SyncJobState.IDLE)
+        }
+    }
+
+    private fun deleteDatastoreFiles(context: Context, storeName: String) {
+        val datastoreDir = context.filesDir.resolve("datastore")
+        datastoreDir.listFiles()
+            ?.filter { it.name.startsWith(storeName) }
             ?.forEach(File::delete)
     }
 }

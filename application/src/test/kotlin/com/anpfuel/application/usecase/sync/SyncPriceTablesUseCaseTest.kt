@@ -160,16 +160,25 @@ class SyncPriceTablesUseCaseTest {
     }
 
     @Test
-    fun rejectsConcurrentSyncPerBr015() = runTest {
-        syncState = SyncJobState.DOWNLOADING
+    fun recoversOrphanedActiveSyncStateBeforeStartingSync() = runTest {
+        syncState = SyncJobState.DISCOVERING
+        val discovered = latestWeekTables()
+        val downloadedSummary = discovered.first().copy(checksum = "summary-sha")
+        val downloadedStation = discovered.last().copy(checksum = "station-sha")
 
-        assertThrows(DomainException::class.java) {
-            kotlinx.coroutines.runBlocking {
-                useCase.invoke(SyncRequestSource.MANUAL)
-            }
-        }
+        coEvery { userPreferencesRepository.getPreferences() } returns UserPreferences(syncStationDetail = true)
+        coEvery { priceTableSyncGateway.discoverPriceTables() } returns discovered
+        coEvery { priceTableRepository.findPriceSurveyByWeek(surveyWeek) } returns null
+        coEvery { priceTableRepository.findPriceTableByUrl(any()) } returns null
+        coEvery { priceTableSyncGateway.downloadPriceTable(discovered.first()) } returns downloadedSummary
+        coEvery { priceTableSyncGateway.downloadPriceTable(discovered.last()) } returns downloadedStation
+        coEvery { priceTableSyncGateway.importWeeklySummary(downloadedSummary) } returns summaryImportPayload()
+        coEvery { priceTableSyncGateway.importStationDetail(downloadedStation) } returns stationImportPayload()
 
-        coVerify(exactly = 0) { priceTableSyncGateway.discoverPriceTables() }
+        val result = useCase.invoke(SyncRequestSource.MANUAL)
+
+        assertEquals(SyncJobOutcome.SUCCESS, result.outcome)
+        coVerify(exactly = 1) { priceTableSyncGateway.discoverPriceTables() }
     }
 
     @Test

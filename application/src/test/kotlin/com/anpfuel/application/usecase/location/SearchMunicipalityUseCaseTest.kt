@@ -3,12 +3,16 @@ package com.anpfuel.application.usecase.location
 import com.anpfuel.application.error.AppError
 import com.anpfuel.domain.exception.DomainException
 import com.anpfuel.domain.model.MunicipalitySearchResult
-import com.anpfuel.domain.repository.AveragePriceRepository
+import com.anpfuel.domain.model.PriceSurvey
+import com.anpfuel.domain.model.UserPreferences
 import com.anpfuel.domain.repository.MunicipalityCatalogRepository
 import com.anpfuel.domain.repository.MunicipalitySearchRepository
 import com.anpfuel.domain.repository.PriceTableRepository
+import com.anpfuel.domain.repository.UserPreferencesRepository
 import com.anpfuel.domain.valueobject.BrazilianState
 import com.anpfuel.domain.valueobject.DataAvailability
+import com.anpfuel.domain.valueobject.DomainId
+import com.anpfuel.domain.valueobject.MunicipalityCatalogEntry
 import com.anpfuel.domain.valueobject.SurveyWeek
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -24,8 +28,8 @@ class SearchMunicipalityUseCaseTest {
 
     private val municipalitySearchRepository = mockk<MunicipalitySearchRepository>()
     private val municipalityCatalogRepository = mockk<MunicipalityCatalogRepository>()
-    private val averagePriceRepository = mockk<AveragePriceRepository>()
     private val priceTableRepository = mockk<PriceTableRepository>()
+    private val userPreferencesRepository = mockk<UserPreferencesRepository>()
 
     private lateinit var useCase: SearchMunicipalityUseCase
 
@@ -36,11 +40,21 @@ class SearchMunicipalityUseCaseTest {
         useCase = SearchMunicipalityUseCase(
             municipalitySearchRepository = municipalitySearchRepository,
             municipalityCatalogRepository = municipalityCatalogRepository,
-            averagePriceRepository = averagePriceRepository,
             priceTableRepository = priceTableRepository,
+            userPreferencesRepository = userPreferencesRepository,
         )
         coEvery { priceTableRepository.countImportedSurveyWeeks() } returns 1
-        coEvery { averagePriceRepository.getLatestImportedSurveyWeek() } returns surveyWeek
+        coEvery { priceTableRepository.getImportedPriceSurveys() } returns listOf(
+            PriceSurvey.restore(
+                id = DomainId.forSurveyWeek(surveyWeek),
+                surveyWeek = surveyWeek,
+                summaryImportedAt = java.time.Instant.parse("2026-06-14T10:00:00Z"),
+                stationImportedAt = null,
+            ),
+        )
+        coEvery { userPreferencesRepository.getPreferences() } returns UserPreferences()
+        coEvery { municipalityCatalogRepository.getLocationKeysWithDataForWeek(surveyWeek) } returns emptySet()
+        coEvery { municipalityCatalogRepository.getLocationKeysEverInAnp() } returns emptySet()
     }
 
     @Test
@@ -75,19 +89,28 @@ class SearchMunicipalityUseCaseTest {
         )
         coEvery { municipalitySearchRepository.search("sao", 20) } returns matches
         coEvery {
-            municipalityCatalogRepository.resolveDataAvailability(
-                BrazilianState.SAO_PAULO,
-                "SÃO PAULO",
-                surveyWeek,
-            )
-        } returns DataAvailability.HAS_DATA
+            municipalityCatalogRepository.findCatalogEntry(BrazilianState.SAO_PAULO, "SÃO PAULO")
+        } returns MunicipalityCatalogEntry(
+            state = BrazilianState.SAO_PAULO,
+            municipality = "SÃO PAULO",
+            ibgeCode = "3550308",
+        )
         coEvery {
-            municipalityCatalogRepository.resolveDataAvailability(
-                BrazilianState.ACRE,
-                "ACRELÂNDIA",
-                surveyWeek,
-            )
-        } returns DataAvailability.NEVER_IN_ANP
+            municipalityCatalogRepository.findCatalogEntry(BrazilianState.ACRE, "ACRELÂNDIA")
+        } returns MunicipalityCatalogEntry(
+            state = BrazilianState.ACRE,
+            municipality = "ACRELÂNDIA",
+            ibgeCode = "1200013",
+        )
+        coEvery {
+            municipalityCatalogRepository.getLocationKeysWithDataForWeek(surveyWeek)
+        } returns setOf(
+            MunicipalityCatalogEntry(
+                state = BrazilianState.SAO_PAULO,
+                municipality = "SÃO PAULO",
+                ibgeCode = "3550308",
+            ).locationKey,
+        )
 
         val outcome = useCase.search("  sao ")
 

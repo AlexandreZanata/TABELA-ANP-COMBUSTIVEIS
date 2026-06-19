@@ -44,7 +44,7 @@ class AppStartupPerformanceTest {
     }
 
     companion object {
-        const val HOME_TITLE = "ANP Fuel Prices"
+        const val HOME_TITLE = "ANP"
         const val STARTUP_LIMIT_MS = 2_000L
 
         @BeforeClass

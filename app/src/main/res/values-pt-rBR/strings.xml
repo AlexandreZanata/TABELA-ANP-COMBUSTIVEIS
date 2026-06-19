@@ -13,7 +13,7 @@
     <string name="nav_settings">Configurações</string>
 
     <!-- Home (UC-005) -->
-    <string name="home_title">Preços ANP Combustíveis</string>
+    <string name="home_title">ANP</string>
     <string name="home_location_format">%1$s, %2$s</string>
     <string name="home_no_location_message">Nenhuma cidade selecionada.</string>
     <string name="home_no_location_hint">Busque ou navegue por estado para ver os preços.</string>

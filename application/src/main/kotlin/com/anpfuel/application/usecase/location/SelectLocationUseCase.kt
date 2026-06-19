@@ -3,13 +3,14 @@ package com.anpfuel.application.usecase.location
 import com.anpfuel.domain.event.CitySelected
 import com.anpfuel.domain.exception.DomainException
 import com.anpfuel.domain.model.UserPreferences
-import com.anpfuel.domain.repository.AveragePriceRepository
 import com.anpfuel.domain.repository.DomainEventPublisher
 import com.anpfuel.domain.repository.MunicipalityCatalogRepository
 import com.anpfuel.domain.repository.PriceTableRepository
 import com.anpfuel.domain.repository.UserPreferencesRepository
 import com.anpfuel.domain.rule.EmptyMunicipalityResultRule
+import com.anpfuel.domain.rule.MunicipalityDataAvailabilityRule
 import com.anpfuel.domain.rule.SearchRequiresImportedDataRule
+import com.anpfuel.domain.rule.ActiveSurveyWeekRule
 import com.anpfuel.domain.valueobject.BrazilianState
 import com.anpfuel.domain.valueobject.DataAvailability
 import com.anpfuel.domain.valueobject.DomainId
@@ -46,7 +47,6 @@ data class SelectLocationResult(
 
 class SelectLocationUseCase(
     private val municipalityCatalogRepository: MunicipalityCatalogRepository,
-    private val averagePriceRepository: AveragePriceRepository,
     private val priceTableRepository: PriceTableRepository,
     private val userPreferencesRepository: UserPreferencesRepository,
     private val eventPublisher: DomainEventPublisher,
@@ -54,7 +54,7 @@ class SelectLocationUseCase(
 
     suspend fun getStatesWithData(): LocationStatesResult {
         requireImportedData()
-        val surveyWeek = requireLatestSurveyWeek()
+        val surveyWeek = resolveDisplaySurveyWeek()
         val states = municipalityCatalogRepository.getCatalogStates()
 
         return LocationStatesResult(
@@ -65,18 +65,23 @@ class SelectLocationUseCase(
 
     suspend fun getMunicipalities(state: BrazilianState): LocationMunicipalitiesResult {
         requireImportedData()
-        val surveyWeek = requireLatestSurveyWeek()
-        val municipalities = municipalityCatalogRepository.getCatalogMunicipalities(state)
-            .map { entry ->
-                CatalogMunicipalityItem(
-                    municipality = entry.municipality,
-                    dataAvailability = municipalityCatalogRepository.resolveDataAvailability(
-                        state = entry.state,
-                        municipality = entry.municipality,
-                        surveyWeek = surveyWeek,
-                    ),
-                )
-            }
+        val surveyWeek = resolveDisplaySurveyWeek()
+        val surveyWeekId = DomainId.forSurveyWeek(surveyWeek)
+        val entries = municipalityCatalogRepository.getCatalogMunicipalities(state)
+        val municipalitiesWithDataThisWeek =
+            municipalityCatalogRepository.getLocationKeysWithDataForWeek(surveyWeek)
+        val municipalitiesEverInAnp = municipalityCatalogRepository.getLocationKeysEverInAnp()
+        val municipalities = entries.map { entry ->
+            CatalogMunicipalityItem(
+                municipality = entry.municipality,
+                dataAvailability = MunicipalityDataAvailabilityRule.resolve(
+                    entry = entry,
+                    surveyWeekId = surveyWeekId,
+                    municipalitiesWithDataThisWeek = municipalitiesWithDataThisWeek,
+                    municipalitiesEverInAnp = municipalitiesEverInAnp,
+                ),
+            )
+        }
 
         return LocationMunicipalitiesResult(
             surveyWeek = surveyWeek,
@@ -101,7 +106,7 @@ class SelectLocationUseCase(
         municipality: String,
     ): SelectLocationResult {
         requireImportedData()
-        val surveyWeek = requireLatestSurveyWeek()
+        val surveyWeek = resolveDisplaySurveyWeek()
         validateMunicipalitySelection(
             state = state,
             municipality = municipality,
@@ -136,9 +141,14 @@ class SelectLocationUseCase(
         )
     }
 
-    private suspend fun requireLatestSurveyWeek(): SurveyWeek =
-        averagePriceRepository.getLatestImportedSurveyWeek()
-            ?: throw DomainException("BR-006: No successfully imported SurveyWeek is available")
+    private suspend fun resolveDisplaySurveyWeek(): SurveyWeek {
+        val preferences = userPreferencesRepository.getPreferences()
+        val importedSurveys = priceTableRepository.getImportedPriceSurveys()
+        return ActiveSurveyWeekRule.resolveDisplayWeek(
+            activeSurveyWeek = preferences.activeSurveyWeek,
+            importedSurveys = importedSurveys,
+        ) ?: throw DomainException("BR-006: No successfully imported SurveyWeek is available")
+    }
 
     private suspend fun validateMunicipalitySelection(
         state: BrazilianState,

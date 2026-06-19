@@ -17,4 +17,10 @@ object SyncJobConcurrencyRule {
     }
 
     fun canStartSync(currentState: SyncJobState): Boolean = !currentState.isActive
+
+    /**
+     * Clears orphaned active state left when a previous sync was interrupted (e.g. process death).
+     */
+    fun recoverOrphanedActiveState(currentState: SyncJobState): SyncJobState =
+        if (currentState.isActive) SyncJobState.IDLE else currentState
 }

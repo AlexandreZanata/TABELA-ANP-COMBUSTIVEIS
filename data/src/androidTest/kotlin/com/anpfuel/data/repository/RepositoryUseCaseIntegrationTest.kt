@@ -68,8 +68,8 @@ class RepositoryUseCaseIntegrationTest {
         searchMunicipalityUseCase = SearchMunicipalityUseCase(
             municipalitySearchRepository = municipalitySearchRepository,
             municipalityCatalogRepository = municipalityCatalogRepository,
-            averagePriceRepository = averagePriceRepository,
             priceTableRepository = priceTableRepository,
+            userPreferencesRepository = InMemoryUserPreferencesRepository(),
         )
 
         runBlocking {

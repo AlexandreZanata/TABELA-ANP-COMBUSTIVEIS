@@ -1,7 +1,9 @@
 package com.anpfuel.application.usecase.sync
 
 import com.anpfuel.application.error.AppError
+import com.anpfuel.application.error.AppErrorResolver
 import com.anpfuel.domain.event.SyncJobOutcome
+import com.anpfuel.domain.exception.DomainException
 import com.anpfuel.domain.event.SyncRequestSource
 import com.anpfuel.domain.valueobject.SurveyWeek
 import com.anpfuel.domain.valueobject.SurveyWeekSelectionMode
@@ -29,22 +31,28 @@ class SelectWeekAndSyncUseCase(
         selectionMode: SurveyWeekSelectionMode,
         source: SyncRequestSource = SyncRequestSource.MANUAL,
     ): SelectWeekAndSyncResult {
-        selectSurveyWeekUseCase(
-            surveyWeek = surveyWeek,
-            selectionMode = selectionMode,
-        )
+        return try {
+            selectSurveyWeekUseCase(
+                surveyWeek = surveyWeek,
+                selectionMode = selectionMode,
+            )
 
-        val syncResult = syncPriceTablesUseCase(
-            source = source,
-            targetSurveyWeek = surveyWeek,
-        )
+            val syncResult = syncPriceTablesUseCase(
+                source = source,
+                targetSurveyWeek = surveyWeek,
+            )
 
-        if (syncResult.outcome == SyncJobOutcome.FAILED) {
-            return SelectWeekAndSyncResult.Failed(
-                error = syncResult.error ?: AppError.SyncNetworkError,
+            if (syncResult.outcome == SyncJobOutcome.FAILED) {
+                SelectWeekAndSyncResult.Failed(
+                    error = syncResult.error ?: AppError.SyncNetworkError,
+                )
+            } else {
+                SelectWeekAndSyncResult.Success(syncResult = syncResult)
+            }
+        } catch (exception: DomainException) {
+            SelectWeekAndSyncResult.Failed(
+                error = AppErrorResolver.fromThrowable(exception),
             )
         }
-
-        return SelectWeekAndSyncResult.Success(syncResult = syncResult)
     }
 }

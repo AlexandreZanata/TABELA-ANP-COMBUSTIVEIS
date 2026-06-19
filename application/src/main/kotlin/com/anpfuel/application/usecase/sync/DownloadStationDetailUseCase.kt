@@ -183,7 +183,10 @@ class DownloadStationDetailUseCase(
 
     private suspend fun prepareForSync() {
         val current = syncJobRepository.getCurrentState()
-        if (current == SyncJobState.COMPLETED || current == SyncJobState.FAILED) {
+        val recovered = SyncJobConcurrencyRule.recoverOrphanedActiveState(current)
+        if (recovered != current) {
+            syncJobRepository.saveState(recovered)
+        } else if (current.isTerminal) {
             transitionTo(SyncJobState.IDLE)
         }
         SyncJobConcurrencyRule.validateCanStartSync(syncJobRepository.getCurrentState())
