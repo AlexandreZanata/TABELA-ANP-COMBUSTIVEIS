@@ -119,6 +119,8 @@ Validate a release locally:
 ```bash
 ./gradlew validateReleaseBuild     # signed APK/AAB (v2.0.0)
 ./gradlew validateReleaseTag       # version, license, disclaimers (Gate 15)
+./gradlew validateGate15Release    # tag, artifacts, release notes (Gate 15)
+./gradlew publishGithubRelease     # dry-run GitHub Release publish (R2.3)
 ./gradlew test                     # full unit test suite (all modules)
 ```
 

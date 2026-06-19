@@ -81,6 +81,20 @@ tasks.register<Exec>("createReleaseTag") {
     isIgnoreExitValue = false
 }
 
+tasks.register<Exec>("validateGate15Release") {
+    group = "verification"
+    description = "Validates Gate 15 v2.0.0 criteria — tag, artifacts, release notes (Phase R2)"
+    commandLine("bash", "scripts/validate-gate-15-release.sh")
+    isIgnoreExitValue = false
+}
+
+tasks.register<Exec>("publishGithubRelease") {
+    group = "release"
+    description = "Dry-run GitHub Release publish for v2.0.0 (pass --args='--publish' to release)"
+    commandLine("bash", "scripts/publish-github-release.sh")
+    isIgnoreExitValue = false
+}
+
 gradle.projectsEvaluated {
     tasks.findByPath(":app:connectedDebugAndroidTest")?.mustRunAfter(
         ":data:connectedDebugAndroidTest",

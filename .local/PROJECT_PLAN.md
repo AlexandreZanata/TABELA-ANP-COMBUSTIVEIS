@@ -24,30 +24,9 @@ This document lists **only what remains** to reach **100% plan completion** (all
 | **Gate 11** | Manual search script (10 cities + homonyms) | R3 |
 | **Gate 12** | Appendix A2 manual not signed off | R3 |
 | **Gate 13** | Manual safe-area check (API 34 + notch device) | R3 |
-| **Gate 15** | Tag `v2.0.0` local; GitHub Release not published | R2 |
+| **Gate 15** | GitHub Release publish + Appendix A2 sign-off pending | R2/R3 |
 | **Risk 12** | Week list “load more” UX (200+ weeks) | R5 |
 | **15.1.2** | README screenshot PNGs missing | R4 |
-
----
-
-## Phase R2 — Release tooling & Gate 15 (v2.0.0)
-
-**Goal:** Ship v2.0.0 the same way v1.0.0 shipped — scripts, tag, artifacts, GitHub Release.
-
-### R2.3 Publish (maintainer)
-
-- [ ] **R2.3.1** Push branch + tag: `git push origin main && git push origin v2.0.0`
-- [ ] **R2.3.2** Create GitHub Release from tag `v2.0.0` using [docs/releases/v2.0.0.md](../docs/releases/v2.0.0.md)
-- [ ] **R2.3.3** Attach `app-release.apk` (+ optional `app-release.aab`) as release assets
-
-**✅ Gate 15 — v2 release passed:**
-
-| Criterion | Target |
-|-----------|--------|
-| Tag | `v2.0.0` exists on release commit |
-| Artifacts | Signed APK/AAB built |
-| GitHub Release | Notes mention week picker, national search, safe areas, fuel icons |
-| Manual sign-off | Appendix A2 complete (Phase R3) |
 
 ---
 
@@ -204,5 +183,6 @@ R5 (load more UX) → R4 (screenshots)
 - **R1 (automated gates):** JVM suite, connectedCheck (Gate 9), assembleRelease (Gate 14), verifyReleaseApkSize, securityCheck — all green on device 2311DRK48G (2026-06-19)
 - **R2.1 (release scripts):** validate-release-tag, validate-github-release-notes, create-release-tag, Gradle tasks, README — pinned to v2.0.0 / Gate 15 (2026-06-19)
 - **R2.2 (build & tag local):** validateReleaseBuild (signed APK ~2.05 MB + AAB), validateReleaseTag, annotated tag `v2.0.0` at `55f0cbb` — local only (2026-06-19)
+- **R2.3 (publish dry-run):** validateGate15Release + publishGithubRelease dry-run; `publish-github-release.sh --publish` for maintainer push + gh release (2026-06-19)
 
 </details>
