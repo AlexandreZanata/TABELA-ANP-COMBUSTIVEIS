@@ -1,18 +1,15 @@
 package com.anpfuel.app.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -26,8 +23,6 @@ import androidx.compose.ui.unit.dp
 import com.anpfuel.app.mapper.FuelProductDrawable
 import com.anpfuel.app.mapper.FuelProductI18n
 import com.anpfuel.app.ui.theme.AnpFuelTheme
-import com.anpfuel.app.ui.theme.FuelPremiumBadge
-import com.anpfuel.app.ui.theme.FuelProductTint
 import com.anpfuel.domain.valueobject.FuelProduct
 
 @Composable
@@ -37,9 +32,10 @@ fun FuelProductIcon(
     size: Dp = 24.dp,
     contentDescription: String? = stringResource(FuelProductI18n.toStringRes(product)),
 ) {
-    val tint = FuelProductTint.colorFor(product)
-
-    Box(
+    Icon(
+        painter = painterResource(FuelProductDrawable.toDrawableRes(product)),
+        contentDescription = contentDescription,
+        tint = Color.Unspecified,
         modifier = modifier
             .size(size)
             .then(
@@ -49,24 +45,7 @@ fun FuelProductIcon(
                     Modifier.clearAndSetSemantics {}
                 },
             ),
-    ) {
-        Icon(
-            painter = painterResource(FuelProductDrawable.toDrawableRes(product)),
-            contentDescription = null,
-            tint = tint,
-            modifier = Modifier.fillMaxSize(),
-        )
-        if (product == FuelProduct.GASOLINE_PREMIUM) {
-            Icon(
-                imageVector = Icons.Filled.Star,
-                contentDescription = null,
-                tint = FuelPremiumBadge,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .size(size * 0.42f),
-            )
-        }
-    }
+    )
 }
 
 @Composable

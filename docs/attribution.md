@@ -4,13 +4,9 @@ This document lists open-source assets bundled with the ANP Fuel Prices app and 
 
 ## Fuel product icons (Phase 14)
 
-### Library selection
+### Source
 
-| Library | License | Decision |
-|---------|---------|----------|
-| [Material Design Icons (Pictogrammers)](https://pictogrammers.com/library/mdi/) | Apache 2.0 | **Selected** — aligns with Material 3 UI, single consistent set, fuel-related glyphs available |
-| [Phosphor Icons](https://phosphoricons.com/) | MIT | Not selected — would mix stroke weights with Material components |
-| [Tabler Icons](https://tabler.io/icons) | MIT | Not selected — stroke style diverges from filled MDI icons |
+Custom fuel glyphs created for this project. Raster sources and traced SVG copies live under `docs/assets/fuel-icons/`. Android drawables are transparent PNGs in `app/src/main/res/drawable-nodpi/`.
 
 ### Trademark policy (BR-014 / Phase 14.1.2)
 
@@ -19,44 +15,23 @@ Icons are **generic** fuel-industry symbols only. The app does **not** include:
 - Petrobras, Ipiranga, Shell, or any retail brand logos
 - Brand-specific pump artwork or trademarked color schemes tied to a distributor
 
-### Source
+### Icon mapping (`FuelProduct` → drawable)
 
-- **Project:** [Pictogrammers / Material Design Icons](https://pictogrammers.com/library/mdi/)
-- **Upstream repository:** [Templarian/MaterialDesign-SVG](https://github.com/Templarian/MaterialDesign-SVG)
-- **License:** [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
-- **SVG copies in repo:** `docs/assets/icons/mdi/`
+| `FuelProduct` | Source file | Android drawable | Notes |
+|---------------|-------------|------------------|-------|
+| `ETHANOL` | `ETANOL.png` | `ic_fuel_ethanol.png` | Green droplet + leaf |
+| `GASOLINE_REGULAR` | `GASOLINA COMUN.png` | `ic_fuel_gasoline_regular.png` | Orange pump |
+| `GASOLINE_PREMIUM` | `GASOLINA ADTIVADA.png` | `ic_fuel_gasoline_premium.png` | Distinct premium pump |
+| `DIESEL_S500` | `DIESEL S500.png` | `ic_fuel_diesel_s500.png` | Purple pump, S500 label |
+| `DIESEL_S10` | `DIESEL S10.png` | `ic_fuel_diesel_s10.png` | Purple pump, S10 label |
+| `CNG` | `GNV.png` | `ic_fuel_cng.png` | CNG cylinder |
+| `LPG_P13` | `GLP.png` | `ic_fuel_lpg_p13.png` | LPG tank |
 
-### Icon mapping (`FuelProduct` → MDI → drawable)
+Drawables are full-color PNGs; Compose renders them with `Color.Unspecified` tint.
 
-| `FuelProduct` | MDI icon | Android drawable | Notes |
-|---------------|----------|------------------|-------|
-| `ETHANOL` | `barrel` | `ic_fuel_ethanol.xml` | Biofuel barrel metaphor |
-| `GASOLINE_REGULAR` | `gas-station` | `ic_fuel_gasoline_regular.xml` | Generic pump / station |
-| `GASOLINE_PREMIUM` | `gas-station` | `ic_fuel_gasoline_premium.xml` | Same base; star badge in Phase 14.2 |
-| `DIESEL_S500` | `oil` | `ic_fuel_diesel_s500.xml` | Oil drop + dispenser |
-| `DIESEL_S10` | `oil` | `ic_fuel_diesel_s10.xml` | Same base; variant tint in Phase 14.2 |
-| `CNG` | `gas-cylinder` | `ic_fuel_cng.xml` | Compressed natural gas cylinder |
-| `LPG_P13` | `propane-tank` | `ic_fuel_lpg_p13.xml` | LPG tank |
+### Legacy MDI icons
 
-Drawables use `#FF000000` fill so Compose `Icon` tint tokens apply per fuel in Phase 14.2.
-
-### Apache 2.0 notice
-
-```
-Copyright Material Design Icons / Pictogrammers contributors
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use these files except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
+Previous generic icons from [Material Design Icons (Pictogrammers)](https://pictogrammers.com/library/mdi/) (Apache 2.0) remain archived under `docs/assets/icons/mdi/` for reference only.
 
 ## ANP data source
 
