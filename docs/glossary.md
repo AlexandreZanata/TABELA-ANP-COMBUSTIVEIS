@@ -172,7 +172,7 @@
 **AND** always tie-break by state abbreviation (alphabetical)
 
 ### BR-018 — Week Selection Before Sync
-**GIVEN** user opens the app or requests first sync  
+**GIVEN** `autoDownloadLatestWeek` is disabled (BR-020)  
 **WHEN** `UserPreferences.activeSurveyWeek` is null  
 **THEN** show week picker before download starts  
 **AND** do not trigger UC-001 until a week is selected
@@ -182,6 +182,16 @@
 **WHEN** any price screen resolves the display week  
 **THEN** use W instead of BR-006 default-latest  
 **AND** keep W until user changes `activeSurveyWeek` or clears cache
+
+### BR-020 — Auto-Download Latest Survey Week
+**GIVEN** `autoDownloadLatestWeek` is enabled (default: `true`)  
+**WHEN** onboarding completes, app cold-starts, or background sync runs  
+**THEN** discover the ANP catalog, set `activeSurveyWeek` to the newest entry, and trigger UC-001 for that week  
+**AND** skip the week picker unless the user disabled this preference
+
+**GIVEN** the user disabled `autoDownloadLatestWeek`  
+**WHEN** no `activeSurveyWeek` is set  
+**THEN** require manual week selection (BR-018) before sync
 
 ## Acronyms
 

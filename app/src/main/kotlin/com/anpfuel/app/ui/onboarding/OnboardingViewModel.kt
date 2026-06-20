@@ -106,6 +106,22 @@ class OnboardingViewModel @Inject constructor(
 
             when (val outcome = discoverSurveyWeekCatalogUseCase()) {
                 is DiscoverSurveyWeekCatalogOutcome.Success -> {
+                    val preferences = userPreferencesRepository.getPreferences()
+                    if (preferences.autoDownloadLatestWeek) {
+                        val latestEntry = outcome.catalog.firstOrNull()
+                        if (latestEntry != null) {
+                            _uiState.update {
+                                it.copy(
+                                    catalog = outcome.catalog,
+                                    isLoadingCatalog = false,
+                                    catalogError = null,
+                                )
+                            }
+                            selectWeekAndSync(latestEntry, SurveyWeekSelectionMode.LATEST)
+                            return@launch
+                        }
+                    }
+
                     _uiState.update {
                         it.copy(
                             catalog = outcome.catalog,

@@ -193,6 +193,7 @@
     <string name="a11y_language_japanese">Japonés</string>
     <string name="settings_preferences_section">Preferencias</string>
     <string name="settings_sync_station_detail">Sincronizar detalle de estaciones en segundo plano</string>
+    <string name="settings_auto_download_latest_week">Descargar automáticamente la semana más reciente</string>
     <string name="settings_sync_wifi_only">Sincronización automática solo con Wi‑Fi</string>
     <string name="settings_show_price_history">Mostrar historial de precios</string>
     <string name="settings_retention_weeks">Retención de datos de estaciones</string>

@@ -193,6 +193,7 @@
     <string name="a11y_language_russian">ロシア語</string>
     <string name="settings_preferences_section">環境設定</string>
     <string name="settings_sync_station_detail">バックグラウンドでスタンド詳細を同期</string>
+    <string name="settings_auto_download_latest_week">最新の調査週を自動的にダウンロード</string>
     <string name="settings_sync_wifi_only">Wi‑Fi接続時のみ自動同期</string>
     <string name="settings_show_price_history">価格履歴を表示</string>
     <string name="settings_retention_weeks">スタンドデータの保持期間</string>

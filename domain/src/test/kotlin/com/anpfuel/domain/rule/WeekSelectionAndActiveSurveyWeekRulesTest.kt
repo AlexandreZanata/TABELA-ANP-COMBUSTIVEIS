@@ -14,8 +14,13 @@ class WeekSelectionAndActiveSurveyWeekRulesTest {
     private val latestWeek = SurveyWeek.fromIsoDates("2026-06-07", "2026-06-13")
 
     @Test
-    fun br018RequiresWeekSelectionWhenActiveWeekMissing() {
-        assertTrue(WeekSelectionBeforeSyncRule.requiresWeekSelection(activeSurveyWeek = null))
+    fun br018RequiresWeekSelectionWhenActiveWeekMissingAndAutoDownloadDisabled() {
+        assertTrue(
+            WeekSelectionBeforeSyncRule.requiresWeekSelection(
+                activeSurveyWeek = null,
+                autoDownloadLatestWeek = false,
+            ),
+        )
     }
 
     @Test

@@ -15,6 +15,7 @@ import com.anpfuel.application.usecase.settings.ClearCacheUseCase
 import com.anpfuel.application.usecase.settings.GetSettingsUseCase
 import com.anpfuel.application.usecase.settings.GetStorageUsageUseCase
 import com.anpfuel.application.usecase.settings.UpdatePreferencesUseCase
+import com.anpfuel.application.usecase.sync.AutoDownloadLatestWeekUseCase
 import com.anpfuel.application.usecase.sync.DiscoverSurveyWeekCatalogUseCase
 import com.anpfuel.application.usecase.sync.DownloadStationDetailUseCase
 import com.anpfuel.application.usecase.sync.SelectSurveyWeekUseCase
@@ -140,6 +141,20 @@ object UseCaseModule {
     ): CompleteOnboardingUseCase = CompleteOnboardingUseCase(
         userPreferencesRepository = userPreferencesRepository,
         priceTableRepository = priceTableRepository,
+    )
+
+    @Provides
+    @Singleton
+    fun provideAutoDownloadLatestWeekUseCase(
+        userPreferencesRepository: UserPreferencesRepository,
+        priceTableRepository: PriceTableRepository,
+        discoverSurveyWeekCatalogUseCase: DiscoverSurveyWeekCatalogUseCase,
+        selectWeekAndSyncUseCase: SelectWeekAndSyncUseCase,
+    ): AutoDownloadLatestWeekUseCase = AutoDownloadLatestWeekUseCase(
+        userPreferencesRepository = userPreferencesRepository,
+        priceTableRepository = priceTableRepository,
+        discoverSurveyWeekCatalogUseCase = discoverSurveyWeekCatalogUseCase,
+        selectWeekAndSyncUseCase = selectWeekAndSyncUseCase,
     )
 
     @Provides

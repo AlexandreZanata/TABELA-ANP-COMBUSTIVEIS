@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anpfuel.app.navigation.Routes
 import com.anpfuel.application.usecase.navigation.ResolveAppStartDestinationUseCase
+import com.anpfuel.application.usecase.sync.AutoDownloadLatestWeekUseCase
+import com.anpfuel.domain.event.SyncRequestSource
 import com.anpfuel.domain.model.AppStartDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -15,6 +17,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class AppStartViewModel @Inject constructor(
     private val resolveAppStartDestinationUseCase: ResolveAppStartDestinationUseCase,
+    private val autoDownloadLatestWeekUseCase: AutoDownloadLatestWeekUseCase,
 ) : ViewModel() {
 
     private val _startDestination = MutableStateFlow<String?>(null)
@@ -22,7 +25,11 @@ class AppStartViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _startDestination.value = resolveAppStartDestinationUseCase().toRoute()
+            val destination = resolveAppStartDestinationUseCase()
+            _startDestination.value = destination.toRoute()
+            if (destination == AppStartDestination.HOME) {
+                autoDownloadLatestWeekUseCase(SyncRequestSource.SCHEDULED)
+            }
         }
     }
 

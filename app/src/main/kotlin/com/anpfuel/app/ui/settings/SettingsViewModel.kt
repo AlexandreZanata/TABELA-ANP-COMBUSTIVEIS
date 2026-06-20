@@ -10,9 +10,12 @@ import com.anpfuel.application.usecase.settings.ClearCacheUseCase
 import com.anpfuel.application.usecase.settings.GetSettingsUseCase
 import com.anpfuel.application.usecase.settings.GetStorageUsageUseCase
 import com.anpfuel.application.usecase.settings.UpdatePreferencesUseCase
+import com.anpfuel.application.usecase.sync.AutoDownloadLatestWeekOutcome
+import com.anpfuel.application.usecase.sync.AutoDownloadLatestWeekUseCase
 import com.anpfuel.application.usecase.sync.SyncPriceTablesUseCase
 import com.anpfuel.data.worker.SyncWorkScheduler
 import com.anpfuel.domain.event.CacheClearScope
+import com.anpfuel.domain.event.SyncJobOutcome
 import com.anpfuel.domain.event.SyncRequestSource
 import com.anpfuel.domain.model.StorageUsage
 import com.anpfuel.domain.model.UserPreferences
@@ -55,6 +58,7 @@ class SettingsViewModel @Inject constructor(
     private val updatePreferencesUseCase: UpdatePreferencesUseCase,
     private val clearCacheUseCase: ClearCacheUseCase,
     private val syncPriceTablesUseCase: SyncPriceTablesUseCase,
+    private val autoDownloadLatestWeekUseCase: AutoDownloadLatestWeekUseCase,
     private val syncWorkScheduler: SyncWorkScheduler,
 ) : ViewModel() {
 
@@ -110,6 +114,10 @@ class SettingsViewModel @Inject constructor(
         updatePreferences(_uiState.value.preferences.copy(syncStationDetail = enabled))
     }
 
+    fun onAutoDownloadLatestWeekChanged(enabled: Boolean) {
+        updatePreferences(_uiState.value.preferences.copy(autoDownloadLatestWeek = enabled))
+    }
+
     fun onAutoSyncOnWifiChanged(enabled: Boolean) {
         updatePreferences(_uiState.value.preferences.copy(autoSyncOnWifi = enabled)) {
             syncWorkScheduler.schedulePeriodicSync()
@@ -134,13 +142,33 @@ class SettingsViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isSyncing = true, error = null, syncMessage = null) }
-            runCatching {
-                syncPriceTablesUseCase(SyncRequestSource.MANUAL)
-            }.onFailure { error ->
+            val syncError = runCatching {
+                when (val outcome = autoDownloadLatestWeekUseCase(SyncRequestSource.MANUAL)) {
+                    is AutoDownloadLatestWeekOutcome.Disabled -> {
+                        val result = syncPriceTablesUseCase(SyncRequestSource.MANUAL)
+                        if (result.outcome == SyncJobOutcome.FAILED) {
+                            result.error ?: AppError.SyncNetworkError
+                        } else {
+                            null
+                        }
+                    }
+                    is AutoDownloadLatestWeekOutcome.UpToDate -> null
+                    is AutoDownloadLatestWeekOutcome.Success -> {
+                        if (outcome.syncResult.outcome == SyncJobOutcome.FAILED) {
+                            outcome.syncResult.error ?: AppError.SyncNetworkError
+                        } else {
+                            null
+                        }
+                    }
+                    is AutoDownloadLatestWeekOutcome.Failed -> outcome.error
+                }
+            }.getOrElse { AppErrorResolver.fromThrowable(it) }
+
+            if (syncError != null) {
                 _uiState.update {
                     it.copy(
                         isSyncing = false,
-                        error = AppErrorResolver.fromThrowable(error),
+                        error = syncError,
                     )
                 }
                 return@launch

@@ -153,6 +153,7 @@ Stored on device only. No cloud sync in v1.
 | `preferredFuelProduct` | `FuelProduct?` | null | Highlights on home |
 | `locale` | BCP 47 (`en`, `pt-BR`) | system default | i18n rule |
 | `syncStationDetail` | boolean | `true` | BR-008 |
+| `autoDownloadLatestWeek` | boolean | `true` | BR-020 |
 | `stationDetailRetentionWeeks` | int | `12` | BR-013 |
 | `autoSyncOnWifi` | boolean | `true` | BR-014 |
 | `showPriceHistory` | boolean | `true` | UC-006 |
@@ -237,8 +238,9 @@ Rules referenced by use cases. Full list maintained in [glossary.md](glossary.md
 | BR-015 | Only one active `SyncJob` at a time |
 | BR-016 | Municipality catalog completeness (IBGE baseline) |
 | BR-017 | Intelligent search ranking tiers |
-| BR-018 | Week selection required before first sync when no active week |
+| BR-018 | Week selection required before sync when auto-download latest is disabled |
 | BR-019 | Active survey week overrides default-latest display |
+| BR-020 | Latest survey week auto-selected and synced unless user opts out |
 
 ---
 

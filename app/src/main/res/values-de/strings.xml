@@ -193,6 +193,7 @@
     <string name="a11y_language_russian">Russisch</string>
     <string name="settings_preferences_section">Einstellungen</string>
     <string name="settings_sync_station_detail">Tankstellendetails im Hintergrund synchronisieren</string>
+    <string name="settings_auto_download_latest_week">Neueste Erhebungswoche automatisch herunterladen</string>
     <string name="settings_sync_wifi_only">Automatische Synchronisierung nur über WLAN</string>
     <string name="settings_show_price_history">Preisverlauf anzeigen</string>
     <string name="settings_retention_weeks">Aufbewahrung von Tankstellendaten</string>

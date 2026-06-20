@@ -42,6 +42,7 @@ class UpdatePreferencesUseCase(
         if (current.preferredFuelProduct != updated.preferredFuelProduct) add(KEY_PREFERRED_FUEL_PRODUCT)
         if (current.localeTag != updated.localeTag) add(KEY_LOCALE_TAG)
         if (current.syncStationDetail != updated.syncStationDetail) add(KEY_SYNC_STATION_DETAIL)
+        if (current.autoDownloadLatestWeek != updated.autoDownloadLatestWeek) add(KEY_AUTO_DOWNLOAD_LATEST_WEEK)
         if (current.stationDetailRetentionWeeks != updated.stationDetailRetentionWeeks) {
             add(KEY_STATION_DETAIL_RETENTION_WEEKS)
         }
@@ -57,6 +58,7 @@ class UpdatePreferencesUseCase(
         const val KEY_PREFERRED_FUEL_PRODUCT = "preferredFuelProduct"
         const val KEY_LOCALE_TAG = "localeTag"
         const val KEY_SYNC_STATION_DETAIL = "syncStationDetail"
+        const val KEY_AUTO_DOWNLOAD_LATEST_WEEK = "autoDownloadLatestWeek"
         const val KEY_STATION_DETAIL_RETENTION_WEEKS = "stationDetailRetentionWeeks"
         const val KEY_AUTO_SYNC_ON_WIFI = "autoSyncOnWifi"
         const val KEY_SHOW_PRICE_HISTORY = "showPriceHistory"

@@ -241,6 +241,7 @@ class SyncPriceTablesUseCaseTest {
 
         coEvery { userPreferencesRepository.getPreferences() } returns UserPreferences(
             syncStationDetail = false,
+            autoDownloadLatestWeek = false,
             activeSurveyWeek = olderWeek,
         )
         coEvery { priceTableSyncGateway.discoverPriceTables() } returns discovered

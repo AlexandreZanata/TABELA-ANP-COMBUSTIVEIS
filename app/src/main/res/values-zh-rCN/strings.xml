@@ -193,6 +193,7 @@
     <string name="a11y_language_japanese">日语</string>
     <string name="settings_preferences_section">偏好设置</string>
     <string name="settings_sync_station_detail">在后台同步加油站详情</string>
+    <string name="settings_auto_download_latest_week">自动下载最新调查周</string>
     <string name="settings_sync_wifi_only">仅在 Wi‑Fi 下自动同步</string>
     <string name="settings_show_price_history">显示价格历史</string>
     <string name="settings_retention_weeks">加油站数据保留</string>

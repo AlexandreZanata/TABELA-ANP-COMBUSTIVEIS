@@ -23,8 +23,8 @@ Introduce the app value proposition and guide the user through survey week selec
    - Weekly updates, offline after sync.
    - Survey week selection overview (v2).
 3. User taps **Get started** on the last intro slide.
-4. System runs UC-009 week catalog discovery and shows the week picker (BR-018).
-5. User taps **Use latest week** or selects a specific historical week.
+4. System runs UC-009 week catalog discovery. If `autoDownloadLatestWeek` is enabled (BR-020, default), auto-selects latest week and syncs; otherwise shows the week picker (BR-018).
+5. When week picker is shown: user taps **Use latest week** or selects a specific historical week.
 6. System persists `activeSurveyWeek`, emits `SurveyWeekSelected`, and triggers UC-001 scoped to the selected week (`SyncRequested(FIRST_LAUNCH)`).
 7. On `SyncJobCompleted` success, system sets onboarding complete flag.
 8. System navigates to UC-003 (location selection) or home if `preferredMunicipality` exists.
@@ -51,7 +51,7 @@ Introduce the app value proposition and guide the user through survey week selec
 
 ## Business rules
 
-- BR-005, BR-009, BR-011, BR-018, BR-019
+- BR-005, BR-009, BR-011, BR-018, BR-019, BR-020
 
 ## Domain events
 

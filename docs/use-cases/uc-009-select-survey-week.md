@@ -19,7 +19,7 @@ Let the user choose **which ANP survey week** to download or browse — defaulti
 
 ## Main flow
 
-1. User opens the app on first launch, taps **Change week**, or has no `activeSurveyWeek` preference (BR-018).
+1. User opens the app on first launch, taps **Change week**, or has no `activeSurveyWeek` preference while `autoDownloadLatestWeek` is disabled (BR-018).
 2. System runs `DiscoverSurveyWeekCatalogUseCase` (Phase 12.3) or reads cached catalog metadata.
 3. System shows **WeekPickerScreen** with weeks ordered newest-first (gov.br parity).
 4. User taps **Use latest week** (`SurveyWeekSelectionMode.LATEST`) or selects a specific historical week (`SPECIFIC`).
@@ -53,9 +53,15 @@ Let the user choose **which ANP survey week** to download or browse — defaulti
 - **WHEN** `SurveyWeekCatalogEntry.operationalNote` is non-null  
 - **THEN** show collapsible banner on week picker and/or home (i18n `week_picker_operational_note`)
 
+### A5 — Auto-download latest week enabled (BR-020)
+
+- **WHEN** `autoDownloadLatestWeek` is true (default)  
+- **THEN** skip week picker on onboarding and cold start  
+- **AND** run `AutoDownloadLatestWeekUseCase` to select catalog latest and sync (UC-001)
+
 ## Business rules
 
-- BR-001, BR-006, BR-011, BR-015, BR-018, BR-019
+- BR-001, BR-006, BR-011, BR-015, BR-018, BR-019, BR-020
 
 ## Domain events
 

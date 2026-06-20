@@ -42,10 +42,23 @@ class ResolveAppStartDestinationUseCaseTest {
     }
 
     @Test
-    fun returnsWeekPickerWhenActiveSurveyWeekNotSet() = runTest {
+    fun returnsHomeWhenAutoDownloadLatestWeekEnabledAndActiveWeekMissing() = runTest {
         coEvery { userPreferencesRepository.getPreferences() } returns UserPreferences(
             onboardingCompleted = true,
             activeSurveyWeek = null,
+            autoDownloadLatestWeek = true,
+        )
+        coEvery { priceTableRepository.getImportedPriceSurveys() } returns emptyList()
+
+        assertEquals(AppStartDestination.HOME, useCase())
+    }
+
+    @Test
+    fun returnsWeekPickerWhenAutoDownloadLatestWeekDisabledAndActiveWeekMissing() = runTest {
+        coEvery { userPreferencesRepository.getPreferences() } returns UserPreferences(
+            onboardingCompleted = true,
+            activeSurveyWeek = null,
+            autoDownloadLatestWeek = false,
         )
         coEvery { priceTableRepository.getImportedPriceSurveys() } returns emptyList()
 
@@ -57,6 +70,7 @@ class ResolveAppStartDestinationUseCaseTest {
         coEvery { userPreferencesRepository.getPreferences() } returns UserPreferences(
             onboardingCompleted = true,
             activeSurveyWeek = activeWeek,
+            autoDownloadLatestWeek = false,
         )
         coEvery { priceTableRepository.getImportedPriceSurveys() } returns listOf(
             importedSurvey(activeWeek),
@@ -66,10 +80,11 @@ class ResolveAppStartDestinationUseCaseTest {
     }
 
     @Test
-    fun returnsWeekPickerWhenActiveWeekMissingLocally() = runTest {
+    fun returnsWeekPickerWhenActiveWeekMissingLocallyAndAutoDownloadDisabled() = runTest {
         coEvery { userPreferencesRepository.getPreferences() } returns UserPreferences(
             onboardingCompleted = true,
             activeSurveyWeek = activeWeek,
+            autoDownloadLatestWeek = false,
         )
         coEvery { priceTableRepository.getImportedPriceSurveys() } returns emptyList()
 

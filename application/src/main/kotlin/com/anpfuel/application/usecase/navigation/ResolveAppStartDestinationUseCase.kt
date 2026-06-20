@@ -21,6 +21,7 @@ class ResolveAppStartDestinationUseCase(
             onboardingCompleted = preferences.onboardingCompleted,
             activeSurveyWeek = preferences.activeSurveyWeek,
             importedSurveys = importedSurveys,
+            autoDownloadLatestWeek = preferences.autoDownloadLatestWeek,
         )
     }
 }

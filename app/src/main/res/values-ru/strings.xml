@@ -193,6 +193,7 @@
     <string name="a11y_language_russian">Русский</string>
     <string name="settings_preferences_section">Предпочтения</string>
     <string name="settings_sync_station_detail">Синхронизировать данные АЗС в фоне</string>
+    <string name="settings_auto_download_latest_week">Автоматически загружать последнюю неделю опроса</string>
     <string name="settings_sync_wifi_only">Автосинхронизация только по Wi‑Fi</string>
     <string name="settings_show_price_history">Показывать историю цен</string>
     <string name="settings_retention_weeks">Хранение данных АЗС</string>

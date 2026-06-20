@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.anpfuel.application.usecase.sync.AutoDownloadLatestWeekOutcome
+import com.anpfuel.application.usecase.sync.AutoDownloadLatestWeekUseCase
 import com.anpfuel.application.usecase.sync.SyncPriceTablesUseCase
 import com.anpfuel.domain.event.SyncJobOutcome
 import com.anpfuel.domain.event.SyncRequestSource
@@ -19,12 +21,22 @@ class SyncWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted params: WorkerParameters,
     private val syncPriceTablesUseCase: SyncPriceTablesUseCase,
+    private val autoDownloadLatestWeekUseCase: AutoDownloadLatestWeekUseCase,
 ) : CoroutineWorker(appContext, params) {
 
     override suspend fun doWork(): Result {
         val source = resolveSource()
         return try {
-            val syncResult = syncPriceTablesUseCase(source)
+            val syncResult = when (val autoOutcome = autoDownloadLatestWeekUseCase(source)) {
+                is AutoDownloadLatestWeekOutcome.Disabled -> syncPriceTablesUseCase(source)
+                is AutoDownloadLatestWeekOutcome.UpToDate -> {
+                    return Result.success()
+                }
+                is AutoDownloadLatestWeekOutcome.Success -> autoOutcome.syncResult
+                is AutoDownloadLatestWeekOutcome.Failed -> {
+                    return Result.failure()
+                }
+            }
             when (syncResult.outcome) {
                 SyncJobOutcome.FAILED -> Result.failure()
                 SyncJobOutcome.SUCCESS,
@@ -59,6 +71,12 @@ class SyncWorker @AssistedInject constructor(
             context: Context,
             params: WorkerParameters,
             syncPriceTablesUseCase: SyncPriceTablesUseCase,
-        ): SyncWorker = SyncWorker(context, params, syncPriceTablesUseCase)
+            autoDownloadLatestWeekUseCase: AutoDownloadLatestWeekUseCase,
+        ): SyncWorker = SyncWorker(
+            context,
+            params,
+            syncPriceTablesUseCase,
+            autoDownloadLatestWeekUseCase,
+        )
     }
 }

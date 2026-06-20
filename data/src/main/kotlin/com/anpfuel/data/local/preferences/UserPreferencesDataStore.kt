@@ -37,6 +37,7 @@ class UserPreferencesDataStore @Inject constructor(
             stored[Keys.PREFERRED_FUEL_PRODUCT] = preferences.preferredFuelProduct?.name.orEmpty()
             stored[Keys.LOCALE_TAG] = preferences.localeTag
             stored[Keys.SYNC_STATION_DETAIL] = preferences.syncStationDetail
+            stored[Keys.AUTO_DOWNLOAD_LATEST_WEEK] = preferences.autoDownloadLatestWeek
             stored[Keys.STATION_DETAIL_RETENTION_WEEKS] = preferences.stationDetailRetentionWeeks
             stored[Keys.AUTO_SYNC_ON_WIFI] = preferences.autoSyncOnWifi
             stored[Keys.SHOW_PRICE_HISTORY] = preferences.showPriceHistory
@@ -65,6 +66,7 @@ class UserPreferencesDataStore @Inject constructor(
                 ?.let { runCatching { FuelProduct.valueOf(it) }.getOrNull() },
             localeTag = preferences[Keys.LOCALE_TAG] ?: "en",
             syncStationDetail = preferences[Keys.SYNC_STATION_DETAIL] ?: true,
+            autoDownloadLatestWeek = preferences[Keys.AUTO_DOWNLOAD_LATEST_WEEK] ?: true,
             stationDetailRetentionWeeks = preferences[Keys.STATION_DETAIL_RETENTION_WEEKS]
                 ?: UserPreferences.DEFAULT_RETENTION_WEEKS,
             autoSyncOnWifi = preferences[Keys.AUTO_SYNC_ON_WIFI] ?: true,
@@ -83,6 +85,7 @@ class UserPreferencesDataStore @Inject constructor(
         val PREFERRED_FUEL_PRODUCT = stringPreferencesKey("preferred_fuel_product")
         val LOCALE_TAG = stringPreferencesKey("locale_tag")
         val SYNC_STATION_DETAIL = booleanPreferencesKey("sync_station_detail")
+        val AUTO_DOWNLOAD_LATEST_WEEK = booleanPreferencesKey("auto_download_latest_week")
         val STATION_DETAIL_RETENTION_WEEKS = intPreferencesKey("station_detail_retention_weeks")
         val AUTO_SYNC_ON_WIFI = booleanPreferencesKey("auto_sync_on_wifi")
         val SHOW_PRICE_HISTORY = booleanPreferencesKey("show_price_history")

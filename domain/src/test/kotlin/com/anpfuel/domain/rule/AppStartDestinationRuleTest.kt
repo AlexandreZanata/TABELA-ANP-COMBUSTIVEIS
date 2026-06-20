@@ -18,39 +18,55 @@ class AppStartDestinationRuleTest {
             onboardingCompleted = false,
             activeSurveyWeek = activeWeek,
             importedSurveys = listOf(importedSurvey(activeWeek)),
+            autoDownloadLatestWeek = true,
         )
 
         assertEquals(AppStartDestination.ONBOARDING, destination)
     }
 
     @Test
-    fun routesToWeekPickerWhenActiveSurveyWeekMissing() {
+    fun routesToHomeWhenAutoDownloadLatestWeekEnabled() {
+        val destination = AppStartDestinationRule.resolve(
+            onboardingCompleted = true,
+            activeSurveyWeek = null,
+            importedSurveys = emptyList(),
+            autoDownloadLatestWeek = true,
+        )
+
+        assertEquals(AppStartDestination.HOME, destination)
+    }
+
+    @Test
+    fun routesToWeekPickerWhenActiveSurveyWeekMissingAndAutoDownloadDisabled() {
         val destination = AppStartDestinationRule.resolve(
             onboardingCompleted = true,
             activeSurveyWeek = null,
             importedSurveys = listOf(importedSurvey(otherWeek)),
+            autoDownloadLatestWeek = false,
         )
 
         assertEquals(AppStartDestination.WEEK_PICKER, destination)
     }
 
     @Test
-    fun routesToWeekPickerWhenActiveSurveyWeekNotImportedLocally() {
+    fun routesToWeekPickerWhenActiveSurveyWeekNotImportedLocallyAndAutoDownloadDisabled() {
         val destination = AppStartDestinationRule.resolve(
             onboardingCompleted = true,
             activeSurveyWeek = activeWeek,
             importedSurveys = listOf(importedSurvey(otherWeek)),
+            autoDownloadLatestWeek = false,
         )
 
         assertEquals(AppStartDestination.WEEK_PICKER, destination)
     }
 
     @Test
-    fun routesToHomeWhenActiveSurveyWeekImportedLocally() {
+    fun routesToHomeWhenActiveSurveyWeekImportedLocallyAndAutoDownloadDisabled() {
         val destination = AppStartDestinationRule.resolve(
             onboardingCompleted = true,
             activeSurveyWeek = activeWeek,
             importedSurveys = listOf(importedSurvey(activeWeek)),
+            autoDownloadLatestWeek = false,
         )
 
         assertEquals(AppStartDestination.HOME, destination)

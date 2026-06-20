@@ -67,6 +67,7 @@ fun SettingsScreen(
         uiState = uiState,
         onLocaleSelected = viewModel::onLocaleSelected,
         onSyncStationDetailChanged = viewModel::onSyncStationDetailChanged,
+        onAutoDownloadLatestWeekChanged = viewModel::onAutoDownloadLatestWeekChanged,
         onAutoSyncOnWifiChanged = viewModel::onAutoSyncOnWifiChanged,
         onShowPriceHistoryChanged = viewModel::onShowPriceHistoryChanged,
         onRetentionWeeksSelected = viewModel::onRetentionWeeksSelected,
@@ -87,6 +88,7 @@ private fun SettingsContent(
     uiState: SettingsUiState,
     onLocaleSelected: (String) -> Unit,
     onSyncStationDetailChanged: (Boolean) -> Unit,
+    onAutoDownloadLatestWeekChanged: (Boolean) -> Unit,
     onAutoSyncOnWifiChanged: (Boolean) -> Unit,
     onShowPriceHistoryChanged: (Boolean) -> Unit,
     onRetentionWeeksSelected: (Int) -> Unit,
@@ -169,6 +171,11 @@ private fun SettingsContent(
                             label = stringResource(R.string.settings_sync_station_detail),
                             checked = uiState.preferences.syncStationDetail,
                             onCheckedChange = onSyncStationDetailChanged,
+                        )
+                        SettingsToggleRow(
+                            label = stringResource(R.string.settings_auto_download_latest_week),
+                            checked = uiState.preferences.autoDownloadLatestWeek,
+                            onCheckedChange = onAutoDownloadLatestWeekChanged,
                         )
                         SettingsToggleRow(
                             label = stringResource(R.string.settings_sync_wifi_only),
@@ -379,6 +386,7 @@ private fun SettingsScreenPreview() {
                 preferences = UserPreferences(
                     localeTag = "en",
                     syncStationDetail = true,
+                    autoDownloadLatestWeek = true,
                     autoSyncOnWifi = true,
                     showPriceHistory = true,
                     stationDetailRetentionWeeks = 12,
@@ -391,6 +399,7 @@ private fun SettingsScreenPreview() {
             ),
             onLocaleSelected = {},
             onSyncStationDetailChanged = {},
+            onAutoDownloadLatestWeekChanged = {},
             onAutoSyncOnWifiChanged = {},
             onShowPriceHistoryChanged = {},
             onRetentionWeeksSelected = {},

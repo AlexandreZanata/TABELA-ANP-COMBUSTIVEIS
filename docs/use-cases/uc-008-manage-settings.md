@@ -22,6 +22,7 @@ Configure app preferences, manage local storage, and view data source informatio
    - **Language** (`en`, `pt-BR`) — applies immediately via i18n.
    - **Preferred location** — clears or sets via UC-003.
    - **Sync station detail** toggle (BR-008, default on).
+   - **Auto-download latest survey week** toggle (BR-020, default on).
    - **Auto sync on Wi‑Fi only** (BR-014).
    - **Station retention weeks** (BR-013).
    - **Show price history** (UC-006).
@@ -46,7 +47,7 @@ Configure app preferences, manage local storage, and view data source informatio
 
 ## Business rules
 
-- BR-008, BR-011, BR-013, BR-014
+- BR-008, BR-011, BR-013, BR-014, BR-020
 
 ## Domain events
 
@@ -63,6 +64,7 @@ Configure app preferences, manage local storage, and view data source informatio
 - `settings_title`
 - `settings_language`
 - `settings_sync_station_detail`
+- `settings_auto_download_latest_week`
 - `settings_sync_wifi_only`
 - `settings_retention_weeks`
 - `settings_storage_usage`

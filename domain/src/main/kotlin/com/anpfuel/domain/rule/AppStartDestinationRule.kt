@@ -13,12 +13,17 @@ object AppStartDestinationRule {
         onboardingCompleted: Boolean,
         activeSurveyWeek: SurveyWeek?,
         importedSurveys: List<PriceSurvey>,
+        autoDownloadLatestWeek: Boolean,
     ): AppStartDestination {
         if (!onboardingCompleted) {
             return AppStartDestination.ONBOARDING
         }
 
-        if (WeekSelectionBeforeSyncRule.requiresWeekSelection(activeSurveyWeek)) {
+        if (AutoDownloadLatestWeekRule.skipsWeekPickerOnColdStart(autoDownloadLatestWeek)) {
+            return AppStartDestination.HOME
+        }
+
+        if (WeekSelectionBeforeSyncRule.requiresWeekSelection(activeSurveyWeek, autoDownloadLatestWeek)) {
             return AppStartDestination.WEEK_PICKER
         }
 

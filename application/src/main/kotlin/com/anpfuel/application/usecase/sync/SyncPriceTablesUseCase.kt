@@ -20,6 +20,7 @@ import com.anpfuel.domain.repository.PriceTableRepository
 import com.anpfuel.domain.repository.PriceTableSyncGateway
 import com.anpfuel.domain.repository.SyncJobRepository
 import com.anpfuel.domain.repository.UserPreferencesRepository
+import com.anpfuel.domain.rule.AutoDownloadLatestWeekRule
 import com.anpfuel.domain.rule.SyncJobConcurrencyRule
 import com.anpfuel.domain.state.SyncJobState
 import com.anpfuel.domain.sync.PriceTableSyncPlanner
@@ -66,7 +67,16 @@ class SyncPriceTablesUseCase(
         return try {
             val discovered = priceTableSyncGateway.discoverPriceTables()
             val preferences = userPreferencesRepository.getPreferences()
-            val effectiveTargetWeek = targetSurveyWeek ?: preferences.activeSurveyWeek
+            val effectiveTargetWeek = targetSurveyWeek ?: if (
+                AutoDownloadLatestWeekRule.shouldResolveSyncTargetFromCatalogLatest(
+                    autoDownloadLatestWeek = preferences.autoDownloadLatestWeek,
+                    explicitTargetSurveyWeek = targetSurveyWeek,
+                )
+            ) {
+                null
+            } else {
+                preferences.activeSurveyWeek
+            }
             val weekTables = resolveWeekTables(discovered, effectiveTargetWeek)
             weekTables.forEach { table ->
                 publish(
