@@ -25,7 +25,7 @@ Download and import the latest ANP `PriceTable` files so the user can browse fue
 4. System compares URLs with local `SurveyWeek` catalog.
 5. For each missing or updated file:
    - Download `WEEKLY_SUMMARY` (`PriceTableType.WEEKLY_SUMMARY`) — **always**.
-   - If preference `syncStationDetail` is true, download `STATION_DETAIL`.
+   - If preference `syncStationDetail` is true (default), download `STATION_DETAIL`.
 6. System parses files (BR-001, BR-002), imports rows (BR-003).
 7. System emits `PriceTableImported` per file.
 8. System transitions to `COMPLETED`, emits `SyncJobCompleted`.

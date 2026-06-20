@@ -395,9 +395,9 @@ stateDiagram-v2
 
 BR-015: `SyncPriceTablesUseCase` checks for active job before starting — rejects concurrent runs.
 
-Default sync scope (v1 lean strategy):
+Default sync scope:
 1. Always download + import `WEEKLY_SUMMARY` (~300 KB)
-2. Download `STATION_DETAIL` only when `syncStationDetail = true` or UC-007 on-demand
+2. Download + import `STATION_DETAIL` when `syncStationDetail = true` (default) or UC-007 on-demand when disabled
 
 ---
 

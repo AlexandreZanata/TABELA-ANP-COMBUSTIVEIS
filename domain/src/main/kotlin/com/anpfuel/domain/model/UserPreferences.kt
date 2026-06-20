@@ -12,7 +12,7 @@ data class UserPreferences(
     val preferredMunicipality: String? = null,
     val preferredFuelProduct: FuelProduct? = null,
     val localeTag: String = "en",
-    val syncStationDetail: Boolean = false,
+    val syncStationDetail: Boolean = true,
     val stationDetailRetentionWeeks: Int = DEFAULT_RETENTION_WEEKS,
     val autoSyncOnWifi: Boolean = true,
     val showPriceHistory: Boolean = true,

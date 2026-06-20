@@ -14,7 +14,7 @@ List individual `RetailStation` prices for a selected municipality, fuel, and we
 ## Preconditions
 
 - Municipality and `FuelProduct` selected.
-- `StationPrice` data available locally for `SurveyWeek` **OR** user accepts on-demand download (BR-008).
+- `StationPrice` data available locally for `SurveyWeek` **OR** user accepts on-demand download when `syncStationDetail` is disabled (BR-008).
 
 ## Main flow
 
@@ -29,7 +29,7 @@ List individual `RetailStation` prices for a selected municipality, fuel, and we
 
 ## Alternative flows
 
-### A1 — User declined station sync globally
+### A1 — User disabled station sync in settings
 
 - **WHEN** `syncStationDetail` is false and no local data  
 - **THEN** explain storage/bandwidth tradeoff, offer one-time download

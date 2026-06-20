@@ -64,7 +64,7 @@ class UserPreferencesDataStore @Inject constructor(
             preferredFuelProduct = fuelProductName.takeIf { it.isNotBlank() }
                 ?.let { runCatching { FuelProduct.valueOf(it) }.getOrNull() },
             localeTag = preferences[Keys.LOCALE_TAG] ?: "en",
-            syncStationDetail = preferences[Keys.SYNC_STATION_DETAIL] ?: false,
+            syncStationDetail = preferences[Keys.SYNC_STATION_DETAIL] ?: true,
             stationDetailRetentionWeeks = preferences[Keys.STATION_DETAIL_RETENTION_WEEKS]
                 ?: UserPreferences.DEFAULT_RETENTION_WEEKS,
             autoSyncOnWifi = preferences[Keys.AUTO_SYNC_ON_WIFI] ?: true,

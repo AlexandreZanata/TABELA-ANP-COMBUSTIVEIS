@@ -198,7 +198,7 @@ class DomainModelCoverageTest {
 
         assertEquals(UserPreferences.DEFAULT_RETENTION_WEEKS, preferences.stationDetailRetentionWeeks)
         assertEquals("en", preferences.localeTag)
-        assertFalse(preferences.syncStationDetail)
+        assertTrue(preferences.syncStationDetail)
     }
 
     @Test

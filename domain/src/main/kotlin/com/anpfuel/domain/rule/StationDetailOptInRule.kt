@@ -1,7 +1,8 @@
 package com.anpfuel.domain.rule
 
 /**
- * BR-008 — Station detail files are not auto-downloaded unless opted in or already cached.
+ * BR-008 — Station detail is synced by default; on-demand download only when the user opts out
+ * and no local station data exists yet.
  */
 object StationDetailOptInRule {
 

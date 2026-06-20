@@ -72,7 +72,13 @@ class GetStationPricesUseCaseTest {
     }
 
     @Test
-    fun br008ReturnsTypedErrorWhenStationDetailMissing() = runTest {
+    fun br008ReturnsTypedErrorWhenStationDetailMissingAndOptedOut() = runTest {
+        coEvery { userPreferencesRepository.getPreferences() } returns UserPreferences(
+            preferredState = state,
+            preferredMunicipality = municipality,
+            preferredFuelProduct = fuelProduct,
+            syncStationDetail = false,
+        )
         coEvery {
             stationPriceRepository.hasStationData(surveyWeek, state, municipality)
         } returns false

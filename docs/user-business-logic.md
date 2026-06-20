@@ -152,7 +152,7 @@ Stored on device only. No cloud sync in v1.
 | `preferredMunicipality` | string? | null | BR-012 |
 | `preferredFuelProduct` | `FuelProduct?` | null | Highlights on home |
 | `locale` | BCP 47 (`en`, `pt-BR`) | system default | i18n rule |
-| `syncStationDetail` | boolean | `false` | BR-008 |
+| `syncStationDetail` | boolean | `true` | BR-008 |
 | `stationDetailRetentionWeeks` | int | `12` | BR-013 |
 | `autoSyncOnWifi` | boolean | `true` | BR-014 |
 | `showPriceHistory` | boolean | `true` | UC-006 |
@@ -174,7 +174,7 @@ Stored on device only. No cloud sync in v1.
 
 ### v1.1 — Enhanced
 
-- Station-level prices (on-demand download)
+- Station-level prices (included in sync by default; optional opt-out in Settings)
 - Price history chart per fuel (last N weeks)
 - Compare two `SurveyWeek`s side by side
 
@@ -227,7 +227,7 @@ Rules referenced by use cases. Full list maintained in [glossary.md](glossary.md
 | BR-005 | Search requires ≥ 1 imported `SurveyWeek` |
 | BR-006 | Default displayed week = most recent successfully imported |
 | BR-007 | City search requires ≥ 2 characters |
-| BR-008 | Station detail is opt-in or on-demand |
+| BR-008 | Station detail syncs by default; opt-out or on-demand when disabled |
 | BR-009 | ANP data attribution visible on every price screen |
 | BR-010 | Empty municipality yields empty state, not an error |
 | BR-011 | Sync failure must not delete existing local data |

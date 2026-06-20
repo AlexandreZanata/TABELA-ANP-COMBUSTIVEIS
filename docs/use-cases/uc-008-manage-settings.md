@@ -21,7 +21,7 @@ Configure app preferences, manage local storage, and view data source informatio
 2. User can change:
    - **Language** (`en`, `pt-BR`) — applies immediately via i18n.
    - **Preferred location** — clears or sets via UC-003.
-   - **Sync station detail** toggle (BR-008).
+   - **Sync station detail** toggle (BR-008, default on).
    - **Auto sync on Wi‑Fi only** (BR-014).
    - **Station retention weeks** (BR-013).
    - **Show price history** (UC-006).

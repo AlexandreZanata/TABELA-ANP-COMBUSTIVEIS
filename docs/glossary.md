@@ -107,8 +107,12 @@
 **THEN** no FTS query is executed  
 **AND** a hint is shown to the user
 
-### BR-008 — Station Detail Opt-in
-**GIVEN** the user has not enabled `syncStationDetail` and no local `StationPrice` exists  
+### BR-008 — Station Detail Opt-out
+**GIVEN** `syncStationDetail` is enabled (default: `true`)  
+**WHEN** UC-001 sync runs for a survey week  
+**THEN** the system must download and import `STATION_DETAIL` together with `WEEKLY_SUMMARY`
+
+**GIVEN** the user has disabled `syncStationDetail` and no local `StationPrice` exists  
 **WHEN** user opens station list  
 **THEN** the app must offer on-demand download  
 **AND** must not auto-download station files in background sync
