@@ -23,6 +23,7 @@ import com.anpfuel.application.usecase.sync.SelectWeekAndSyncUseCase
 import com.anpfuel.application.usecase.sync.SyncPriceTablesUseCase
 import com.anpfuel.application.usecase.vehicle.DeleteVehicleUseCase
 import com.anpfuel.application.usecase.vehicle.GetVehicleUseCase
+import com.anpfuel.application.usecase.vehicle.GetTankFillCostEstimatesUseCase
 import com.anpfuel.application.usecase.vehicle.ListVehiclesUseCase
 import com.anpfuel.application.usecase.vehicle.SaveVehicleUseCase
 import com.anpfuel.domain.repository.VehicleRepository
@@ -288,6 +289,20 @@ object UseCaseModule {
         stationPriceRepository = stationPriceRepository,
         userPreferencesRepository = userPreferencesRepository,
         eventPublisher = eventPublisher,
+    )
+
+    @Provides
+    @Singleton
+    fun provideGetTankFillCostEstimatesUseCase(
+        averagePriceRepository: AveragePriceRepository,
+        stationPriceRepository: StationPriceRepository,
+        priceTableRepository: PriceTableRepository,
+        userPreferencesRepository: UserPreferencesRepository,
+    ): GetTankFillCostEstimatesUseCase = GetTankFillCostEstimatesUseCase(
+        averagePriceRepository = averagePriceRepository,
+        stationPriceRepository = stationPriceRepository,
+        priceTableRepository = priceTableRepository,
+        userPreferencesRepository = userPreferencesRepository,
     )
 
     @Provides

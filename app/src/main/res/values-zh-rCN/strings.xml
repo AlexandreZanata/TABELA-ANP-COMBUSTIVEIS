@@ -24,6 +24,8 @@
     <string name="home_tank_fill_cost_placeholder_title">跟踪真实加油费用</string>
     <string name="home_tank_fill_cost_placeholder_body">添加车辆以估算在您所在城市加满油箱的费用。</string>
     <string name="home_tank_fill_cost_liters_format">%1$s（%2$d 升）</string>
+    <string name="home_tank_fill_cost_unavailable">价格不可用</string>
+    <string name="home_tank_fill_cost_station_name">在 %1$s</string>
     <string name="vehicle_screen_title">车辆</string>
     <string name="vehicle_name_hint">车辆名称</string>
     <string name="vehicle_tank_capacity_hint">油箱容量（升）</string>
@@ -243,6 +245,7 @@
     <!-- Accessibility (Phase 9.3) -->
     <string name="a11y_loading">正在加载内容</string>
     <string name="a11y_tank_fill_cost_placeholder">添加车辆以跟踪满箱费用</string>
+    <string name="a11y_tank_fill_cost_card">%1$s，满箱费用 %2$s</string>
     <string name="a11y_fuel_price_card">%1$s，平均价格 %2$s</string>
     <string name="a11y_station_price_row">%1$s，价格 %2$s</string>
     <string name="a11y_price_trend_chart">价格趋势图</string>

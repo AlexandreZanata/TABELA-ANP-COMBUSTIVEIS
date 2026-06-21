@@ -46,9 +46,11 @@ import com.anpfuel.app.ui.components.FuelPriceCard
 import com.anpfuel.app.ui.components.LoadingState
 import com.anpfuel.app.ui.components.OfflineBanner
 import com.anpfuel.app.ui.components.SyncStatusBanner
+import com.anpfuel.app.ui.components.TankFillCostCard
 import com.anpfuel.app.ui.components.TankFillCostPlaceholderCard
 import com.anpfuel.app.ui.weekpicker.SurveyWeekChipAction
 import com.anpfuel.app.ui.model.AveragePriceUiModel
+import com.anpfuel.app.ui.model.TankFillCostEstimateUiModel
 import com.anpfuel.app.ui.theme.AnpFuelTheme
 import com.anpfuel.domain.state.DataReadinessState
 import com.anpfuel.domain.valueobject.BrazilianState
@@ -201,10 +203,17 @@ internal fun HomeContent(
                 else -> {
                     LocationHeader(uiState = uiState)
                     PriceMetadata(uiState = uiState)
-                    if (uiState.vehicles.isEmpty()) {
+                    if (uiState.tankFillCostEstimates.isEmpty()) {
                         TankFillCostPlaceholderCard(
                             onClick = { onNavigate(Routes.VEHICLES) },
                         )
+                    } else {
+                        uiState.tankFillCostEstimates.forEach { estimate ->
+                            TankFillCostCard(
+                                estimate = estimate,
+                                onClick = { onNavigate(Routes.VEHICLES) },
+                            )
+                        }
                     }
                     uiState.prices.forEach { price ->
                         FuelPriceCard(

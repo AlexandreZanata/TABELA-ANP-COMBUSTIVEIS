@@ -24,6 +24,8 @@
     <string name="home_tank_fill_cost_placeholder_title">Suivez le coût réel de votre plein</string>
     <string name="home_tank_fill_cost_placeholder_body">Ajoutez un véhicule pour estimer le coût d\'un plein dans votre ville.</string>
     <string name="home_tank_fill_cost_liters_format">%1$s (%2$d L)</string>
+    <string name="home_tank_fill_cost_unavailable">Prix indisponible</string>
+    <string name="home_tank_fill_cost_station_name">Chez %1$s</string>
     <string name="vehicle_screen_title">Véhicules</string>
     <string name="vehicle_name_hint">Nom du véhicule</string>
     <string name="vehicle_tank_capacity_hint">Capacité du réservoir (litres)</string>
@@ -243,6 +245,7 @@
     <!-- Accessibility (Phase 9.3) -->
     <string name="a11y_loading">Chargement du contenu</string>
     <string name="a11y_tank_fill_cost_placeholder">Ajouter un véhicule pour suivre le coût du plein</string>
+    <string name="a11y_tank_fill_cost_card">%1$s, coût du plein %2$s</string>
     <string name="a11y_fuel_price_card">%1$s, prix moyen %2$s</string>
     <string name="a11y_station_price_row">%1$s, prix %2$s</string>
     <string name="a11y_price_trend_chart">Graphique de tendance des prix</string>

@@ -25,6 +25,8 @@
     <string name="home_tank_fill_cost_placeholder_title">Acompanhe o custo real de encher o tanque</string>
     <string name="home_tank_fill_cost_placeholder_body">Cadastre um veículo para estimar quanto custa encher o tanque na sua cidade.</string>
     <string name="home_tank_fill_cost_liters_format">%1$s (%2$d L)</string>
+    <string name="home_tank_fill_cost_unavailable">Preço indisponível</string>
+    <string name="home_tank_fill_cost_station_name">Em %1$s</string>
     <string name="vehicle_screen_title">Veículos</string>
     <string name="vehicle_name_hint">Nome do veículo</string>
     <string name="vehicle_tank_capacity_hint">Capacidade do tanque (litros)</string>
@@ -244,6 +246,7 @@
     <!-- Accessibility (Phase 9.3) -->
     <string name="a11y_loading">Carregando conteúdo</string>
     <string name="a11y_tank_fill_cost_placeholder">Adicionar veículo para acompanhar o custo do tanque</string>
+    <string name="a11y_tank_fill_cost_card">%1$s, custo do tanque %2$s</string>
     <string name="a11y_fuel_price_card">%1$s, preço médio %2$s</string>
     <string name="a11y_station_price_row">%1$s, preço %2$s</string>
     <string name="a11y_price_trend_chart">Gráfico de tendência de preços</string>

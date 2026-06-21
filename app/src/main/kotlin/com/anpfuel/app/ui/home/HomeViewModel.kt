@@ -9,11 +9,13 @@ import com.anpfuel.application.usecase.network.ObserveNetworkConnectivityUseCase
 import com.anpfuel.application.usecase.price.GetMunicipalityPricesUseCase
 import com.anpfuel.application.usecase.readiness.GetDataReadinessUseCase
 import com.anpfuel.application.usecase.sync.SyncPriceTablesUseCase
+import com.anpfuel.application.usecase.vehicle.GetTankFillCostEstimatesUseCase
 import com.anpfuel.application.usecase.vehicle.ListVehiclesUseCase
+import com.anpfuel.app.mapper.TankFillCostUiMapper
 import com.anpfuel.app.ui.model.AveragePriceUiModel
+import com.anpfuel.app.ui.model.TankFillCostEstimateUiModel
 import com.anpfuel.domain.event.SyncRequestSource
 import com.anpfuel.domain.exception.DomainException
-import com.anpfuel.domain.model.Vehicle
 import com.anpfuel.domain.state.DataReadinessState
 import com.anpfuel.domain.valueobject.BrazilianState
 import com.anpfuel.domain.valueobject.DataAvailability
@@ -36,7 +38,7 @@ data class HomeUiState(
     val state: BrazilianState? = null,
     val surveyWeek: SurveyWeek? = null,
     val prices: List<AveragePriceUiModel> = emptyList(),
-    val vehicles: List<Vehicle> = emptyList(),
+    val tankFillCostEstimates: List<TankFillCostEstimateUiModel> = emptyList(),
     val hasLocation: Boolean = false,
     val hasCachedData: Boolean = false,
     val isEmptyMunicipality: Boolean = false,
@@ -53,6 +55,7 @@ class HomeViewModel @Inject constructor(
     private val selectLocationUseCase: SelectLocationUseCase,
     private val syncPriceTablesUseCase: SyncPriceTablesUseCase,
     private val listVehiclesUseCase: ListVehiclesUseCase,
+    private val getTankFillCostEstimatesUseCase: GetTankFillCostEstimatesUseCase,
     observeNetworkConnectivityUseCase: ObserveNetworkConnectivityUseCase,
 ) : ViewModel() {
 
@@ -86,7 +89,7 @@ class HomeViewModel @Inject constructor(
                             state = preferred?.state,
                             surveyWeek = readinessResult.latestSurveyWeek,
                             prices = emptyList(),
-                            vehicles = vehicles,
+                            tankFillCostEstimates = emptyList(),
                             isEmptyMunicipality = false,
                             dataAvailability = null,
                             operationalNote = null,
@@ -96,8 +99,18 @@ class HomeViewModel @Inject constructor(
                 }
 
                 val pricesResult = getMunicipalityPricesUseCase()
+                val tankFillResult = getTankFillCostEstimatesUseCase(
+                    vehicles = vehicles,
+                    state = pricesResult.state,
+                    municipality = pricesResult.municipality,
+                    surveyWeek = pricesResult.surveyWeek,
+                )
                 val uiPrices = com.anpfuel.app.mapper.AveragePriceUiMapper.toUiModels(
                     prices = pricesResult.prices,
+                    locale = locale,
+                )
+                val uiTankFillEstimates = TankFillCostUiMapper.toUiModels(
+                    items = tankFillResult.items,
                     locale = locale,
                 )
 
@@ -111,7 +124,7 @@ class HomeViewModel @Inject constructor(
                         state = pricesResult.state,
                         surveyWeek = pricesResult.surveyWeek,
                         prices = uiPrices,
-                        vehicles = vehicles,
+                        tankFillCostEstimates = uiTankFillEstimates,
                         isEmptyMunicipality = pricesResult.isEmpty,
                         dataAvailability = pricesResult.dataAvailability,
                         operationalNote = pricesResult.operationalNote,
