@@ -11,6 +11,8 @@ import com.anpfuel.data.local.catalog.MunicipalityCatalogSeeder
 import com.anpfuel.data.local.fts.MunicipalityFtsIndexer
 import com.anpfuel.data.local.importing.ImportAuditLogger
 import com.anpfuel.data.local.importing.PriceTableBatchImporter
+import com.anpfuel.data.local.preferences.GeocodeCacheDataStore
+import com.anpfuel.data.local.preferences.GeocodeCacheStore
 import com.anpfuel.data.local.preferences.DataStorePriceTableMetadataStore
 import com.anpfuel.data.local.preferences.PriceTableMetadataStore
 import com.anpfuel.data.repository.AveragePriceRepositoryImpl
@@ -25,7 +27,9 @@ import com.anpfuel.data.repository.StationPriceRepositoryImpl
 import com.anpfuel.data.repository.StorageStatsRepositoryImpl
 import com.anpfuel.data.repository.SyncJobRepositoryImpl
 import com.anpfuel.data.repository.UserPreferencesRepositoryImpl
+import com.anpfuel.data.repository.ReverseGeocodeRepositoryImpl
 import com.anpfuel.data.repository.VehicleRepositoryImpl
+import com.anpfuel.domain.repository.ReverseGeocodeRepository
 import com.anpfuel.domain.repository.VehicleRepository
 import com.anpfuel.domain.repository.AveragePriceRepository
 import com.anpfuel.domain.repository.CacheRepository
@@ -79,6 +83,18 @@ abstract class RepositoryModule {
     abstract fun bindMunicipalitySearchRepository(
         impl: MunicipalitySearchRepositoryImpl,
     ): MunicipalitySearchRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindGeocodeCacheStore(
+        impl: GeocodeCacheDataStore,
+    ): GeocodeCacheStore
+
+    @Binds
+    @Singleton
+    abstract fun bindReverseGeocodeRepository(
+        impl: ReverseGeocodeRepositoryImpl,
+    ): ReverseGeocodeRepository
 
     @Binds
     @Singleton

@@ -1,6 +1,7 @@
 package com.anpfuel.data.di
 
 import com.anpfuel.application.usecase.location.SearchMunicipalityUseCase
+import com.anpfuel.application.usecase.location.ResolveDeviceLocationUseCase
 import com.anpfuel.application.usecase.location.SelectLocationUseCase
 import com.anpfuel.application.usecase.navigation.ResolveAppStartDestinationUseCase
 import com.anpfuel.application.usecase.network.ObserveNetworkConnectivityUseCase
@@ -26,6 +27,7 @@ import com.anpfuel.application.usecase.vehicle.GetVehicleUseCase
 import com.anpfuel.application.usecase.vehicle.GetTankFillCostEstimatesUseCase
 import com.anpfuel.application.usecase.vehicle.ListVehiclesUseCase
 import com.anpfuel.application.usecase.vehicle.SaveVehicleUseCase
+import com.anpfuel.domain.repository.ReverseGeocodeRepository
 import com.anpfuel.domain.repository.VehicleRepository
 import com.anpfuel.domain.repository.AveragePriceRepository
 import com.anpfuel.domain.repository.CacheRepository
@@ -210,6 +212,18 @@ object UseCaseModule {
         municipalityCatalogRepository = municipalityCatalogRepository,
         priceTableRepository = priceTableRepository,
         userPreferencesRepository = userPreferencesRepository,
+        eventPublisher = eventPublisher,
+    )
+
+    @Provides
+    @Singleton
+    fun provideResolveDeviceLocationUseCase(
+        reverseGeocodeRepository: ReverseGeocodeRepository,
+        selectLocationUseCase: SelectLocationUseCase,
+        eventPublisher: DomainEventPublisher,
+    ): ResolveDeviceLocationUseCase = ResolveDeviceLocationUseCase(
+        reverseGeocodeRepository = reverseGeocodeRepository,
+        selectLocationUseCase = selectLocationUseCase,
         eventPublisher = eventPublisher,
     )
 

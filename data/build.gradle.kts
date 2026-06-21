@@ -36,6 +36,7 @@ android {
         }
         getByName("test") {
             assets.srcDir("src/main/assets")
+            resources.srcDir("$projectDir/fixtures")
         }
     }
 
@@ -76,6 +77,8 @@ dependencies {
     ksp(libs.hilt.work.compiler)
 
     testImplementation(libs.junit.jupiter)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation("org.json:json:20240303")
     testImplementation(libs.kxml2)
     testImplementation(libs.poi.ooxml)
