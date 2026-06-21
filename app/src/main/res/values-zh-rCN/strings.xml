@@ -158,6 +158,9 @@
     <string name="stations_empty">所选城市本周没有加油站报告此燃油价格。</string>
     <string name="stations_brand_label">品牌：%1$s</string>
     <string name="stations_collected_at_label">采集时间：%1$s</string>
+    <string name="stations_navigate_action">导航</string>
+    <string name="stations_navigate_no_app">未找到可打开路线的地图应用。</string>
+    <string name="a11y_station_navigate">导航至 %1$s</string>
     <string name="prices_view_stations">查看加油站价格</string>
 
     <!-- FuelProduct labels -->

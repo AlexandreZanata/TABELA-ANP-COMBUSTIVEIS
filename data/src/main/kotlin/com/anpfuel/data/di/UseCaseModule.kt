@@ -17,6 +17,7 @@ import com.anpfuel.application.usecase.settings.ClearCacheUseCase
 import com.anpfuel.application.usecase.settings.GetSettingsUseCase
 import com.anpfuel.application.usecase.settings.GetStorageUsageUseCase
 import com.anpfuel.application.usecase.settings.UpdatePreferencesUseCase
+import com.anpfuel.application.usecase.station.BuildStationNavigationQueryUseCase
 import com.anpfuel.application.usecase.sync.AutoDownloadLatestWeekUseCase
 import com.anpfuel.application.usecase.sync.DiscoverSurveyWeekCatalogUseCase
 import com.anpfuel.application.usecase.sync.DownloadStationDetailUseCase
@@ -262,6 +263,16 @@ object UseCaseModule {
         averagePriceRepository = averagePriceRepository,
         priceTableRepository = priceTableRepository,
         userPreferencesRepository = userPreferencesRepository,
+    )
+
+    @Provides
+    @Singleton
+    fun provideBuildStationNavigationQueryUseCase(
+        userPreferencesRepository: UserPreferencesRepository,
+        eventPublisher: DomainEventPublisher,
+    ): BuildStationNavigationQueryUseCase = BuildStationNavigationQueryUseCase(
+        userPreferencesRepository = userPreferencesRepository,
+        eventPublisher = eventPublisher,
     )
 
     @Provides

@@ -9,6 +9,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,12 +25,17 @@ import com.anpfuel.app.ui.theme.AnpFuelTheme
 @Composable
 fun StationPriceRow(
     station: StationPriceUiModel,
+    onNavigate: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val rowDescription = stringResource(
         R.string.a11y_station_price_row,
         station.displayName,
         station.priceFormatted,
+    )
+    val navigateDescription = stringResource(
+        R.string.a11y_station_navigate,
+        station.displayName,
     )
 
     Card(
@@ -78,11 +84,24 @@ fun StationPriceRow(
                     )
                 }
             }
-            Text(
-                text = station.priceFormatted,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary,
-            )
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                Text(
+                    text = station.priceFormatted,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                TextButton(
+                    onClick = onNavigate,
+                    modifier = Modifier.semantics {
+                        contentDescription = navigateDescription
+                    },
+                ) {
+                    Text(text = stringResource(R.string.stations_navigate_action))
+                }
+            }
         }
     }
 }
@@ -93,12 +112,15 @@ private fun StationPriceRowPreview() {
     AnpFuelTheme {
         StationPriceRow(
             station = StationPriceUiModel(
+                cnpjDigits = "12345678000195",
                 displayName = "Posto Centro",
                 brand = "BR",
                 address = "Rua XV de Novembro, 1000",
                 priceFormatted = "R$ 5,79",
                 collectedAtLabel = "Jun 10, 2026",
+                navigationQuery = "Rua XV de Novembro, 1000, Curitiba - PR, Brazil",
             ),
+            onNavigate = {},
         )
     }
 }

@@ -328,7 +328,12 @@ class VehicleViewModel @Inject constructor(
                 when (val outcome = getStationPricesUseCase(fuelProduct = fuelProduct)) {
                     is StationPricesOutcome.Success -> {
                         val options = outcome.stations.map { stationPrice ->
-                            val uiModel = StationPriceUiMapper.toUiModel(stationPrice, locale)
+                            val uiModel = StationPriceUiMapper.toUiModel(
+                                stationPrice = stationPrice,
+                                locale = locale,
+                                preferredState = outcome.state,
+                                preferredMunicipality = outcome.municipality,
+                            )
                             VehicleStationOptionUiModel(
                                 cnpj = stationPrice.station.cnpj,
                                 displayName = uiModel.displayName,
