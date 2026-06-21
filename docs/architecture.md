@@ -109,13 +109,24 @@ application/src/main/kotlin/com/anpfuel/application/
 │   ├── sync/
 │   │   ├── SyncPriceTablesUseCase.kt          # UC-001
 │   │   └── DownloadStationDetailUseCase.kt      # UC-007 subset
-│   ├── location/
-│   │   ├── SelectLocationUseCase.kt           # UC-003
-│   │   └── SearchMunicipalityUseCase.kt         # UC-004
 │   ├── price/
 │   │   ├── GetMunicipalityPricesUseCase.kt    # UC-005
 │   │   ├── GetPriceHistoryUseCase.kt          # UC-006
 │   │   └── GetStationPricesUseCase.kt         # UC-007
+│   ├── vehicle/
+│   │   ├── ListVehiclesUseCase.kt             # UC-010
+│   │   ├── SaveVehicleUseCase.kt              # UC-010
+│   │   ├── DeleteVehicleUseCase.kt            # UC-010
+│   │   └── GetTankFillCostEstimatesUseCase.kt # UC-011
+│   ├── location/
+│   │   ├── SelectLocationUseCase.kt           # UC-003
+│   │   ├── SearchMunicipalityUseCase.kt       # UC-004
+│   │   └── ResolveDeviceLocationUseCase.kt    # UC-012
+│   ├── station/
+│   │   └── BuildStationNavigationQueryUseCase.kt # UC-013
+│   ├── alert/
+│   │   ├── ConfigurePriceDropAlertUseCase.kt  # UC-014
+│   │   └── EvaluatePriceDropAlertsUseCase.kt  # UC-014
 │   ├── settings/
 │   │   ├── GetSettingsUseCase.kt              # UC-008
 │   │   ├── UpdatePreferencesUseCase.kt        # UC-008
@@ -138,13 +149,16 @@ data/src/main/kotlin/com/anpfuel/data/
 │   │   ├── SurveyWeekDao.kt
 │   │   ├── AveragePriceDao.kt
 │   │   ├── StationPriceDao.kt
-│   │   └── MunicipalityFtsDao.kt
+│   │   ├── MunicipalityFtsDao.kt
+│   │   └── VehicleDao.kt
 │   ├── entity/                               # Room entities (infra, not domain)
 │   └── preferences/
-│       └── UserPreferencesDataStore.kt
+│       ├── UserPreferencesDataStore.kt
+│       └── GeocodeCacheDataStore.kt          # UC-012 Nominatim cache
 ├── remote/
 │   ├── AnpListingScraper.kt                  # Jsoup + OkHttp
-│   └── AnpFileDownloader.kt                  # OkHttp streaming download
+│   ├── AnpFileDownloader.kt                  # OkHttp streaming download
+│   └── NominatimReverseGeocodeClient.kt      # UC-012
 ├── parser/
 │   ├── StreamingXlsxParser.kt                # Low-level ZIP/XML streaming
 │   ├── WeeklySummarySheetParser.kt           # resumo_semanal_lpc
@@ -158,10 +172,13 @@ data/src/main/kotlin/com/anpfuel/data/
 │   ├── AveragePriceRepositoryImpl.kt
 │   ├── StationPriceRepositoryImpl.kt
 │   ├── MunicipalitySearchRepositoryImpl.kt
-│   └── UserPreferencesRepositoryImpl.kt
+│   ├── UserPreferencesRepositoryImpl.kt
+│   ├── VehicleRepositoryImpl.kt              # UC-010
+│   └── ReverseGeocodeRepositoryImpl.kt       # UC-012
 ├── worker/
 │   ├── SyncWorker.kt                         # WorkManager — UC-001
-│   └── RetentionCleanupWorker.kt             # BR-013
+│   ├── RetentionCleanupWorker.kt             # BR-013
+│   └── PriceDropEvaluationWorker.kt          # UC-014
 └── di/
     ├── DatabaseModule.kt
     ├── NetworkModule.kt
@@ -186,7 +203,8 @@ app/src/main/kotlin/com/anpfuel/app/
 │   ├── search/                               # UC-004
 │   ├── location/                             # UC-003
 │   ├── prices/                               # UC-005, UC-006
-│   ├── stations/                             # UC-007
+│   ├── stations/                             # UC-007, UC-013
+│   ├── vehicle/                              # UC-010
 │   └── settings/                             # UC-008
 ├── viewmodel/                                # One ViewModel per screen
 │   ├── HomeViewModel.kt
@@ -260,6 +278,12 @@ sequenceDiagram
 | UC-006 History | `GetPriceHistoryUseCase` | `AveragePriceRepository` | Room |
 | UC-007 Stations | `GetStationPricesUseCase` | `StationPriceRepository` | Room + on-demand download |
 | UC-008 Settings | `UpdatePreferencesUseCase`, `ClearCacheUseCase` | `UserPreferencesRepository`, all repos | DataStore, Room |
+| UC-009 Week picker | `SelectSurveyWeekUseCase`, `SelectWeekAndSyncUseCase` | `UserPreferencesRepository`, `PriceTableRepository` | DataStore, Worker |
+| UC-010 Vehicles | `SaveVehicleUseCase`, `ListVehiclesUseCase`, `DeleteVehicleUseCase` | `VehicleRepository` | Room |
+| UC-011 Tank fill cost | `GetTankFillCostEstimatesUseCase` | `VehicleRepository`, `StationPriceRepository`, `AveragePriceRepository` | Room |
+| UC-012 Device location | `ResolveDeviceLocationUseCase` | `ReverseGeocodeRepository`, `MunicipalityCatalog` port | Nominatim, DataStore cache |
+| UC-013 Station navigation | `BuildStationNavigationQueryUseCase` | Domain rules only | `:app` Intents |
+| UC-014 Price drop alerts | `EvaluatePriceDropAlertsUseCase` | `VehicleRepository`, price repos | WorkManager, NotificationManager |
 
 ---
 
@@ -340,6 +364,18 @@ CREATE INDEX idx_station_survey_muni_product
 
 CREATE INDEX idx_station_price_asc
     ON station_price(survey_week_id, municipality, fuel_product, price);
+
+-- User vehicles (UC-010 — v3 migration)
+CREATE TABLE vehicle (
+    id                      TEXT PRIMARY KEY NOT NULL,
+    display_name            TEXT NOT NULL,
+    tank_capacity_liters    REAL NOT NULL,
+    fuel_product            TEXT NOT NULL,
+    price_source_mode       TEXT NOT NULL,
+    specific_station_cnpj   TEXT,
+    price_drop_alert_enabled INTEGER NOT NULL DEFAULT 0,
+    sort_order              INTEGER NOT NULL DEFAULT 0
+);
 ```
 
 ### Room configuration
@@ -447,12 +483,14 @@ sealed interface PriceHomeEvent {
 
 ```
 onboarding → home ↔ search
-                � ↕
+                ↕
             location  settings
                 ↓
              prices → history
                 ↓
-             stations
+        stations → navigate (external maps)
+                ↓
+             vehicles
 ```
 
 ---
@@ -484,9 +522,12 @@ Parser tests **must** run against real files in `data/samples/` (see [data-sourc
 | Concern | Layer | Implementation |
 |---------|-------|----------------|
 | TLS for ANP downloads | `:data` | OkHttp — HTTPS only, no cleartext |
-| No PII storage | `:domain` | No user accounts in v1 |
+| TLS for Nominatim | `:data` | OkHttp — HTTPS only (UC-012) |
+| No PII cloud storage | `:domain` | No user accounts; vehicles local only |
+| Ephemeral GPS | `:app` | One-shot location; coordinates not persisted |
 | CNPJ is public data | `:data` | Stored as-is from ANP |
 | Local preferences | `:data` | DataStore (not SharedPreferences) |
+| Local notifications | `:data` / `:app` | NotificationManager — UC-014, no FCM |
 | Cache wipe | `:application` | `ClearCacheUseCase` — UC-008 |
 
 ---
@@ -497,7 +538,8 @@ Parser tests **must** run against real files in `data/samples/` (see [data-sourc
 |----------|---------|
 | [tech-stack.md](tech-stack.md) | Libraries, versions, module deps |
 | [adr/001-kotlin-compose-stack.md](adr/001-kotlin-compose-stack.md) | Why this stack |
-| [user-business-logic.md](user-business-logic.md) | UC-001…UC-008, BR-001…BR-015 |
+| [adr/003-nominatim-reverse-geocode.md](adr/003-nominatim-reverse-geocode.md) | Nominatim for UC-012 |
+| [user-business-logic.md](user-business-logic.md) | UC-001…UC-014, BR-001…BR-027 |
 | [glossary.md](glossary.md) | Domain language |
 | [data-sources.md](data-sources.md) | ANP XLSX formats |
 

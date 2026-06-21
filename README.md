@@ -67,7 +67,7 @@ See [docs/data-sources.md](docs/data-sources.md) for column schemas and download
 | Document | Purpose |
 |----------|---------|
 | [docs/user-business-logic.md](docs/user-business-logic.md) | **Product contract** — user journeys, states, rules |
-| [docs/use-cases/](docs/use-cases/) | Detailed use cases (UC-001 … UC-009) |
+| [docs/use-cases/](docs/use-cases/) | Detailed use cases (UC-001 … UC-014) |
 | [docs/glossary.md](docs/glossary.md) | Domain language + business rules (BR-001 … BR-019) |
 | [docs/attribution.md](docs/attribution.md) | Third-party assets (fuel icons) |
 | [CHANGELOG.md](CHANGELOG.md) | Release history |

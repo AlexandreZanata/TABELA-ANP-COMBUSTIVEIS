@@ -24,7 +24,7 @@ List individual `RetailStation` prices for a selected municipality, fuel, and we
 4. **IF** data missing → show prompt to download station detail for this week.
 5. User confirms download → emit `StationDetailRequested` → run UC-001 subset (station file only).
 6. System loads stations sorted by `price` ascending.
-7. UI shows per row: trade name (or legal name), brand, address, price, collection date.
+7. UI shows per row: trade name (or legal name), brand, address, price, collection date, and **Navigate** action (UC-013).
 8. ANP attribution visible (BR-009).
 
 ## Alternative flows
@@ -46,12 +46,13 @@ List individual `RetailStation` prices for a selected municipality, fuel, and we
 
 ## Business rules
 
-- BR-004, BR-008, BR-009, BR-010, BR-013
+- BR-004, BR-008, BR-009, BR-010, BR-013, BR-026
 
 ## Domain events
 
 - `StationDetailRequested`
 - `FuelProductSelected`
+- `StationNavigationRequested` (UC-013)
 
 ## Postconditions
 
@@ -64,3 +65,8 @@ List individual `RetailStation` prices for a selected municipality, fuel, and we
 - `stations_download_prompt`
 - `stations_empty`
 - `error_station_detail_missing`
+- `stations_navigate_action` (UC-013)
+
+## Related documentation
+
+- [uc-013-navigate-to-station.md](uc-013-navigate-to-station.md)

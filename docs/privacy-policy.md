@@ -1,31 +1,63 @@
 # Privacy Policy — ANP Fuel Prices
 
-**Last updated:** 2026-06-18  
+**Last updated:** 2026-06-21  
 **App:** ANP Fuel Prices (`com.anpfuel.app`)
 
 ## Summary
 
-ANP Fuel Prices does **not collect, transmit, or sell personal data**. All preferences and imported fuel price data stay on your device.
+ANP Fuel Prices does **not collect, transmit, or sell personal data** to app-owned servers. Preferences, vehicle profiles, and imported fuel price data stay on your device. Optional features (device location, local notifications) are described below.
 
 ## Data stored on your device
 
 | Data | Purpose | Shared externally |
 |------|---------|-------------------|
 | Selected city and fuel preferences | Remember your location choice | No |
+| Registered vehicles (name, tank size, fuel type, station preference) | Tank fill cost estimates and alerts | No |
 | Imported ANP price tables | Offline browsing | No |
 | Language preference | UI localization | No |
 | Sync and storage settings | App configuration | No |
+| Price drop alert preferences | Local notifications after weekly sync | No |
+| Reverse geocode cache (rounded coordinates → city) | Avoid repeat Nominatim calls (BR-021) | No |
 
 ## Data we do not collect
 
-- Name, email, phone number, or account credentials (no login in v1)
-- Precise GPS location
+- Name, email, phone number, or account credentials (no login)
+- Persistent GPS coordinate history (location is one-shot and not stored)
 - Contacts, photos, or other device files
-- Advertising identifiers or analytics events (no analytics SDK in v1)
+- Advertising identifiers or analytics events (no analytics SDK)
+
+## Optional device location (UC-012)
+
+If you choose **Use my location** during onboarding:
+
+- The app requests Android location permission and reads your position **once** to resolve your municipality.
+- Raw latitude/longitude is **not saved** on the device.
+- The app may call the public [Nominatim](https://nominatim.openstreetmap.org/) reverse geocoding API (OpenStreetMap) over HTTPS.
+- A successful result (state + municipality) is saved as your preferred city, same as manual selection.
+- Rounded coordinate → city mappings may be cached locally to reduce network use.
+
+You can always choose **Choose manually** and skip location entirely.
+
+## Local notifications (UC-014)
+
+If you enable price drop alerts on a vehicle:
+
+- Notifications are generated **on your device** after new ANP data is imported.
+- No notification content is sent to our servers (there is no backend).
+- Android may require the **Notifications** permission (Android 13+).
 
 ## Network usage
 
-The app connects to **gov.br/anp** only to discover and download public weekly fuel price spreadsheets. No third-party backend or tracking services are used.
+| Destination | When | Data sent |
+|-------------|------|-----------|
+| **gov.br / ANP** | Sync weekly price tables | None (anonymous HTTP GET of public files) |
+| **nominatim.openstreetmap.org** | Optional reverse geocode (UC-012) | Latitude, longitude, app User-Agent |
+
+No third-party analytics or tracking services are used.
+
+## OpenStreetMap / Nominatim attribution
+
+Geocoding results © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors, via Nominatim usage policy. Attribution is shown in the app where this feature is offered.
 
 ## Public ANP data displayed
 
