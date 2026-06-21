@@ -2,10 +2,11 @@ package com.anpfuel.application.usecase.sync
 
 import com.anpfuel.application.error.AppError
 import com.anpfuel.application.error.AppErrorResolver
+import com.anpfuel.application.mapper.SurveyWeekCatalogMapper
 import com.anpfuel.domain.event.SyncJobOutcome
 import com.anpfuel.domain.exception.DomainException
 import com.anpfuel.domain.event.SyncRequestSource
-import com.anpfuel.domain.valueobject.SurveyWeek
+import com.anpfuel.domain.model.SurveyWeekCatalogEntry
 import com.anpfuel.domain.valueobject.SurveyWeekSelectionMode
 
 sealed class SelectWeekAndSyncResult {
@@ -27,19 +28,20 @@ class SelectWeekAndSyncUseCase(
 ) {
 
     suspend operator fun invoke(
-        surveyWeek: SurveyWeek,
+        catalogEntry: SurveyWeekCatalogEntry,
         selectionMode: SurveyWeekSelectionMode,
         source: SyncRequestSource = SyncRequestSource.MANUAL,
     ): SelectWeekAndSyncResult {
         return try {
             selectSurveyWeekUseCase(
-                surveyWeek = surveyWeek,
+                surveyWeek = catalogEntry.surveyWeek,
                 selectionMode = selectionMode,
             )
 
             val syncResult = syncPriceTablesUseCase(
                 source = source,
-                targetSurveyWeek = surveyWeek,
+                targetSurveyWeek = catalogEntry.surveyWeek,
+                preDiscoveredWeekTables = SurveyWeekCatalogMapper.toPriceTables(catalogEntry),
             )
 
             if (syncResult.outcome == SyncJobOutcome.FAILED) {

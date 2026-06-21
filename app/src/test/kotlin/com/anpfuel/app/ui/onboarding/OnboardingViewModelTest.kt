@@ -229,7 +229,7 @@ class OnboardingViewModelTest {
     private fun stubSyncCompletion() {
         coEvery {
             onboardingSelectWeekAndSyncUseCase(
-                surveyWeek = surveyWeek,
+                catalogEntry = catalogEntry,
                 selectionMode = SurveyWeekSelectionMode.LATEST,
             )
         } returns OnboardingSelectWeekAndSyncResult.Completed(

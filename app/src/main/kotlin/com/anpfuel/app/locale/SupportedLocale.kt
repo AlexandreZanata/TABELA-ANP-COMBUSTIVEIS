@@ -1,8 +1,12 @@
 package com.anpfuel.app.locale
 
+import android.content.Context
+import android.os.LocaleList
+import androidx.annotation.VisibleForTesting
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.anpfuel.app.R
+import java.util.Locale
 
 /**
  * UC-008 — App-supported UI locale with a representative country flag.
@@ -42,6 +46,40 @@ object AppLocales {
     fun find(localeTag: String): SupportedLocale? =
         all.firstOrNull { it.localeTag == localeTag }
 
+    fun resolveDeviceLocaleTag(context: Context): String {
+        @Suppress("DEPRECATION")
+        val locales = context.resources.configuration.locales
+        return resolveFromLocaleList(locales)
+    }
+
+    @VisibleForTesting
+    internal fun resolveFromLocaleList(locales: LocaleList): String {
+        for (index in 0 until locales.size()) {
+            matchLocale(locales[index])?.let { return it }
+        }
+        return PORTUGUESE_BRAZIL_TAG
+    }
+
+    @VisibleForTesting
+    internal fun matchLocale(locale: Locale): String? {
+        val languageTag = locale.toLanguageTag()
+        if (languageTag in supportedLocaleTags) {
+            return languageTag
+        }
+
+        return when (locale.language) {
+            "pt" -> PORTUGUESE_BRAZIL_TAG
+            "en" -> ENGLISH_TAG
+            "es" -> SPANISH_TAG
+            "fr" -> FRENCH_TAG
+            "zh" -> CHINESE_TAG
+            "ru" -> RUSSIAN_TAG
+            "de" -> GERMAN_TAG
+            "ja" -> JAPANESE_TAG
+            else -> null
+        }
+    }
+
     fun normalizeLocaleTag(localeTag: String?): String {
         val migrated = when (localeTag) {
             "hi" -> JAPANESE_TAG
@@ -49,7 +87,7 @@ object AppLocales {
             "bn" -> RUSSIAN_TAG
             else -> localeTag
         }
-        val resolved = migrated?.takeIf { it.isNotBlank() } ?: ENGLISH_TAG
-        return if (resolved in supportedLocaleTags) resolved else ENGLISH_TAG
+        val resolved = migrated?.takeIf { it.isNotBlank() } ?: PORTUGUESE_BRAZIL_TAG
+        return if (resolved in supportedLocaleTags) resolved else PORTUGUESE_BRAZIL_TAG
     }
 }

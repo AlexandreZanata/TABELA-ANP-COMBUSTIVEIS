@@ -1,5 +1,6 @@
 package com.anpfuel.app.ui.vehicle
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -13,12 +14,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.anpfuel.app.R
@@ -146,24 +149,19 @@ fun VehicleForm(
                     )
                 }
                 else -> {
-                    FlowRow(
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         stationOptions.forEach { station ->
-                            FilterChip(
+                            VehicleStationOptionRow(
+                                label = stringResource(
+                                    R.string.vehicle_station_option_format,
+                                    station.displayName,
+                                    station.priceFormatted,
+                                ),
                                 selected = form.selectedStationCnpj == station.cnpj,
                                 onClick = { onStationSelected(station.cnpj) },
-                                label = {
-                                    Text(
-                                        text = stringResource(
-                                            R.string.vehicle_station_option_format,
-                                            station.displayName,
-                                            station.priceFormatted,
-                                        ),
-                                    )
-                                },
                             )
                         }
                     }
@@ -221,5 +219,46 @@ fun VehicleForm(
         ) {
             Text(text = stringResource(R.string.action_cancel))
         }
+    }
+}
+
+@Composable
+private fun VehicleStationOptionRow(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.medium,
+        color = if (selected) {
+            MaterialTheme.colorScheme.primaryContainer
+        } else {
+            MaterialTheme.colorScheme.surface
+        },
+        border = BorderStroke(
+            width = if (selected) 2.dp else 1.dp,
+            color = if (selected) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.outlineVariant
+            },
+        ),
+    ) {
+        Text(
+            text = label,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            style = MaterialTheme.typography.bodyMedium,
+            color = if (selected) {
+                MaterialTheme.colorScheme.onPrimaryContainer
+            } else {
+                MaterialTheme.colorScheme.onSurface
+            },
+            textAlign = TextAlign.Start,
+        )
     }
 }

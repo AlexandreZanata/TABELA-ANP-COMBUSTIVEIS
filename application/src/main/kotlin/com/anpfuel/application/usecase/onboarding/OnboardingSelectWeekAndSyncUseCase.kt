@@ -2,14 +2,16 @@ package com.anpfuel.application.usecase.onboarding
 
 import com.anpfuel.application.error.AppError
 import com.anpfuel.application.error.AppErrorResolver
+import com.anpfuel.application.mapper.SurveyWeekCatalogMapper
 import com.anpfuel.application.usecase.sync.SelectSurveyWeekUseCase
-import com.anpfuel.domain.exception.DomainException
 import com.anpfuel.application.usecase.sync.SyncPriceTablesResult
 import com.anpfuel.application.usecase.sync.SyncPriceTablesUseCase
 import com.anpfuel.domain.event.SyncJobOutcome
 import com.anpfuel.domain.event.SyncRequestSource
-import com.anpfuel.domain.valueobject.SurveyWeek
+import com.anpfuel.domain.exception.DomainException
+import com.anpfuel.domain.model.SurveyWeekCatalogEntry
 import com.anpfuel.domain.valueobject.SurveyWeekSelectionMode
+import kotlinx.coroutines.delay
 
 sealed class OnboardingSelectWeekAndSyncResult {
     data class SyncFailed(
@@ -32,19 +34,19 @@ class OnboardingSelectWeekAndSyncUseCase(
 ) {
 
     suspend operator fun invoke(
-        surveyWeek: SurveyWeek,
+        catalogEntry: SurveyWeekCatalogEntry,
         selectionMode: SurveyWeekSelectionMode,
         source: SyncRequestSource = SyncRequestSource.FIRST_LAUNCH,
     ): OnboardingSelectWeekAndSyncResult {
         return try {
             selectSurveyWeekUseCase(
-                surveyWeek = surveyWeek,
+                surveyWeek = catalogEntry.surveyWeek,
                 selectionMode = selectionMode,
             )
 
-            val syncResult = syncPriceTablesUseCase(
+            val syncResult = syncWithFirstLaunchRetry(
+                catalogEntry = catalogEntry,
                 source = source,
-                targetSurveyWeek = surveyWeek,
             )
 
             if (syncResult.outcome == SyncJobOutcome.FAILED) {
@@ -63,5 +65,34 @@ class OnboardingSelectWeekAndSyncUseCase(
                 error = AppErrorResolver.fromThrowable(exception),
             )
         }
+    }
+
+    private suspend fun syncWithFirstLaunchRetry(
+        catalogEntry: SurveyWeekCatalogEntry,
+        source: SyncRequestSource,
+    ): SyncPriceTablesResult {
+        val preDiscoveredWeekTables = SurveyWeekCatalogMapper.toPriceTables(catalogEntry)
+        val firstResult = syncPriceTablesUseCase(
+            source = source,
+            targetSurveyWeek = catalogEntry.surveyWeek,
+            preDiscoveredWeekTables = preDiscoveredWeekTables,
+        )
+        if (
+            source != SyncRequestSource.FIRST_LAUNCH ||
+            firstResult.outcome != SyncJobOutcome.FAILED
+        ) {
+            return firstResult
+        }
+
+        delay(FIRST_LAUNCH_RETRY_DELAY_MS)
+        return syncPriceTablesUseCase(
+            source = source,
+            targetSurveyWeek = catalogEntry.surveyWeek,
+            preDiscoveredWeekTables = preDiscoveredWeekTables,
+        )
+    }
+
+    companion object {
+        internal const val FIRST_LAUNCH_RETRY_DELAY_MS = 750L
     }
 }

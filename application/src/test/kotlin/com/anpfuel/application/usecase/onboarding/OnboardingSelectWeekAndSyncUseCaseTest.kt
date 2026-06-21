@@ -9,6 +9,7 @@ import com.anpfuel.domain.event.PreferencesUpdated
 import com.anpfuel.domain.event.SyncJobOutcome
 import com.anpfuel.domain.event.SyncRequestSource
 import com.anpfuel.domain.event.SurveyWeekSelected
+import com.anpfuel.domain.model.SurveyWeekCatalogEntry
 import com.anpfuel.domain.model.UserPreferences
 import com.anpfuel.domain.valueobject.SurveyWeek
 import com.anpfuel.domain.valueobject.SurveyWeekSelectionMode
@@ -31,6 +32,16 @@ class OnboardingSelectWeekAndSyncUseCaseTest {
 
     private val latestWeek = SurveyWeek.fromIsoDates("2026-06-07", "2026-06-13")
     private val historicalWeek = SurveyWeek.fromIsoDates("2026-05-31", "2026-06-06")
+    private val latestEntry = SurveyWeekCatalogEntry.create(
+        surveyWeek = latestWeek,
+        summaryUrl = "https://example.com/summary.xlsx",
+        stationUrl = "https://example.com/station.xlsx",
+    )
+    private val historicalEntry = SurveyWeekCatalogEntry.create(
+        surveyWeek = historicalWeek,
+        summaryUrl = "https://example.com/summary-old.xlsx",
+        stationUrl = "https://example.com/station-old.xlsx",
+    )
 
     @BeforeEach
     fun setUp() {
@@ -49,13 +60,14 @@ class OnboardingSelectWeekAndSyncUseCaseTest {
             syncPriceTablesUseCase(
                 source = SyncRequestSource.FIRST_LAUNCH,
                 targetSurveyWeek = latestWeek,
+                preDiscoveredWeekTables = any(),
             )
         } returns syncResult
         coEvery { completeOnboardingUseCase.completeAfterSync(syncResult) } returns
             CompleteOnboardingResult.Completed
 
         val result = useCase.invoke(
-            surveyWeek = latestWeek,
+            catalogEntry = latestEntry,
             selectionMode = SurveyWeekSelectionMode.LATEST,
         )
 
@@ -71,6 +83,7 @@ class OnboardingSelectWeekAndSyncUseCaseTest {
             syncPriceTablesUseCase(
                 source = SyncRequestSource.FIRST_LAUNCH,
                 targetSurveyWeek = latestWeek,
+                preDiscoveredWeekTables = any(),
             )
         }
     }
@@ -83,13 +96,14 @@ class OnboardingSelectWeekAndSyncUseCaseTest {
             syncPriceTablesUseCase(
                 source = SyncRequestSource.FIRST_LAUNCH,
                 targetSurveyWeek = historicalWeek,
+                preDiscoveredWeekTables = any(),
             )
         } returns syncResult
         coEvery { completeOnboardingUseCase.completeAfterSync(syncResult) } returns
             CompleteOnboardingResult.Completed
 
         useCase.invoke(
-            surveyWeek = historicalWeek,
+            catalogEntry = historicalEntry,
             selectionMode = SurveyWeekSelectionMode.SPECIFIC,
         )
 
@@ -99,12 +113,48 @@ class OnboardingSelectWeekAndSyncUseCaseTest {
     }
 
     @Test
-    fun returnsSyncFailedWithoutCompletingOnboardingWhenSyncFails() = runTest {
+    fun retriesFirstLaunchSyncOnceAfterFailure() = runTest {
+        val syncResult = SyncPriceTablesResult(outcome = SyncJobOutcome.SUCCESS)
         stubSelectWeek(latestWeek, SurveyWeekSelectionMode.LATEST)
         coEvery {
             syncPriceTablesUseCase(
                 source = SyncRequestSource.FIRST_LAUNCH,
                 targetSurveyWeek = latestWeek,
+                preDiscoveredWeekTables = any(),
+            )
+        } returnsMany listOf(
+            SyncPriceTablesResult(
+                outcome = SyncJobOutcome.FAILED,
+                error = AppError.SyncNetworkError,
+            ),
+            syncResult,
+        )
+        coEvery { completeOnboardingUseCase.completeAfterSync(syncResult) } returns
+            CompleteOnboardingResult.Completed
+
+        val result = useCase.invoke(
+            catalogEntry = latestEntry,
+            selectionMode = SurveyWeekSelectionMode.LATEST,
+        )
+
+        assertInstanceOf(OnboardingSelectWeekAndSyncResult.Completed::class.java, result)
+        coVerify(exactly = 2) {
+            syncPriceTablesUseCase(
+                source = SyncRequestSource.FIRST_LAUNCH,
+                targetSurveyWeek = latestWeek,
+                preDiscoveredWeekTables = any(),
+            )
+        }
+    }
+
+    @Test
+    fun returnsSyncFailedWithoutCompletingOnboardingWhenBothAttemptsFail() = runTest {
+        stubSelectWeek(latestWeek, SurveyWeekSelectionMode.LATEST)
+        coEvery {
+            syncPriceTablesUseCase(
+                source = SyncRequestSource.FIRST_LAUNCH,
+                targetSurveyWeek = latestWeek,
+                preDiscoveredWeekTables = any(),
             )
         } returns SyncPriceTablesResult(
             outcome = SyncJobOutcome.FAILED,
@@ -112,7 +162,7 @@ class OnboardingSelectWeekAndSyncUseCaseTest {
         )
 
         val result = useCase.invoke(
-            surveyWeek = latestWeek,
+            catalogEntry = latestEntry,
             selectionMode = SurveyWeekSelectionMode.LATEST,
         )
 
@@ -122,6 +172,13 @@ class OnboardingSelectWeekAndSyncUseCaseTest {
         )
         assertEquals(AppError.SyncNetworkError, failed.error)
         coVerify(exactly = 0) { completeOnboardingUseCase.completeAfterSync(any()) }
+        coVerify(exactly = 2) {
+            syncPriceTablesUseCase(
+                source = SyncRequestSource.FIRST_LAUNCH,
+                targetSurveyWeek = latestWeek,
+                preDiscoveredWeekTables = any(),
+            )
+        }
     }
 
     @Test
@@ -132,13 +189,14 @@ class OnboardingSelectWeekAndSyncUseCaseTest {
             syncPriceTablesUseCase(
                 source = SyncRequestSource.FIRST_LAUNCH,
                 targetSurveyWeek = latestWeek,
+                preDiscoveredWeekTables = any(),
             )
         } returns syncResult
         coEvery { completeOnboardingUseCase.completeAfterSync(syncResult) } returns
             CompleteOnboardingResult.NotReady
 
         val result = useCase.invoke(
-            surveyWeek = latestWeek,
+            catalogEntry = latestEntry,
             selectionMode = SurveyWeekSelectionMode.LATEST,
         )
 
