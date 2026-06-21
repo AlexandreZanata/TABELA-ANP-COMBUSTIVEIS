@@ -77,6 +77,15 @@
     <string name="onboarding_action_get_started">开始使用</string>
     <string name="onboarding_action_sync_now">立即同步</string>
     <string name="onboarding_action_skip">暂时跳过</string>
+    <string name="onboarding_location_prompt_title">自动查找您的城市？</string>
+    <string name="onboarding_location_prompt_body">我们可以使用一次设备位置来推荐您的城市以查看油价。您也可以手动选择。</string>
+    <string name="onboarding_location_use_device">使用我的位置</string>
+    <string name="onboarding_location_choose_manual">手动选择</string>
+    <string name="onboarding_location_permission_rationale">位置访问有助于检测您的城市以查询油价。坐标不会被存储。</string>
+    <string name="onboarding_location_failed">无法检测您的城市。请手动选择州和城市。</string>
+    <string name="onboarding_location_resolving">正在检测您的城市…</string>
+    <string name="geocoding_osm_attribution">城市检测数据 © OpenStreetMap 贡献者</string>
+    <string name="settings_geocoding_attribution">地理编码由 OpenStreetMap（Nominatim）提供</string>
 
     <!-- UC-009 Week picker (Phase 12) -->
     <string name="week_picker_title">调查周</string>

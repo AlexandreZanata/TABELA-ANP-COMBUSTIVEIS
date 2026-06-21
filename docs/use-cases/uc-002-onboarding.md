@@ -51,8 +51,15 @@ Introduce the app value proposition and guide the user through survey week selec
 
 ### A4 — User chooses manual location after sync
 
-- **WHEN** user declines device location on UC-012 prompt  
-- **THEN** navigate to UC-003 manual state + city picker
+- **WHEN** user declines device location on UC-012 prompt or taps **Choose manually**  
+- **THEN** navigate to UC-003 manual state + city picker  
+- **AND** set `locationPromptCompleted = true`
+
+### A5 — Device location resolves city successfully
+
+- **WHEN** user grants location and reverse geocode matches catalog  
+- **THEN** persist preferred municipality via UC-003 and navigate to Home  
+- **AND** set `locationPromptCompleted = true`
 
 ## Business rules
 
@@ -62,7 +69,7 @@ Introduce the app value proposition and guide the user through survey week selec
 
 - `SurveyWeekSelected` (v2, via UC-009)
 - `SyncRequested(FIRST_LAUNCH)`
-- `PreferencesUpdated` (`activeSurveyWeek`, `onboardingCompleted`)
+- `PreferencesUpdated` (`activeSurveyWeek`, `onboardingCompleted`, `locationPromptCompleted`)
 
 ## Postconditions
 
@@ -77,7 +84,8 @@ Introduce the app value proposition and guide the user through survey week selec
 - `onboarding_body_offline`
 - `onboarding_action_get_started`
 - `week_picker_title`, `week_picker_latest`, `week_picker_updated_at`, `week_picker_operational_note` (UC-009)
-- `onboarding_location_prompt_title`, `onboarding_location_use_device` (UC-012)
+- `onboarding_location_prompt_title`, `onboarding_location_prompt_body`, `onboarding_location_use_device`, `onboarding_location_choose_manual` (UC-012)
+- `geocoding_osm_attribution` (UC-012)
 
 ## Related documentation
 

@@ -42,6 +42,7 @@ class UserPreferencesDataStore @Inject constructor(
             stored[Keys.AUTO_SYNC_ON_WIFI] = preferences.autoSyncOnWifi
             stored[Keys.SHOW_PRICE_HISTORY] = preferences.showPriceHistory
             stored[Keys.ONBOARDING_COMPLETED] = preferences.onboardingCompleted
+            stored[Keys.LOCATION_PROMPT_COMPLETED] = preferences.locationPromptCompleted
             val activeWeek = ActiveSurveyWeekCodec.encode(preferences.activeSurveyWeek)
             if (activeWeek != null) {
                 stored[Keys.ACTIVE_SURVEY_WEEK_START] = activeWeek.first
@@ -72,6 +73,7 @@ class UserPreferencesDataStore @Inject constructor(
             autoSyncOnWifi = preferences[Keys.AUTO_SYNC_ON_WIFI] ?: true,
             showPriceHistory = preferences[Keys.SHOW_PRICE_HISTORY] ?: true,
             onboardingCompleted = preferences[Keys.ONBOARDING_COMPLETED] ?: false,
+            locationPromptCompleted = preferences[Keys.LOCATION_PROMPT_COMPLETED] ?: false,
             activeSurveyWeek = ActiveSurveyWeekCodec.decode(
                 startDate = preferences[Keys.ACTIVE_SURVEY_WEEK_START],
                 endDate = preferences[Keys.ACTIVE_SURVEY_WEEK_END],
@@ -90,6 +92,7 @@ class UserPreferencesDataStore @Inject constructor(
         val AUTO_SYNC_ON_WIFI = booleanPreferencesKey("auto_sync_on_wifi")
         val SHOW_PRICE_HISTORY = booleanPreferencesKey("show_price_history")
         val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
+        val LOCATION_PROMPT_COMPLETED = booleanPreferencesKey("location_prompt_completed")
         val ACTIVE_SURVEY_WEEK_START = stringPreferencesKey("active_survey_week_start")
         val ACTIVE_SURVEY_WEEK_END = stringPreferencesKey("active_survey_week_end")
     }

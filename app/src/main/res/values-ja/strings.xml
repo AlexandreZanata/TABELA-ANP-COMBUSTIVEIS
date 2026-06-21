@@ -77,6 +77,15 @@
     <string name="onboarding_action_get_started">始める</string>
     <string name="onboarding_action_sync_now">今すぐ同期</string>
     <string name="onboarding_action_skip">今はスキップ</string>
+    <string name="onboarding_location_prompt_title">市区町村を自動で見つけますか？</string>
+    <string name="onboarding_location_prompt_body">価格表示のために、一度だけ端末の位置情報で市区町村を提案できます。手動で選ぶこともできます。</string>
+    <string name="onboarding_location_use_device">位置情報を使う</string>
+    <string name="onboarding_location_choose_manual">手動で選ぶ</string>
+    <string name="onboarding_location_permission_rationale">位置情報へのアクセスは、価格照会のための市区町村検出に役立ちます。座標は保存されません。</string>
+    <string name="onboarding_location_failed">市区町村を検出できませんでした。州と市区町村を手動で選んでください。</string>
+    <string name="onboarding_location_resolving">市区町村を検出中…</string>
+    <string name="geocoding_osm_attribution">市区町村検出データ © OpenStreetMap contributors</string>
+    <string name="settings_geocoding_attribution">OpenStreetMap（Nominatim）によるジオコーディング</string>
 
     <!-- UC-009 Week picker (Phase 12) -->
     <string name="week_picker_title">調査週</string>

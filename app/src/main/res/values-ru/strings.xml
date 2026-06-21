@@ -77,6 +77,15 @@
     <string name="onboarding_action_get_started">Начать</string>
     <string name="onboarding_action_sync_now">Синхронизировать сейчас</string>
     <string name="onboarding_action_skip">Пропустить пока</string>
+    <string name="onboarding_location_prompt_title">Найти ваш город автоматически?</string>
+    <string name="onboarding_location_prompt_body">Мы можем один раз использовать геолокацию устройства, чтобы предложить город для цен. Вы также можете выбрать вручную.</string>
+    <string name="onboarding_location_use_device">Использовать мою геолокацию</string>
+    <string name="onboarding_location_choose_manual">Выбрать вручную</string>
+    <string name="onboarding_location_permission_rationale">Доступ к геолокации помогает определить ваш город для просмотра цен. Координаты не сохраняются.</string>
+    <string name="onboarding_location_failed">Не удалось определить город. Выберите штат и город вручную.</string>
+    <string name="onboarding_location_resolving">Определение города…</string>
+    <string name="geocoding_osm_attribution">Определение города: данные © участники OpenStreetMap</string>
+    <string name="settings_geocoding_attribution">Геокодирование OpenStreetMap (Nominatim)</string>
 
     <!-- UC-009 Week picker (Phase 12) -->
     <string name="week_picker_title">Неделя опроса</string>

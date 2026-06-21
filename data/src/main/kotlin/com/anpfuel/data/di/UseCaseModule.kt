@@ -5,6 +5,7 @@ import com.anpfuel.application.usecase.location.ResolveDeviceLocationUseCase
 import com.anpfuel.application.usecase.location.SelectLocationUseCase
 import com.anpfuel.application.usecase.navigation.ResolveAppStartDestinationUseCase
 import com.anpfuel.application.usecase.network.ObserveNetworkConnectivityUseCase
+import com.anpfuel.application.usecase.onboarding.CompleteLocationPromptUseCase
 import com.anpfuel.application.usecase.onboarding.CompleteOnboardingUseCase
 import com.anpfuel.application.usecase.onboarding.OnboardingSelectWeekAndSyncUseCase
 import com.anpfuel.application.usecase.readiness.GetDataReadinessUseCase
@@ -139,6 +140,16 @@ object UseCaseModule {
         networkConnectivityGateway: NetworkConnectivityGateway,
     ): ObserveNetworkConnectivityUseCase = ObserveNetworkConnectivityUseCase(
         networkConnectivityGateway = networkConnectivityGateway,
+    )
+
+    @Provides
+    @Singleton
+    fun provideCompleteLocationPromptUseCase(
+        userPreferencesRepository: UserPreferencesRepository,
+        eventPublisher: DomainEventPublisher,
+    ): CompleteLocationPromptUseCase = CompleteLocationPromptUseCase(
+        userPreferencesRepository = userPreferencesRepository,
+        eventPublisher = eventPublisher,
     )
 
     @Provides

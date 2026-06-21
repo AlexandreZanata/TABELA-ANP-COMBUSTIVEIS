@@ -78,6 +78,15 @@
     <string name="onboarding_action_get_started">Get started</string>
     <string name="onboarding_action_sync_now">Sync now</string>
     <string name="onboarding_action_skip">Skip for now</string>
+    <string name="onboarding_location_prompt_title">Find your city automatically?</string>
+    <string name="onboarding_location_prompt_body">We can use your device location once to suggest your city for fuel prices. You can also choose manually.</string>
+    <string name="onboarding_location_use_device">Use my location</string>
+    <string name="onboarding_location_choose_manual">Choose manually</string>
+    <string name="onboarding_location_permission_rationale">Location access helps detect your city for price lookup. Coordinates are not stored.</string>
+    <string name="onboarding_location_failed">Could not detect your city. Choose your state and city manually.</string>
+    <string name="onboarding_location_resolving">Detecting your city…</string>
+    <string name="geocoding_osm_attribution">City detection data © OpenStreetMap contributors</string>
+    <string name="settings_geocoding_attribution">Geocoding by OpenStreetMap (Nominatim)</string>
 
     <!-- UC-009 Week picker (Phase 12) -->
     <string name="week_picker_title">Survey week</string>

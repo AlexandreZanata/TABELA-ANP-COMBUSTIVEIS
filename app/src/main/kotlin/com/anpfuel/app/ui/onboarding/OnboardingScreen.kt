@@ -1,5 +1,8 @@
 package com.anpfuel.app.ui.onboarding
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,6 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anpfuel.app.R
 import com.anpfuel.app.ui.accessibility.headingSemantics
 import com.anpfuel.app.ui.components.AnpAttributionFooter
+import com.anpfuel.app.ui.components.GeocodingAttributionFooter
 import com.anpfuel.app.ui.components.LoadingState
 import com.anpfuel.app.ui.theme.AnpFuelTheme
 import com.anpfuel.app.ui.weekpicker.WeekPickerConfirmDialog
@@ -52,6 +56,29 @@ fun OnboardingScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val locale = LocalConfiguration.current.locales[0]
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+    ) { permissions ->
+        val granted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+            permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        if (granted) {
+            viewModel.onLocationPermissionGranted()
+        } else {
+            viewModel.onLocationPermissionDenied()
+        }
+    }
+
+    LaunchedEffect(viewModel) {
+        viewModel.locationPermissionRequest.collect {
+            permissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                ),
+            )
+        }
+    }
 
     LaunchedEffect(viewModel) {
         viewModel.navigation.collect { destination ->
@@ -74,6 +101,8 @@ fun OnboardingScreen(
         onRetrySync = viewModel::retrySync,
         onSkipSync = viewModel::skipSync,
         onBackToIntro = viewModel::backToIntro,
+        onUseDeviceLocation = viewModel::onUseDeviceLocationClick,
+        onChooseManualLocation = viewModel::onChooseManualLocation,
         modifier = modifier,
     )
 
@@ -101,10 +130,13 @@ private fun OnboardingContent(
     onRetrySync: () -> Unit,
     onSkipSync: () -> Unit,
     onBackToIntro: () -> Unit,
+    onUseDeviceLocation: () -> Unit,
+    onChooseManualLocation: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val titleRes = when (uiState.step) {
         OnboardingStep.INTRO -> R.string.onboarding_title_welcome
+        OnboardingStep.LOCATION_PROMPT -> R.string.onboarding_location_prompt_title
         OnboardingStep.WEEK_PICKER, OnboardingStep.SYNCING -> R.string.week_picker_title
     }
 
@@ -122,7 +154,12 @@ private fun OnboardingContent(
                 },
             )
         },
-        bottomBar = { AnpAttributionFooter() },
+        bottomBar = {
+            when (uiState.step) {
+                OnboardingStep.LOCATION_PROMPT -> GeocodingAttributionFooter()
+                else -> AnpAttributionFooter()
+            }
+        },
     ) { innerPadding ->
         when (uiState.step) {
             OnboardingStep.SYNCING -> {
@@ -162,6 +199,17 @@ private fun OnboardingContent(
                     onPageSelected = onPageSelected,
                     onProceedToWeekPicker = onProceedToWeekPicker,
                     onSkipSync = onSkipSync,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                )
+            }
+
+            OnboardingStep.LOCATION_PROMPT -> {
+                LocationPromptStep(
+                    isResolvingLocation = uiState.isResolvingLocation,
+                    onUseDeviceLocation = onUseDeviceLocation,
+                    onChooseManualLocation = onChooseManualLocation,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding),
@@ -316,6 +364,8 @@ private fun OnboardingIntroContentPreview() {
             onRetrySync = {},
             onSkipSync = {},
             onBackToIntro = {},
+            onUseDeviceLocation = {},
+            onChooseManualLocation = {},
         )
     }
 }
@@ -347,6 +397,30 @@ private fun OnboardingWeekPickerPreview() {
             onRetrySync = {},
             onSkipSync = {},
             onBackToIntro = {},
+            onUseDeviceLocation = {},
+            onChooseManualLocation = {},
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun OnboardingLocationPromptPreview() {
+    AnpFuelTheme {
+        OnboardingContent(
+            uiState = OnboardingUiState(step = OnboardingStep.LOCATION_PROMPT),
+            onNextPage = {},
+            onPreviousPage = {},
+            onPageSelected = {},
+            onProceedToWeekPicker = {},
+            onUseLatestWeekAndSync = {},
+            onSelectWeek = {},
+            onRetryCatalog = {},
+            onRetrySync = {},
+            onSkipSync = {},
+            onBackToIntro = {},
+            onUseDeviceLocation = {},
+            onChooseManualLocation = {},
         )
     }
 }

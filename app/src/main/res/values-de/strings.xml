@@ -77,6 +77,15 @@
     <string name="onboarding_action_get_started">Loslegen</string>
     <string name="onboarding_action_sync_now">Jetzt synchronisieren</string>
     <string name="onboarding_action_skip">Vorerst überspringen</string>
+    <string name="onboarding_location_prompt_title">Ihre Stadt automatisch finden?</string>
+    <string name="onboarding_location_prompt_body">Wir können Ihren Standort einmalig nutzen, um Ihre Stadt für Preise vorzuschlagen. Sie können auch manuell wählen.</string>
+    <string name="onboarding_location_use_device">Meinen Standort verwenden</string>
+    <string name="onboarding_location_choose_manual">Manuell wählen</string>
+    <string name="onboarding_location_permission_rationale">Standortzugriff hilft, Ihre Stadt für Preisabfragen zu erkennen. Koordinaten werden nicht gespeichert.</string>
+    <string name="onboarding_location_failed">Stadt konnte nicht erkannt werden. Wählen Sie Bundesland und Stadt manuell.</string>
+    <string name="onboarding_location_resolving">Stadt wird erkannt…</string>
+    <string name="geocoding_osm_attribution">Stadterkennung: Daten © OpenStreetMap-Mitwirkende</string>
+    <string name="settings_geocoding_attribution">Geokodierung durch OpenStreetMap (Nominatim)</string>
 
     <!-- UC-009 Week picker (Phase 12) -->
     <string name="week_picker_title">Erhebungswoche</string>
