@@ -121,6 +121,20 @@ class HomeViewModelTest {
     }
 
     @Test
+    fun loadDoesNotShowLoadingIndicatorWhenContentAlreadyPresent() = runTest(dispatcher) {
+        stubReadyHome(vehicles = emptyList(), tankItems = emptyList())
+
+        viewModel.load(Locale.US)
+        advanceUntilIdle()
+        assertEquals(false, viewModel.uiState.value.isLoading)
+
+        viewModel.load(Locale.US)
+        advanceUntilIdle()
+
+        assertEquals(false, viewModel.uiState.value.isLoading)
+    }
+
+    @Test
     fun loadMapsMultipleTankFillCardsInOrder() = runTest(dispatcher) {
         val first = sampleVehicle("Gol", sortOrder = 0)
         val second = sampleVehicle("Onix", sortOrder = 1)

@@ -36,7 +36,7 @@ class StationAddressNormalizationRuleTest {
         )
 
         assertEquals(
-            "RUA AMARO CASTRO LIMA, CAMPO GRANDE - MS, Brazil",
+            "ULTRAGAZ, RUA AMARO CASTRO LIMA, CAMPO GRANDE - MS, Brazil",
             query,
         )
     }
@@ -67,7 +67,7 @@ class StationAddressNormalizationRuleTest {
 
         val query = StationAddressNormalizationRule.buildNavigationQuery(station = station)
 
-        assertEquals("Av. Brasil, 1000, Curitiba, PR, Brazil", query)
+        assertEquals("Posto Centro, Av. Brasil, 1000, Curitiba, PR, Brazil", query)
     }
 
     @Test
@@ -88,6 +88,23 @@ class StationAddressNormalizationRuleTest {
     }
 
     @Test
+    fun doesNotDuplicateStationNameWhenAlreadyInAddress() {
+        val station = RetailStation.create(
+            cnpj = Cnpj.parse("12345678000195"),
+            legalName = "POSTO BR CENTRO LTDA",
+            tradeName = "Posto BR Centro",
+            address = "Posto BR Centro, Rua XV, 100",
+            municipality = "CURITIBA",
+            state = BrazilianState.PARANA,
+            brand = "BR",
+        )
+
+        val query = StationAddressNormalizationRule.buildNavigationQuery(station = station)
+
+        assertEquals("Posto BR Centro, Rua XV, 100, CURITIBA - PR, Brazil", query)
+    }
+
+    @Test
     fun keepsExistingBrazilSuffix() {
         val station = RetailStation.create(
             cnpj = Cnpj.parse("12345678000195"),
@@ -101,6 +118,6 @@ class StationAddressNormalizationRuleTest {
 
         val query = StationAddressNormalizationRule.buildNavigationQuery(station = station)
 
-        assertEquals("Rua A, Porto Alegre - RS, Brazil", query)
+        assertEquals("Posto Sul, Rua A, Porto Alegre - RS, Brazil", query)
     }
 }

@@ -1,5 +1,6 @@
 package com.anpfuel.app.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,12 +10,13 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,11 +31,6 @@ fun StationPriceRow(
     modifier: Modifier = Modifier,
 ) {
     val rowDescription = stringResource(
-        R.string.a11y_station_price_row,
-        station.displayName,
-        station.priceFormatted,
-    )
-    val navigateDescription = stringResource(
         R.string.a11y_station_navigate,
         station.displayName,
     )
@@ -43,7 +40,9 @@ fun StationPriceRow(
             .fillMaxWidth()
             .semantics(mergeDescendants = true) {
                 contentDescription = rowDescription
-            },
+                role = Role.Button
+            }
+            .clickable(onClick = onNavigate),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
         ),
@@ -84,24 +83,11 @@ fun StationPriceRow(
                     )
                 }
             }
-            Column(
-                horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
-                Text(
-                    text = station.priceFormatted,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                )
-                TextButton(
-                    onClick = onNavigate,
-                    modifier = Modifier.semantics {
-                        contentDescription = navigateDescription
-                    },
-                ) {
-                    Text(text = stringResource(R.string.stations_navigate_action))
-                }
-            }
+            Text(
+                text = station.priceFormatted,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
         }
     }
 }

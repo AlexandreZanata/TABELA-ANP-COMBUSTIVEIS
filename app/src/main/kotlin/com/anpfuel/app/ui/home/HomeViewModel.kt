@@ -62,6 +62,8 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
+    private var hasPresentedContent = false
+
     init {
         viewModelScope.launch {
             observeNetworkConnectivityUseCase().collect { isConnected ->
@@ -70,9 +72,14 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun load(locale: Locale) {
+    fun load(locale: Locale, showLoadingIndicator: Boolean = false) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null, errorMessage = null) }
+            val showLoading = showLoadingIndicator || !hasPresentedContent
+            if (showLoading) {
+                _uiState.update { it.copy(isLoading = true, error = null, errorMessage = null) }
+            } else {
+                _uiState.update { it.copy(error = null, errorMessage = null) }
+            }
             runCatching {
                 val readinessResult = getDataReadinessUseCase()
                 val preferred = selectLocationUseCase.getPreferredLocation()
@@ -95,6 +102,7 @@ class HomeViewModel @Inject constructor(
                             operationalNote = null,
                         )
                     }
+                    hasPresentedContent = true
                     return@launch
                 }
 
@@ -112,6 +120,8 @@ class HomeViewModel @Inject constructor(
                 val uiTankFillEstimates = TankFillCostUiMapper.toUiModels(
                     items = tankFillResult.items,
                     locale = locale,
+                    state = tankFillResult.state,
+                    municipality = tankFillResult.municipality,
                 )
 
                 _uiState.update {
@@ -130,6 +140,7 @@ class HomeViewModel @Inject constructor(
                         operationalNote = pricesResult.operationalNote,
                     )
                 }
+                hasPresentedContent = true
             }.onFailure { error ->
                 val appError = AppErrorResolver.fromThrowable(error)
                 _uiState.update {
@@ -139,6 +150,7 @@ class HomeViewModel @Inject constructor(
                         errorMessage = error.message ?: error.javaClass.simpleName,
                     )
                 }
+                hasPresentedContent = true
             }
         }
     }

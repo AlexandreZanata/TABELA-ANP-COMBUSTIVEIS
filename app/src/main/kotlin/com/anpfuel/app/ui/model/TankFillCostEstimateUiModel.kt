@@ -8,8 +8,10 @@ data class TankFillCostEstimateUiModel(
     val vehicleId: DomainId,
     val displayName: String,
     val tankCapacityLiters: Int,
+    val tankCapacityLitersLabel: String,
     val fuelProduct: FuelProduct,
     val totalCostFormatted: String?,
     val stationDisplayName: String?,
+    val stationNavigationQuery: String?,
     val unitPriceSource: TankFillCostUnitPriceSource?,
 )

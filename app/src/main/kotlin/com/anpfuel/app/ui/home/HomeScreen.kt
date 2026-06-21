@@ -1,5 +1,6 @@
 package com.anpfuel.app.ui.home
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -24,8 +26,10 @@ import com.anpfuel.app.ui.components.AnpTopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,6 +41,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.anpfuel.app.R
 import com.anpfuel.app.mapper.AppErrorMapper
 import com.anpfuel.app.mapper.SurveyWeekFormatter
+import com.anpfuel.app.navigation.MapAppChooser
+import com.anpfuel.app.navigation.MapNavigationResult
 import com.anpfuel.app.navigation.Routes
 import com.anpfuel.app.ui.components.AnpAttributionFooter
 import com.anpfuel.app.ui.components.Br010EmptyState
@@ -83,8 +89,8 @@ fun HomeScreen(
         onToggleTheme = onToggleTheme,
         onNavigate = onNavigate,
         onRefresh = { viewModel.refresh(locale) },
-        onRetry = { viewModel.load(locale) },
-        onWeekChanged = { viewModel.load(locale) },
+        onRetry = { viewModel.load(locale, showLoadingIndicator = true) },
+        onWeekChanged = { viewModel.load(locale, showLoadingIndicator = true) },
         modifier = modifier,
     )
 }
@@ -102,6 +108,11 @@ internal fun HomeContent(
     modifier: Modifier = Modifier,
     includeSurveyWeekChip: Boolean = true,
 ) {
+    val context = LocalContext.current
+    val scrollState = rememberSaveable(saver = ScrollState.Saver) {
+        ScrollState(0)
+    }
+
     AnpScaffold(
         modifier = modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
@@ -132,7 +143,7 @@ internal fun HomeContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
@@ -212,6 +223,20 @@ internal fun HomeContent(
                             TankFillCostCard(
                                 estimate = estimate,
                                 onClick = { onNavigate(Routes.VEHICLES) },
+                                onGoToStation = estimate.stationNavigationQuery?.let { query ->
+                                    {
+                                        when (MapAppChooser.openNavigation(context, query)) {
+                                            MapNavigationResult.NoAppFound -> {
+                                                Toast.makeText(
+                                                    context,
+                                                    context.getString(R.string.stations_navigate_no_app),
+                                                    Toast.LENGTH_SHORT,
+                                                ).show()
+                                            }
+                                            MapNavigationResult.Launched -> Unit
+                                        }
+                                    }
+                                },
                             )
                         }
                     }

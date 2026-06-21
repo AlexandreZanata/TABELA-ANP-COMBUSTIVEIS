@@ -38,6 +38,7 @@ import com.anpfuel.app.ui.components.AnpAttributionFooter
 import com.anpfuel.app.ui.components.EmptyState
 import com.anpfuel.app.ui.components.ErrorState
 import com.anpfuel.app.ui.components.FuelProductIcon
+import com.anpfuel.app.ui.components.StationsNavigateHintBanner
 import com.anpfuel.app.ui.components.FuelProductLabel
 import com.anpfuel.app.ui.components.LoadingState
 import com.anpfuel.app.ui.components.OfflineBanner
@@ -244,6 +245,9 @@ private fun StationsContent(
                         text = stringResource(R.string.stations_sort_by_price),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    StationsNavigateHintBanner(
+                        modifier = Modifier.padding(top = 4.dp, bottom = 8.dp),
                     )
                     uiState.stations.forEach { station ->
                         StationPriceRow(

@@ -17,6 +17,7 @@ data class TankFillCostEstimate(
     val totalCost: PriceAmount,
     val unitPriceSource: TankFillCostUnitPriceSource,
     val stationDisplayName: String? = null,
+    val referenceStation: RetailStation? = null,
 )
 
 enum class TankFillCostUnitPriceSource {

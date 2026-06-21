@@ -2,6 +2,7 @@ package com.anpfuel.domain.rule
 
 import com.anpfuel.domain.exception.DomainException
 import com.anpfuel.domain.model.AveragePrice
+import com.anpfuel.domain.model.RetailStation
 import com.anpfuel.domain.model.StationPrice
 import com.anpfuel.domain.model.TankFillCostEstimate
 import com.anpfuel.domain.model.TankFillCostUnitPriceSource
@@ -34,6 +35,7 @@ object TankFillCostRule {
             totalCost = totalCost,
             unitPriceSource = resolved.source,
             stationDisplayName = resolved.stationDisplayName,
+            referenceStation = resolved.referenceStation,
         )
     }
 
@@ -69,6 +71,7 @@ object TankFillCostRule {
             unitPrice = cheapest.price,
             source = TankFillCostUnitPriceSource.CHEAPEST_STATION,
             stationDisplayName = cheapest.station.displayName(),
+            referenceStation = cheapest.station,
         )
     }
 
@@ -81,6 +84,7 @@ object TankFillCostRule {
             unitPrice = match.price,
             source = TankFillCostUnitPriceSource.SPECIFIC_STATION,
             stationDisplayName = match.station.displayName(),
+            referenceStation = match.station,
         )
     }
 
@@ -97,5 +101,6 @@ object TankFillCostRule {
         val unitPrice: PriceAmount,
         val source: TankFillCostUnitPriceSource,
         val stationDisplayName: String?,
+        val referenceStation: RetailStation? = null,
     )
 }

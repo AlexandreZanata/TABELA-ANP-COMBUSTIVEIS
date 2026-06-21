@@ -21,12 +21,14 @@
     <string name="home_view_price_details">Ver detalhes completos dos preços</string>
 
     <!-- Tank fill cost / Vehicles (UC-010, UC-011) -->
-    <string name="home_tank_fill_cost_title">Custo do tanque cheio</string>
+    <string name="home_tank_fill_cost_title">Custo para encher o tanque</string>
+    <string name="home_tank_fill_cost_vehicle_format">%1$s (%2$s L)</string>
     <string name="home_tank_fill_cost_placeholder_title">Acompanhe o custo real de encher o tanque</string>
     <string name="home_tank_fill_cost_placeholder_body">Cadastre um veículo para estimar quanto custa encher o tanque na sua cidade.</string>
     <string name="home_tank_fill_cost_liters_format">%1$s (%2$d L)</string>
     <string name="home_tank_fill_cost_unavailable">Preço indisponível</string>
     <string name="home_tank_fill_cost_station_name">Em %1$s</string>
+    <string name="home_tank_fill_cost_go_to_station">Ir até o posto</string>
     <string name="vehicle_screen_title">Veículos</string>
     <string name="vehicle_name_hint">Nome do veículo</string>
     <string name="vehicle_tank_capacity_hint">Capacidade do tanque (litros)</string>
@@ -149,7 +151,8 @@
 
     <!-- UC-006 History -->
     <string name="history_title">Histórico</string>
-    <string name="history_insufficient_data">O histórico ficará disponível após mais sincronizações semanais.</string>
+    <string name="history_insufficient_data">Para comparar preços, é preciso ter dados de mais de uma semana baixados no app.</string>
+    <string name="history_insufficient_data_hint">Use o seletor de semana acima ou sincronize tabelas anteriores da ANP.</string>
     <string name="history_week_label">%1$s</string>
     <string name="history_disabled">O histórico de preços está desativado nas configurações.</string>
     <string name="history_fuel_product_label">Combustível</string>
@@ -158,13 +161,14 @@
     <!-- UC-007 Stations -->
     <string name="stations_title">Postos</string>
     <string name="stations_sort_by_price">Menor preço primeiro</string>
+    <string name="stations_tap_to_navigate_hint">Toque em um posto para abrir no Google Maps.</string>
     <string name="stations_download_prompt">Os preços por posto ainda não estão neste dispositivo. Baixe o arquivo de postos da ANP desta semana para comparar preços por estabelecimento.</string>
     <string name="stations_download_action">Baixar preços por posto</string>
     <string name="stations_empty">Nenhum posto informou este combustível na cidade selecionada nesta semana.</string>
     <string name="stations_brand_label">Bandeira: %1$s</string>
     <string name="stations_collected_at_label">Coleta: %1$s</string>
     <string name="stations_navigate_action">Ir</string>
-    <string name="stations_navigate_no_app">Nenhum app de mapas encontrado para abrir rotas.</string>
+    <string name="stations_navigate_no_app">Não foi possível abrir o Google Maps. Instale o app ou use o navegador.</string>
     <string name="a11y_station_navigate">Ir para %1$s</string>
     <string name="prices_view_stations">Ver preços por posto</string>
 

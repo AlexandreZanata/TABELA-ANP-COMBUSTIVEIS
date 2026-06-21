@@ -54,7 +54,7 @@ class BuildStationNavigationQueryUseCaseTest {
 
         assertTrue(query.contains("CAMPO GRANDE - MS"))
         assertEquals(
-            "RUA AMARO CASTRO LIMA, CAMPO GRANDE - MS, Brazil",
+            "ULTRAGAZ, RUA AMARO CASTRO LIMA, CAMPO GRANDE - MS, Brazil",
             query,
         )
     }
@@ -67,7 +67,7 @@ class BuildStationNavigationQueryUseCaseTest {
         val result = useCase.invoke(station)
 
         assertEquals(
-            "RUA AMARO CASTRO LIMA, CAMPO GRANDE - MS, Brazil",
+            "ULTRAGAZ, RUA AMARO CASTRO LIMA, CAMPO GRANDE - MS, Brazil",
             result.navigationQuery,
         )
         coVerify(exactly = 1) { eventPublisher.publish(capture(eventSlot)) }

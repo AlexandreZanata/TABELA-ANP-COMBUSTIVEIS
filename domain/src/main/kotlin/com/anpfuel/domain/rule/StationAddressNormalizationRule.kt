@@ -27,20 +27,32 @@ object StationAddressNormalizationRule {
             preferredMunicipality?.trim().orEmpty()
         }
         val state = station.state
-        val locationSuffix = formatLocationSuffix(municipality, state)
-
         val normalizedAddress = normalizeAddress(station.address)
+        val displayName = station.displayName().trim()
         val queryBody = if (isAddressSufficient(normalizedAddress)) {
-            appendLocationIfMissing(
-                address = normalizedAddress,
-                municipality = municipality,
-                state = state,
+            prependStationNameIfMissing(
+                displayName = displayName,
+                query = appendLocationIfMissing(
+                    address = normalizedAddress,
+                    municipality = municipality,
+                    state = state,
+                ),
             )
         } else {
-            "${station.displayName()}, $locationSuffix"
+            "${displayName}, ${formatLocationSuffix(municipality, state)}"
         }
 
         return appendCountry(queryBody)
+    }
+
+    internal fun prependStationNameIfMissing(displayName: String, query: String): String {
+        if (displayName.isBlank()) {
+            return query
+        }
+        if (query.contains(displayName, ignoreCase = true)) {
+            return query
+        }
+        return "$displayName, $query"
     }
 
     internal fun isAddressSufficient(normalizedAddress: String): Boolean =

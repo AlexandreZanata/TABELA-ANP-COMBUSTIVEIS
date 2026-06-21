@@ -21,11 +21,13 @@
     <string name="home_view_price_details">查看完整价格详情</string>
 
     <string name="home_tank_fill_cost_title">满箱费用</string>
+    <string name="home_tank_fill_cost_vehicle_format">%1$s（%2$s 升）</string>
     <string name="home_tank_fill_cost_placeholder_title">跟踪真实加油费用</string>
     <string name="home_tank_fill_cost_placeholder_body">添加车辆以估算在您所在城市加满油箱的费用。</string>
     <string name="home_tank_fill_cost_liters_format">%1$s（%2$d 升）</string>
     <string name="home_tank_fill_cost_unavailable">价格不可用</string>
     <string name="home_tank_fill_cost_station_name">在 %1$s</string>
+    <string name="home_tank_fill_cost_go_to_station">前往加油站</string>
     <string name="vehicle_screen_title">车辆</string>
     <string name="vehicle_name_hint">车辆名称</string>
     <string name="vehicle_tank_capacity_hint">油箱容量（升）</string>
@@ -148,7 +150,8 @@
 
     <!-- UC-006 History -->
     <string name="history_title">价格历史</string>
-    <string name="history_insufficient_data">完成更多每周同步后可查看历史记录。</string>
+    <string name="history_insufficient_data">若要比较价格，本设备上需要有超过一个调查周的数据。</string>
+    <string name="history_insufficient_data_hint">使用上方的周选择器，或同步更早的 ANP 每周数据表。</string>
     <string name="history_week_label">%1$s</string>
     <string name="history_disabled">价格历史已在设置中关闭。</string>
     <string name="history_fuel_product_label">燃油产品</string>
@@ -157,6 +160,7 @@
     <!-- UC-007 Stations -->
     <string name="stations_title">加油站</string>
     <string name="stations_sort_by_price">按价格排序（从低到高）</string>
+    <string name="stations_tap_to_navigate_hint">点击加油站即可在 Google 地图中打开。</string>
     <string name="stations_download_prompt">此设备上尚无加油站级别价格。下载本周 ANP 加油站文件以按站点比较价格。</string>
     <string name="stations_download_action">下载加油站价格</string>
     <string name="stations_empty">所选城市本周没有加油站报告此燃油价格。</string>

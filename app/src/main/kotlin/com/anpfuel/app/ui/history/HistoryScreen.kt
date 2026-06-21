@@ -157,6 +157,7 @@ private fun HistoryContent(
                 uiState.showInsufficientData -> {
                     EmptyState(
                         message = stringResource(R.string.history_insufficient_data),
+                        hint = stringResource(R.string.history_insufficient_data_hint),
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }

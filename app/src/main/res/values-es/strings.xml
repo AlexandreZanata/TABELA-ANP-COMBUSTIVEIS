@@ -21,11 +21,13 @@
     <string name="home_view_price_details">Ver detalles completos de precios</string>
 
     <string name="home_tank_fill_cost_title">Costo de llenar el tanque</string>
+    <string name="home_tank_fill_cost_vehicle_format">%1$s (%2$s L)</string>
     <string name="home_tank_fill_cost_placeholder_title">Siga el costo real de llenar el tanque</string>
     <string name="home_tank_fill_cost_placeholder_body">Agregue un vehículo para estimar cuánto cuesta llenar el tanque en su ciudad.</string>
     <string name="home_tank_fill_cost_liters_format">%1$s (%2$d L)</string>
     <string name="home_tank_fill_cost_unavailable">Precio no disponible</string>
     <string name="home_tank_fill_cost_station_name">En %1$s</string>
+    <string name="home_tank_fill_cost_go_to_station">Ir a la estación</string>
     <string name="vehicle_screen_title">Vehículos</string>
     <string name="vehicle_name_hint">Nombre del vehículo</string>
     <string name="vehicle_tank_capacity_hint">Capacidad del tanque (litros)</string>
@@ -148,7 +150,8 @@
 
     <!-- UC-006 History -->
     <string name="history_title">Historial de precios</string>
-    <string name="history_insufficient_data">El historial estará disponible después de más sincronizaciones semanales.</string>
+    <string name="history_insufficient_data">Para comparar precios, necesitas datos de más de una semana de encuesta en el dispositivo.</string>
+    <string name="history_insufficient_data_hint">Usa el selector de semana arriba o sincroniza tablas anteriores de la ANP.</string>
     <string name="history_week_label">%1$s</string>
     <string name="history_disabled">El historial de precios está desactivado en ajustes.</string>
     <string name="history_fuel_product_label">Producto de combustible</string>
@@ -157,6 +160,7 @@
     <!-- UC-007 Stations -->
     <string name="stations_title">Estaciones</string>
     <string name="stations_sort_by_price">Ordenado por precio (menor primero)</string>
+    <string name="stations_tap_to_navigate_hint">Toque una estación para abrirla en Google Maps.</string>
     <string name="stations_download_prompt">Los precios por estación aún no están en este dispositivo. Descargue el archivo de estaciones de la ANP de esta semana para comparar precios por estación.</string>
     <string name="stations_download_action">Descargar precios por estación</string>
     <string name="stations_empty">Ninguna estación reportó este combustible en la ciudad seleccionada esta semana.</string>
