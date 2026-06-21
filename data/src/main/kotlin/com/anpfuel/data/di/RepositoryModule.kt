@@ -25,6 +25,8 @@ import com.anpfuel.data.repository.StationPriceRepositoryImpl
 import com.anpfuel.data.repository.StorageStatsRepositoryImpl
 import com.anpfuel.data.repository.SyncJobRepositoryImpl
 import com.anpfuel.data.repository.UserPreferencesRepositoryImpl
+import com.anpfuel.data.repository.VehicleRepositoryImpl
+import com.anpfuel.domain.repository.VehicleRepository
 import com.anpfuel.domain.repository.AveragePriceRepository
 import com.anpfuel.domain.repository.CacheRepository
 import com.anpfuel.domain.repository.DomainEventPublisher
@@ -77,6 +79,12 @@ abstract class RepositoryModule {
     abstract fun bindMunicipalitySearchRepository(
         impl: MunicipalitySearchRepositoryImpl,
     ): MunicipalitySearchRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindVehicleRepository(
+        impl: VehicleRepositoryImpl,
+    ): VehicleRepository
 
     @Binds
     @Singleton

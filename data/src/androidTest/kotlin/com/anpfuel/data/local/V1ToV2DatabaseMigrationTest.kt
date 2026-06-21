@@ -72,10 +72,11 @@ class V1ToV2DatabaseMigrationTest {
 
         helper.runMigrationsAndValidate(
             testDb,
-            3,
+            4,
             true,
             AnpFuelDatabaseMigrations.MIGRATION_1_2,
             AnpFuelDatabaseMigrations.MIGRATION_2_3,
+            AnpFuelDatabaseMigrations.MIGRATION_3_4,
         ).apply {
             query("SELECT COUNT(*) FROM average_price").use { cursor ->
                 assertTrue(cursor.moveToFirst())
@@ -113,6 +114,16 @@ class V1ToV2DatabaseMigrationTest {
             ).use { cursor ->
                 assertTrue(cursor.moveToFirst())
                 assertTrue(cursor.getString(0).contains("content=`municipality_catalog`"))
+            }
+
+            query(
+                """
+                SELECT name FROM sqlite_master
+                WHERE type = 'table' AND name = 'vehicle'
+                """.trimIndent(),
+            ).use { cursor ->
+                assertTrue(cursor.moveToFirst())
+                assertEquals("vehicle", cursor.getString(0))
             }
 
             close()

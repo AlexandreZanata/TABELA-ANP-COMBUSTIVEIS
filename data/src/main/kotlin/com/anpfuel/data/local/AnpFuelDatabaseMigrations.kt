@@ -150,4 +150,24 @@ object AnpFuelDatabaseMigrations {
             )
         }
     }
+
+    val MIGRATION_3_4: Migration = object : Migration(3, 4) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS `vehicle` (
+                    `id` TEXT NOT NULL,
+                    `display_name` TEXT NOT NULL,
+                    `tank_capacity_liters` REAL NOT NULL,
+                    `fuel_product` TEXT NOT NULL,
+                    `price_source_mode` TEXT NOT NULL,
+                    `specific_station_cnpj` TEXT,
+                    `price_drop_alert_enabled` INTEGER NOT NULL DEFAULT 0,
+                    `sort_order` INTEGER NOT NULL DEFAULT 0,
+                    PRIMARY KEY(`id`)
+                )
+                """.trimIndent(),
+            )
+        }
+    }
 }

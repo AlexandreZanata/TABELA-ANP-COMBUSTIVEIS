@@ -11,6 +11,7 @@ import com.anpfuel.data.local.dao.MunicipalityCatalogDao
 import com.anpfuel.data.local.dao.MunicipalityFtsDao
 import com.anpfuel.data.local.dao.StationPriceDao
 import com.anpfuel.data.local.dao.SurveyWeekDao
+import com.anpfuel.data.local.dao.VehicleDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,6 +35,7 @@ object DatabaseModule {
             .addMigrations(
                 AnpFuelDatabaseMigrations.MIGRATION_1_2,
                 AnpFuelDatabaseMigrations.MIGRATION_2_3,
+                AnpFuelDatabaseMigrations.MIGRATION_3_4,
             )
             .build()
 
@@ -60,4 +62,8 @@ object DatabaseModule {
     @Provides
     fun provideMunicipalityFtsDao(database: AnpFuelDatabase): MunicipalityFtsDao =
         database.municipalityFtsDao()
+
+    @Provides
+    fun provideVehicleDao(database: AnpFuelDatabase): VehicleDao =
+        database.vehicleDao()
 }

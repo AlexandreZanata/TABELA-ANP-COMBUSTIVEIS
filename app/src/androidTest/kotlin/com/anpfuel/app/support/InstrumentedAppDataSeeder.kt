@@ -69,6 +69,7 @@ object InstrumentedAppDataSeeder {
             .addMigrations(
                 AnpFuelDatabaseMigrations.MIGRATION_1_2,
                 AnpFuelDatabaseMigrations.MIGRATION_2_3,
+                AnpFuelDatabaseMigrations.MIGRATION_3_4,
             )
             .allowMainThreadQueries()
             .build()

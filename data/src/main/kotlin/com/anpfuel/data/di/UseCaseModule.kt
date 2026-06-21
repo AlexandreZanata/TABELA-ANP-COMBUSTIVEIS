@@ -21,6 +21,11 @@ import com.anpfuel.application.usecase.sync.DownloadStationDetailUseCase
 import com.anpfuel.application.usecase.sync.SelectSurveyWeekUseCase
 import com.anpfuel.application.usecase.sync.SelectWeekAndSyncUseCase
 import com.anpfuel.application.usecase.sync.SyncPriceTablesUseCase
+import com.anpfuel.application.usecase.vehicle.DeleteVehicleUseCase
+import com.anpfuel.application.usecase.vehicle.GetVehicleUseCase
+import com.anpfuel.application.usecase.vehicle.ListVehiclesUseCase
+import com.anpfuel.application.usecase.vehicle.SaveVehicleUseCase
+import com.anpfuel.domain.repository.VehicleRepository
 import com.anpfuel.domain.repository.AveragePriceRepository
 import com.anpfuel.domain.repository.CacheRepository
 import com.anpfuel.domain.repository.DomainEventPublisher
@@ -282,6 +287,42 @@ object UseCaseModule {
         cacheRepository = cacheRepository,
         stationPriceRepository = stationPriceRepository,
         userPreferencesRepository = userPreferencesRepository,
+        eventPublisher = eventPublisher,
+    )
+
+    @Provides
+    @Singleton
+    fun provideListVehiclesUseCase(
+        vehicleRepository: VehicleRepository,
+    ): ListVehiclesUseCase = ListVehiclesUseCase(
+        vehicleRepository = vehicleRepository,
+    )
+
+    @Provides
+    @Singleton
+    fun provideGetVehicleUseCase(
+        vehicleRepository: VehicleRepository,
+    ): GetVehicleUseCase = GetVehicleUseCase(
+        vehicleRepository = vehicleRepository,
+    )
+
+    @Provides
+    @Singleton
+    fun provideSaveVehicleUseCase(
+        vehicleRepository: VehicleRepository,
+        eventPublisher: DomainEventPublisher,
+    ): SaveVehicleUseCase = SaveVehicleUseCase(
+        vehicleRepository = vehicleRepository,
+        eventPublisher = eventPublisher,
+    )
+
+    @Provides
+    @Singleton
+    fun provideDeleteVehicleUseCase(
+        vehicleRepository: VehicleRepository,
+        eventPublisher: DomainEventPublisher,
+    ): DeleteVehicleUseCase = DeleteVehicleUseCase(
+        vehicleRepository = vehicleRepository,
         eventPublisher = eventPublisher,
     )
 }
