@@ -11,6 +11,7 @@
     <string name="nav_history">Historial</string>
     <string name="nav_stations">Estaciones</string>
     <string name="nav_settings">Ajustes</string>
+    <string name="nav_vehicles">Vehículos</string>
 
     <!-- Home (UC-005) -->
     <string name="home_title">ANP</string>
@@ -18,6 +19,32 @@
     <string name="home_no_location_message">Aún no se ha seleccionado ninguna ciudad.</string>
     <string name="home_no_location_hint">Busque o explore por estado para ver los precios del combustible.</string>
     <string name="home_view_price_details">Ver detalles completos de precios</string>
+
+    <string name="home_tank_fill_cost_title">Costo de llenar el tanque</string>
+    <string name="home_tank_fill_cost_placeholder_title">Siga el costo real de llenar el tanque</string>
+    <string name="home_tank_fill_cost_placeholder_body">Agregue un vehículo para estimar cuánto cuesta llenar el tanque en su ciudad.</string>
+    <string name="home_tank_fill_cost_liters_format">%1$s (%2$d L)</string>
+    <string name="vehicle_screen_title">Vehículos</string>
+    <string name="vehicle_name_hint">Nombre del vehículo</string>
+    <string name="vehicle_tank_capacity_hint">Capacidad del tanque (litros)</string>
+    <string name="vehicle_fuel_product_label">Tipo de combustible</string>
+    <string name="vehicle_price_source_label">Referencia de precio</string>
+    <string name="vehicle_price_source_cheapest">Estación más barata</string>
+    <string name="vehicle_price_source_specific">Estación específica</string>
+    <string name="vehicle_price_drop_alert_label">Avisar cuando baje el precio</string>
+    <string name="vehicle_add">Agregar vehículo</string>
+    <string name="vehicle_edit">Editar vehículo</string>
+    <string name="vehicle_save">Guardar</string>
+    <string name="vehicle_delete">Eliminar</string>
+    <string name="vehicle_delete_confirm">¿Eliminar este vehículo?</string>
+    <string name="vehicle_empty_message">Aún no hay vehículos</string>
+    <string name="vehicle_empty_hint">Agregue hasta 3 vehículos para seguir el costo del tanque.</string>
+    <string name="vehicle_max_reached">Máximo de 3 vehículos alcanzado</string>
+    <string name="vehicle_select_station">Seleccionar estación</string>
+    <string name="vehicle_station_option_format">%1$s — %2$s</string>
+    <string name="vehicle_validation_name_required">Ingrese un nombre de vehículo</string>
+    <string name="vehicle_validation_tank_capacity">Ingrese una capacidad válida (1–200 L)</string>
+    <string name="vehicle_validation_station_required">Seleccione una estación</string>
 
     <string name="home_empty_message">Aún no se han sincronizado datos de precios de combustible.</string>
     <string name="home_empty_hint">Complete la introducción o sincronice para cargar las tablas semanales de la ANP.</string>
@@ -215,6 +242,7 @@
 
     <!-- Accessibility (Phase 9.3) -->
     <string name="a11y_loading">Cargando contenido</string>
+    <string name="a11y_tank_fill_cost_placeholder">Agregar vehículo para seguir el costo del tanque</string>
     <string name="a11y_fuel_price_card">%1$s, precio promedio %2$s</string>
     <string name="a11y_station_price_row">%1$s, precio %2$s</string>
     <string name="a11y_price_trend_chart">Gráfico de tendencia de precios</string>

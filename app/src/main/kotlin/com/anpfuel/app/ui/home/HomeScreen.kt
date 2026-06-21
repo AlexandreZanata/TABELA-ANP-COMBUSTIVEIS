@@ -30,7 +30,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import com.anpfuel.app.R
 import com.anpfuel.app.mapper.AppErrorMapper
 import com.anpfuel.app.mapper.SurveyWeekFormatter
@@ -43,6 +46,7 @@ import com.anpfuel.app.ui.components.FuelPriceCard
 import com.anpfuel.app.ui.components.LoadingState
 import com.anpfuel.app.ui.components.OfflineBanner
 import com.anpfuel.app.ui.components.SyncStatusBanner
+import com.anpfuel.app.ui.components.TankFillCostPlaceholderCard
 import com.anpfuel.app.ui.weekpicker.SurveyWeekChipAction
 import com.anpfuel.app.ui.model.AveragePriceUiModel
 import com.anpfuel.app.ui.theme.AnpFuelTheme
@@ -63,9 +67,12 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val locale = LocalConfiguration.current.locales[0]
+    val lifecycleOwner = LocalLifecycleOwner.current
 
-    LaunchedEffect(locale) {
-        viewModel.load(locale)
+    LaunchedEffect(lifecycleOwner, locale) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            viewModel.load(locale)
+        }
     }
 
     HomeContent(
@@ -194,6 +201,11 @@ internal fun HomeContent(
                 else -> {
                     LocationHeader(uiState = uiState)
                     PriceMetadata(uiState = uiState)
+                    if (uiState.vehicles.isEmpty()) {
+                        TankFillCostPlaceholderCard(
+                            onClick = { onNavigate(Routes.VEHICLES) },
+                        )
+                    }
                     uiState.prices.forEach { price ->
                         FuelPriceCard(
                             price = price,
@@ -262,6 +274,10 @@ private fun RowActions(onNavigate: (String) -> Unit) {
         AssistChip(
             onClick = { onNavigate(Routes.STATIONS) },
             label = { Text(text = stringResource(R.string.nav_stations)) },
+        )
+        AssistChip(
+            onClick = { onNavigate(Routes.VEHICLES) },
+            label = { Text(text = stringResource(R.string.nav_vehicles)) },
         )
         AssistChip(
             onClick = { onNavigate(Routes.SETTINGS) },

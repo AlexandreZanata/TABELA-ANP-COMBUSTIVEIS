@@ -19,6 +19,7 @@ import com.anpfuel.app.ui.prices.PricesScreen
 import com.anpfuel.app.ui.settings.SettingsScreen
 import com.anpfuel.app.ui.stations.StationsScreen
 import com.anpfuel.app.ui.search.SearchScreen
+import com.anpfuel.app.ui.vehicle.VehicleScreen
 import com.anpfuel.app.ui.weekpicker.WeekPickerRoute
 import com.anpfuel.app.viewmodel.AppStartViewModel
 
@@ -119,6 +120,11 @@ fun AnpNavGraph(
             ),
         ) {
             StationsScreen()
+        }
+        composable(Routes.VEHICLES) {
+            VehicleScreen(
+                onNavigateBack = { navController.popBackStack() },
+            )
         }
         composable(Routes.SETTINGS) {
             SettingsScreen(

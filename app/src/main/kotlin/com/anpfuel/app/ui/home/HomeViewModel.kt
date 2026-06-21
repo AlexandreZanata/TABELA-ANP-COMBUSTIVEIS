@@ -9,9 +9,11 @@ import com.anpfuel.application.usecase.network.ObserveNetworkConnectivityUseCase
 import com.anpfuel.application.usecase.price.GetMunicipalityPricesUseCase
 import com.anpfuel.application.usecase.readiness.GetDataReadinessUseCase
 import com.anpfuel.application.usecase.sync.SyncPriceTablesUseCase
+import com.anpfuel.application.usecase.vehicle.ListVehiclesUseCase
 import com.anpfuel.app.ui.model.AveragePriceUiModel
 import com.anpfuel.domain.event.SyncRequestSource
 import com.anpfuel.domain.exception.DomainException
+import com.anpfuel.domain.model.Vehicle
 import com.anpfuel.domain.state.DataReadinessState
 import com.anpfuel.domain.valueobject.BrazilianState
 import com.anpfuel.domain.valueobject.DataAvailability
@@ -34,6 +36,7 @@ data class HomeUiState(
     val state: BrazilianState? = null,
     val surveyWeek: SurveyWeek? = null,
     val prices: List<AveragePriceUiModel> = emptyList(),
+    val vehicles: List<Vehicle> = emptyList(),
     val hasLocation: Boolean = false,
     val hasCachedData: Boolean = false,
     val isEmptyMunicipality: Boolean = false,
@@ -49,6 +52,7 @@ class HomeViewModel @Inject constructor(
     private val getMunicipalityPricesUseCase: GetMunicipalityPricesUseCase,
     private val selectLocationUseCase: SelectLocationUseCase,
     private val syncPriceTablesUseCase: SyncPriceTablesUseCase,
+    private val listVehiclesUseCase: ListVehiclesUseCase,
     observeNetworkConnectivityUseCase: ObserveNetworkConnectivityUseCase,
 ) : ViewModel() {
 
@@ -69,6 +73,7 @@ class HomeViewModel @Inject constructor(
             runCatching {
                 val readinessResult = getDataReadinessUseCase()
                 val preferred = selectLocationUseCase.getPreferredLocation()
+                val vehicles = listVehiclesUseCase()
 
                 if (preferred == null || !readinessResult.hasCachedData) {
                     _uiState.update {
@@ -81,6 +86,7 @@ class HomeViewModel @Inject constructor(
                             state = preferred?.state,
                             surveyWeek = readinessResult.latestSurveyWeek,
                             prices = emptyList(),
+                            vehicles = vehicles,
                             isEmptyMunicipality = false,
                             dataAvailability = null,
                             operationalNote = null,
@@ -105,6 +111,7 @@ class HomeViewModel @Inject constructor(
                         state = pricesResult.state,
                         surveyWeek = pricesResult.surveyWeek,
                         prices = uiPrices,
+                        vehicles = vehicles,
                         isEmptyMunicipality = pricesResult.isEmpty,
                         dataAvailability = pricesResult.dataAvailability,
                         operationalNote = pricesResult.operationalNote,

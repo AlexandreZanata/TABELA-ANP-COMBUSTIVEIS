@@ -11,6 +11,7 @@
     <string name="nav_history">历史</string>
     <string name="nav_stations">加油站</string>
     <string name="nav_settings">设置</string>
+    <string name="nav_vehicles">车辆</string>
 
     <!-- Home (UC-005) -->
     <string name="home_title">ANP</string>
@@ -18,6 +19,32 @@
     <string name="home_no_location_message">尚未选择城市。</string>
     <string name="home_no_location_hint">搜索或按州浏览以查看燃油价格。</string>
     <string name="home_view_price_details">查看完整价格详情</string>
+
+    <string name="home_tank_fill_cost_title">满箱费用</string>
+    <string name="home_tank_fill_cost_placeholder_title">跟踪真实加油费用</string>
+    <string name="home_tank_fill_cost_placeholder_body">添加车辆以估算在您所在城市加满油箱的费用。</string>
+    <string name="home_tank_fill_cost_liters_format">%1$s（%2$d 升）</string>
+    <string name="vehicle_screen_title">车辆</string>
+    <string name="vehicle_name_hint">车辆名称</string>
+    <string name="vehicle_tank_capacity_hint">油箱容量（升）</string>
+    <string name="vehicle_fuel_product_label">燃料类型</string>
+    <string name="vehicle_price_source_label">价格参考</string>
+    <string name="vehicle_price_source_cheapest">最便宜加油站</string>
+    <string name="vehicle_price_source_specific">指定加油站</string>
+    <string name="vehicle_price_drop_alert_label">价格下降时通知</string>
+    <string name="vehicle_add">添加车辆</string>
+    <string name="vehicle_edit">编辑车辆</string>
+    <string name="vehicle_save">保存</string>
+    <string name="vehicle_delete">删除</string>
+    <string name="vehicle_delete_confirm">移除此车辆？</string>
+    <string name="vehicle_empty_message">尚无车辆</string>
+    <string name="vehicle_empty_hint">最多添加 3 辆车以跟踪满箱费用。</string>
+    <string name="vehicle_max_reached">已达 3 辆车上限</string>
+    <string name="vehicle_select_station">选择加油站</string>
+    <string name="vehicle_station_option_format">%1$s — %2$s</string>
+    <string name="vehicle_validation_name_required">请输入车辆名称</string>
+    <string name="vehicle_validation_tank_capacity">请输入有效容量（1–200 升）</string>
+    <string name="vehicle_validation_station_required">请选择加油站</string>
 
     <string name="home_empty_message">尚未同步燃油价格数据。</string>
     <string name="home_empty_hint">完成引导或同步以加载 ANP 每周数据表。</string>
@@ -215,6 +242,7 @@
 
     <!-- Accessibility (Phase 9.3) -->
     <string name="a11y_loading">正在加载内容</string>
+    <string name="a11y_tank_fill_cost_placeholder">添加车辆以跟踪满箱费用</string>
     <string name="a11y_fuel_price_card">%1$s，平均价格 %2$s</string>
     <string name="a11y_station_price_row">%1$s，价格 %2$s</string>
     <string name="a11y_price_trend_chart">价格趋势图</string>
