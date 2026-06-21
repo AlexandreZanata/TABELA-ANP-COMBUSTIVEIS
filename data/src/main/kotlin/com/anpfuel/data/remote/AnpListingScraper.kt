@@ -16,6 +16,9 @@ class AnpListingScraper @Inject constructor(
     private val okHttpClient: OkHttpClient,
 ) {
 
+    private val cacheLock = Any()
+    private var cachedListingHtml: CachedListingHtml? = null
+
     suspend fun discoverPriceTables(
         listingPageUrl: String = AnpEndpoints.LISTING_PAGE_URL,
     ): List<PriceTable> = withContext(Dispatchers.IO) {
@@ -53,7 +56,33 @@ class AnpListingScraper @Inject constructor(
             .toList()
     }
 
+    internal fun clearListingCache() {
+        synchronized(cacheLock) {
+            cachedListingHtml = null
+        }
+    }
+
     private fun fetchListingHtml(listingPageUrl: String): String {
+        synchronized(cacheLock) {
+            cachedListingHtml?.let { cached ->
+                if (cached.listingPageUrl == listingPageUrl && !cached.isExpired()) {
+                    return cached.html
+                }
+            }
+        }
+
+        val html = fetchListingHtmlFromNetwork(listingPageUrl)
+        synchronized(cacheLock) {
+            cachedListingHtml = CachedListingHtml(
+                listingPageUrl = listingPageUrl,
+                html = html,
+                fetchedAtMillis = System.currentTimeMillis(),
+            )
+        }
+        return html
+    }
+
+    private fun fetchListingHtmlFromNetwork(listingPageUrl: String): String {
         val request = Request.Builder()
             .url(listingPageUrl)
             .get()
@@ -65,5 +94,18 @@ class AnpListingScraper @Inject constructor(
             }
             return requireNotNull(response.body).string()
         }
+    }
+
+    private data class CachedListingHtml(
+        val listingPageUrl: String,
+        val html: String,
+        val fetchedAtMillis: Long,
+    ) {
+        fun isExpired(nowMillis: Long = System.currentTimeMillis()): Boolean =
+            nowMillis - fetchedAtMillis >= LISTING_CACHE_TTL_MILLIS
+    }
+
+    companion object {
+        internal const val LISTING_CACHE_TTL_MILLIS = 60_000L
     }
 }

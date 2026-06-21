@@ -25,6 +25,7 @@ import com.anpfuel.application.usecase.sync.DiscoverSurveyWeekCatalogUseCase
 import com.anpfuel.application.usecase.sync.DownloadStationDetailUseCase
 import com.anpfuel.application.usecase.sync.SelectSurveyWeekUseCase
 import com.anpfuel.application.usecase.sync.SelectWeekAndSyncUseCase
+import com.anpfuel.application.sync.SyncExecutionLock
 import com.anpfuel.application.usecase.sync.SyncPriceTablesUseCase
 import com.anpfuel.application.usecase.vehicle.DeleteVehicleUseCase
 import com.anpfuel.application.usecase.vehicle.GetVehicleUseCase
@@ -96,6 +97,10 @@ object UseCaseModule {
 
     @Provides
     @Singleton
+    fun provideSyncExecutionLock(): SyncExecutionLock = SyncExecutionLock()
+
+    @Provides
+    @Singleton
     fun provideSyncPriceTablesUseCase(
         syncJobRepository: SyncJobRepository,
         priceTableRepository: PriceTableRepository,
@@ -103,6 +108,7 @@ object UseCaseModule {
         userPreferencesRepository: UserPreferencesRepository,
         eventPublisher: DomainEventPublisher,
         applyStationDetailRetentionUseCase: ApplyStationDetailRetentionUseCase,
+        syncExecutionLock: SyncExecutionLock,
     ): SyncPriceTablesUseCase = SyncPriceTablesUseCase(
         syncJobRepository = syncJobRepository,
         priceTableRepository = priceTableRepository,
@@ -110,6 +116,7 @@ object UseCaseModule {
         userPreferencesRepository = userPreferencesRepository,
         eventPublisher = eventPublisher,
         applyStationDetailRetentionUseCase = applyStationDetailRetentionUseCase,
+        syncExecutionLock = syncExecutionLock,
     )
 
     @Provides

@@ -1,6 +1,7 @@
 package com.anpfuel.application.usecase.sync
 
 import com.anpfuel.application.error.AppError
+import com.anpfuel.application.sync.SyncExecutionLock
 import com.anpfuel.application.usecase.settings.ApplyStationDetailRetentionUseCase
 import com.anpfuel.domain.event.DomainEvent
 import com.anpfuel.domain.event.PriceTableDiscovered
@@ -78,7 +79,32 @@ class SyncPriceTablesUseCaseTest {
             userPreferencesRepository = userPreferencesRepository,
             eventPublisher = eventPublisher,
             applyStationDetailRetentionUseCase = applyStationDetailRetentionUseCase,
+            syncExecutionLock = SyncExecutionLock(),
         )
+    }
+
+    @Test
+    fun usesPreDiscoveredWeekTablesWithoutListingDiscovery() = runTest {
+        val preDiscovered = latestWeekTables()
+        val downloadedSummary = preDiscovered.first().copy(checksum = "summary-sha")
+        val downloadedStation = preDiscovered.last().copy(checksum = "station-sha")
+
+        coEvery { userPreferencesRepository.getPreferences() } returns UserPreferences(syncStationDetail = true)
+        coEvery { priceTableRepository.findPriceSurveyByWeek(surveyWeek) } returns null
+        coEvery { priceTableRepository.findPriceTableByUrl(any()) } returns null
+        coEvery { priceTableSyncGateway.downloadPriceTable(preDiscovered.first()) } returns downloadedSummary
+        coEvery { priceTableSyncGateway.downloadPriceTable(preDiscovered.last()) } returns downloadedStation
+        coEvery { priceTableSyncGateway.importWeeklySummary(downloadedSummary) } returns summaryImportPayload()
+        coEvery { priceTableSyncGateway.importStationDetail(downloadedStation) } returns stationImportPayload()
+
+        val result = useCase.invoke(
+            source = SyncRequestSource.FIRST_LAUNCH,
+            targetSurveyWeek = surveyWeek,
+            preDiscoveredWeekTables = preDiscovered,
+        )
+
+        assertEquals(SyncJobOutcome.SUCCESS, result.outcome)
+        coVerify(exactly = 0) { priceTableSyncGateway.discoverPriceTables() }
     }
 
     @Test

@@ -5,6 +5,7 @@ import com.anpfuel.domain.event.PreferencesUpdated
 import com.anpfuel.domain.event.SyncJobOutcome
 import com.anpfuel.domain.event.SyncRequestSource
 import com.anpfuel.domain.event.SurveyWeekSelected
+import com.anpfuel.domain.model.SurveyWeekCatalogEntry
 import com.anpfuel.domain.model.UserPreferences
 import com.anpfuel.domain.valueobject.SurveyWeek
 import com.anpfuel.domain.valueobject.SurveyWeekSelectionMode
@@ -25,6 +26,11 @@ class SelectWeekAndSyncUseCaseTest {
     private lateinit var useCase: SelectWeekAndSyncUseCase
 
     private val latestWeek = SurveyWeek.fromIsoDates("2026-06-07", "2026-06-13")
+    private val latestEntry = SurveyWeekCatalogEntry.create(
+        surveyWeek = latestWeek,
+        summaryUrl = "https://example.com/summary.xlsx",
+        stationUrl = "https://example.com/station.xlsx",
+    )
 
     @BeforeEach
     fun setUp() {
@@ -35,18 +41,19 @@ class SelectWeekAndSyncUseCaseTest {
     }
 
     @Test
-    fun useLatestWeekPersistsAndSyncsIndexZeroWeek() = runTest {
+    fun useLatestWeekPersistsAndSyncsUsingCatalogUrls() = runTest {
         stubSelectWeek(latestWeek, SurveyWeekSelectionMode.LATEST)
         val syncResult = SyncPriceTablesResult(outcome = SyncJobOutcome.SUCCESS)
         coEvery {
             syncPriceTablesUseCase(
                 source = SyncRequestSource.MANUAL,
                 targetSurveyWeek = latestWeek,
+                preDiscoveredWeekTables = any(),
             )
         } returns syncResult
 
         val result = useCase.invoke(
-            surveyWeek = latestWeek,
+            catalogEntry = latestEntry,
             selectionMode = SurveyWeekSelectionMode.LATEST,
         )
 
@@ -64,6 +71,7 @@ class SelectWeekAndSyncUseCaseTest {
             syncPriceTablesUseCase(
                 source = SyncRequestSource.MANUAL,
                 targetSurveyWeek = latestWeek,
+                preDiscoveredWeekTables = any(),
             )
         } returns SyncPriceTablesResult(
             outcome = SyncJobOutcome.FAILED,
@@ -71,7 +79,7 @@ class SelectWeekAndSyncUseCaseTest {
         )
 
         val result = useCase.invoke(
-            surveyWeek = latestWeek,
+            catalogEntry = latestEntry,
             selectionMode = SurveyWeekSelectionMode.LATEST,
         )
 

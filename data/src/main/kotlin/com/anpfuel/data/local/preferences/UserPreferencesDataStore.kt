@@ -36,6 +36,7 @@ class UserPreferencesDataStore @Inject constructor(
             stored[Keys.PREFERRED_MUNICIPALITY] = preferences.preferredMunicipality.orEmpty()
             stored[Keys.PREFERRED_FUEL_PRODUCT] = preferences.preferredFuelProduct?.name.orEmpty()
             stored[Keys.LOCALE_TAG] = preferences.localeTag
+            stored[Keys.LOCALE_USER_SELECTED] = preferences.localeUserSelected
             stored[Keys.SYNC_STATION_DETAIL] = preferences.syncStationDetail
             stored[Keys.AUTO_DOWNLOAD_LATEST_WEEK] = preferences.autoDownloadLatestWeek
             stored[Keys.STATION_DETAIL_RETENTION_WEEKS] = preferences.stationDetailRetentionWeeks
@@ -65,7 +66,8 @@ class UserPreferencesDataStore @Inject constructor(
             preferredMunicipality = municipality.takeIf { it.isNotBlank() },
             preferredFuelProduct = fuelProductName.takeIf { it.isNotBlank() }
                 ?.let { runCatching { FuelProduct.valueOf(it) }.getOrNull() },
-            localeTag = preferences[Keys.LOCALE_TAG] ?: "en",
+            localeTag = preferences[Keys.LOCALE_TAG].orEmpty(),
+            localeUserSelected = preferences[Keys.LOCALE_USER_SELECTED] ?: false,
             syncStationDetail = preferences[Keys.SYNC_STATION_DETAIL] ?: true,
             autoDownloadLatestWeek = preferences[Keys.AUTO_DOWNLOAD_LATEST_WEEK] ?: true,
             stationDetailRetentionWeeks = preferences[Keys.STATION_DETAIL_RETENTION_WEEKS]
@@ -86,6 +88,7 @@ class UserPreferencesDataStore @Inject constructor(
         val PREFERRED_MUNICIPALITY = stringPreferencesKey("preferred_municipality")
         val PREFERRED_FUEL_PRODUCT = stringPreferencesKey("preferred_fuel_product")
         val LOCALE_TAG = stringPreferencesKey("locale_tag")
+        val LOCALE_USER_SELECTED = booleanPreferencesKey("locale_user_selected")
         val SYNC_STATION_DETAIL = booleanPreferencesKey("sync_station_detail")
         val AUTO_DOWNLOAD_LATEST_WEEK = booleanPreferencesKey("auto_download_latest_week")
         val STATION_DETAIL_RETENTION_WEEKS = intPreferencesKey("station_detail_retention_weeks")

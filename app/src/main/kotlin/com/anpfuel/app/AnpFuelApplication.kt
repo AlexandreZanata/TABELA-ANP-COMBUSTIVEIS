@@ -32,9 +32,20 @@ class AnpFuelApplication : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
         runBlocking(Dispatchers.IO) {
-            AppLocaleHolder.localeTag = AppLocales.normalizeLocaleTag(
-                userPreferencesRepository.getPreferences().localeTag,
-            )
+            val preferences = userPreferencesRepository.getPreferences()
+            val resolvedTag = if (!preferences.localeUserSelected) {
+                val deviceTag = AppLocales.resolveDeviceLocaleTag(this@AnpFuelApplication)
+                userPreferencesRepository.savePreferences(
+                    preferences.copy(
+                        localeTag = deviceTag,
+                        localeUserSelected = true,
+                    ),
+                )
+                deviceTag
+            } else {
+                AppLocales.normalizeLocaleTag(preferences.localeTag)
+            }
+            AppLocaleHolder.localeTag = resolvedTag
         }
         applicationScope.launch {
             syncWorkScheduler.schedulePeriodicSync()

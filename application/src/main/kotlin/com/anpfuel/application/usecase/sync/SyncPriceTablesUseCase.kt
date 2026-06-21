@@ -2,6 +2,7 @@ package com.anpfuel.application.usecase.sync
 
 import com.anpfuel.application.error.AppError
 import com.anpfuel.application.error.AppErrorResolver
+import com.anpfuel.application.sync.SyncExecutionLock
 import com.anpfuel.application.usecase.settings.ApplyStationDetailRetentionUseCase
 import com.anpfuel.domain.event.DomainEvent
 import com.anpfuel.domain.event.PriceTableDiscovered
@@ -41,11 +42,25 @@ class SyncPriceTablesUseCase(
     private val userPreferencesRepository: UserPreferencesRepository,
     private val eventPublisher: DomainEventPublisher,
     private val applyStationDetailRetentionUseCase: ApplyStationDetailRetentionUseCase,
+    private val syncExecutionLock: SyncExecutionLock,
 ) {
 
     suspend operator fun invoke(
         source: SyncRequestSource,
         targetSurveyWeek: SurveyWeek? = null,
+        preDiscoveredWeekTables: List<PriceTable>? = null,
+    ): SyncPriceTablesResult = syncExecutionLock.withLock {
+        invokeInternal(
+            source = source,
+            targetSurveyWeek = targetSurveyWeek,
+            preDiscoveredWeekTables = preDiscoveredWeekTables,
+        )
+    }
+
+    private suspend fun invokeInternal(
+        source: SyncRequestSource,
+        targetSurveyWeek: SurveyWeek?,
+        preDiscoveredWeekTables: List<PriceTable>?,
     ): SyncPriceTablesResult {
         val events = mutableListOf<DomainEvent>()
 
@@ -65,7 +80,7 @@ class SyncPriceTablesUseCase(
         transitionTo(SyncJobState.DISCOVERING)
 
         return try {
-            val discovered = priceTableSyncGateway.discoverPriceTables()
+            val discovered = preDiscoveredWeekTables ?: priceTableSyncGateway.discoverPriceTables()
             val preferences = userPreferencesRepository.getPreferences()
             val effectiveTargetWeek = targetSurveyWeek ?: if (
                 AutoDownloadLatestWeekRule.shouldResolveSyncTargetFromCatalogLatest(

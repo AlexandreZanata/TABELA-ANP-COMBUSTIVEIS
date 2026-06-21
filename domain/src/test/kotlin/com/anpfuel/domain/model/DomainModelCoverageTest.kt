@@ -199,7 +199,8 @@ class DomainModelCoverageTest {
         val preferences = UserPreferences()
 
         assertEquals(UserPreferences.DEFAULT_RETENTION_WEEKS, preferences.stationDetailRetentionWeeks)
-        assertEquals("en", preferences.localeTag)
+        assertEquals("", preferences.localeTag)
+        assertFalse(preferences.localeUserSelected)
         assertTrue(preferences.syncStationDetail)
         assertTrue(preferences.autoDownloadLatestWeek)
     }

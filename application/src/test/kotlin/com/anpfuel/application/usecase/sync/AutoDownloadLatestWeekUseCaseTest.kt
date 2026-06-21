@@ -88,7 +88,7 @@ class AutoDownloadLatestWeekUseCaseTest {
         coEvery { priceTableRepository.findPriceSurveyByWeek(latestWeek) } returns null
         coEvery {
             selectWeekAndSyncUseCase(
-                surveyWeek = latestWeek,
+                catalogEntry = latestEntry,
                 selectionMode = SurveyWeekSelectionMode.LATEST,
                 source = SyncRequestSource.SCHEDULED,
             )

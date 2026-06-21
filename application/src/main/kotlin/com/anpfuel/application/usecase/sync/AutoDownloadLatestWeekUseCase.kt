@@ -59,7 +59,7 @@ class AutoDownloadLatestWeekUseCase(
 
                 when (
                     val syncResult = selectWeekAndSyncUseCase(
-                        surveyWeek = latestWeek,
+                        catalogEntry = latestEntry,
                         selectionMode = SurveyWeekSelectionMode.LATEST,
                         source = source,
                     )

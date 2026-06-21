@@ -8,9 +8,9 @@ import java.util.Locale
  * Holds the active app locale tag for [AppLocaleApplier] (UC-008).
  */
 object AppLocaleHolder {
-    var localeTag: String = AppLocales.ENGLISH_TAG
+    var localeTag: String = AppLocales.PORTUGUESE_BRAZIL_TAG
 
-    const val DEFAULT_LOCALE_TAG = AppLocales.ENGLISH_TAG
+    const val DEFAULT_LOCALE_TAG = AppLocales.PORTUGUESE_BRAZIL_TAG
     const val PORTUGUESE_BRAZIL_TAG = AppLocales.PORTUGUESE_BRAZIL_TAG
 
     val supportedLocaleTags: List<String> = AppLocales.supportedLocaleTags

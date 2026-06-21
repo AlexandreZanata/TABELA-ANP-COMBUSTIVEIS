@@ -310,7 +310,7 @@ class OnboardingViewModel @Inject constructor(
 
             when (
                 val result = onboardingSelectWeekAndSyncUseCase(
-                    surveyWeek = entry.surveyWeek,
+                    catalogEntry = entry,
                     selectionMode = selectionMode,
                 )
             ) {

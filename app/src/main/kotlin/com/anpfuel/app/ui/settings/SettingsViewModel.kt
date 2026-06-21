@@ -113,7 +113,7 @@ class SettingsViewModel @Inject constructor(
         if (_uiState.value.preferences.localeTag == localeTag) {
             return
         }
-        updatePreferences(_uiState.value.preferences.copy(localeTag = localeTag)) {
+        updatePreferences(_uiState.value.preferences.copy(localeTag = localeTag, localeUserSelected = true)) {
             AppLocaleHolder.localeTag = localeTag
             _effects.emit(SettingsEffect.RecreateActivity)
         }

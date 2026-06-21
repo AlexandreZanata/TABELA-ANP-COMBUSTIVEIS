@@ -130,7 +130,7 @@ class WeekPickerViewModel @Inject constructor(
 
             when (
                 val result = selectWeekAndSyncUseCase(
-                    surveyWeek = entry.surveyWeek,
+                    catalogEntry = entry,
                     selectionMode = selectionMode,
                 )
             ) {
