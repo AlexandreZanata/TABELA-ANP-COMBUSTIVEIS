@@ -1,5 +1,7 @@
 package com.anpfuel.app.ui.vehicle
 
+import com.anpfuel.app.notification.NotificationPermissionHandler
+import com.anpfuel.application.usecase.alert.ConfigurePriceDropAlertUseCase
 import com.anpfuel.application.usecase.price.GetStationPricesUseCase
 import com.anpfuel.application.usecase.vehicle.DeleteVehicleUseCase
 import com.anpfuel.application.usecase.vehicle.ListVehiclesUseCase
@@ -37,17 +39,22 @@ class VehicleViewModelTest {
     private val saveVehicleUseCase = mockk<SaveVehicleUseCase>()
     private val deleteVehicleUseCase = mockk<DeleteVehicleUseCase>()
     private val getStationPricesUseCase = mockk<GetStationPricesUseCase>()
+    private val configurePriceDropAlertUseCase = mockk<ConfigurePriceDropAlertUseCase>(relaxed = true)
+    private val notificationPermissionHandler = mockk<NotificationPermissionHandler>()
 
     private lateinit var viewModel: VehicleViewModel
 
     @BeforeEach
     fun setUp() {
         Dispatchers.setMain(dispatcher)
+        coEvery { notificationPermissionHandler.hasPostNotificationsPermission() } returns true
         viewModel = VehicleViewModel(
             listVehiclesUseCase = listVehiclesUseCase,
             saveVehicleUseCase = saveVehicleUseCase,
             deleteVehicleUseCase = deleteVehicleUseCase,
             getStationPricesUseCase = getStationPricesUseCase,
+            configurePriceDropAlertUseCase = configurePriceDropAlertUseCase,
+            notificationPermissionHandler = notificationPermissionHandler,
         )
     }
 
@@ -118,6 +125,7 @@ class VehicleViewModelTest {
         advanceUntilIdle()
 
         coVerify(exactly = 1) { saveVehicleUseCase.invoke(any()) }
+        coVerify(exactly = 1) { configurePriceDropAlertUseCase.invoke(updated = any(), previous = null) }
         coVerify(exactly = 2) { listVehiclesUseCase.invoke() }
         assertFalse(viewModel.uiState.value.showForm)
         assertEquals(1, viewModel.uiState.value.vehicles.size)

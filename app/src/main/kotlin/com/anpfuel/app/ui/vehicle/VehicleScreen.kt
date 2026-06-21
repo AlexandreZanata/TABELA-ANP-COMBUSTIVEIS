@@ -1,5 +1,9 @@
 package com.anpfuel.app.ui.vehicle
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -61,6 +65,28 @@ fun VehicleScreen(
 
     LaunchedEffect(Unit) {
         viewModel.load()
+    }
+
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        if (granted) {
+            viewModel.onNotificationPermissionGranted()
+        } else {
+            viewModel.onNotificationPermissionDenied()
+        }
+    }
+
+    LaunchedEffect(viewModel) {
+        viewModel.notificationPermissionRequest.collect {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.refreshNotificationPermissionState()
     }
 
     VehicleContent(
@@ -189,6 +215,7 @@ internal fun VehicleContent(
                         stationOptions = uiState.stationOptions,
                         isLoadingStations = uiState.isLoadingStations,
                         isSaving = uiState.isSaving,
+                        showNotificationPermissionHint = uiState.showNotificationPermissionHint,
                         locale = locale,
                         onDisplayNameChanged = onDisplayNameChanged,
                         onTankCapacityChanged = onTankCapacityChanged,

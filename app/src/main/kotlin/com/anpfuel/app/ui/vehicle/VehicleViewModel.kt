@@ -2,8 +2,10 @@ package com.anpfuel.app.ui.vehicle
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.anpfuel.app.notification.NotificationPermissionHandler
 import com.anpfuel.application.error.AppError
 import com.anpfuel.application.error.AppErrorResolver
+import com.anpfuel.application.usecase.alert.ConfigurePriceDropAlertUseCase
 import com.anpfuel.application.usecase.price.GetStationPricesUseCase
 import com.anpfuel.application.usecase.price.StationPricesOutcome
 import com.anpfuel.application.usecase.vehicle.DeleteVehicleUseCase
@@ -22,8 +24,11 @@ import com.anpfuel.app.mapper.StationPriceUiMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Locale
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -62,6 +67,7 @@ data class VehicleUiState(
     val vehicleToDelete: DomainId? = null,
     val canAddVehicle: Boolean = true,
     val isSaving: Boolean = false,
+    val showNotificationPermissionHint: Boolean = false,
     val error: AppError? = null,
     val errorMessage: String? = null,
 )
@@ -72,10 +78,15 @@ class VehicleViewModel @Inject constructor(
     private val saveVehicleUseCase: SaveVehicleUseCase,
     private val deleteVehicleUseCase: DeleteVehicleUseCase,
     private val getStationPricesUseCase: GetStationPricesUseCase,
+    private val configurePriceDropAlertUseCase: ConfigurePriceDropAlertUseCase,
+    private val notificationPermissionHandler: NotificationPermissionHandler,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(VehicleUiState())
     val uiState: StateFlow<VehicleUiState> = _uiState.asStateFlow()
+
+    private val _notificationPermissionRequest = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    val notificationPermissionRequest: SharedFlow<Unit> = _notificationPermissionRequest.asSharedFlow()
 
     fun load() {
         viewModelScope.launch {
@@ -112,6 +123,7 @@ class VehicleViewModel @Inject constructor(
                 editingVehicleId = null,
                 form = VehicleFormState(),
                 stationOptions = emptyList(),
+                showNotificationPermissionHint = false,
                 error = null,
                 errorMessage = null,
             )
@@ -132,6 +144,8 @@ class VehicleViewModel @Inject constructor(
                     selectedStationCnpj = vehicle.priceSource.specificStationCnpj,
                     priceDropAlertEnabled = vehicle.priceDropAlertEnabled,
                 ),
+                showNotificationPermissionHint = vehicle.priceDropAlertEnabled &&
+                    !notificationPermissionHandler.hasPostNotificationsPermission(),
                 error = null,
                 errorMessage = null,
             )
@@ -148,6 +162,7 @@ class VehicleViewModel @Inject constructor(
                 editingVehicleId = null,
                 form = VehicleFormState(),
                 stationOptions = emptyList(),
+                showNotificationPermissionHint = false,
             )
         }
     }
@@ -212,8 +227,54 @@ class VehicleViewModel @Inject constructor(
     }
 
     fun onPriceDropAlertChanged(enabled: Boolean) {
+        if (!enabled) {
+            _uiState.update {
+                it.copy(
+                    form = it.form.copy(priceDropAlertEnabled = false),
+                    showNotificationPermissionHint = false,
+                )
+            }
+            return
+        }
+
+        if (notificationPermissionHandler.hasPostNotificationsPermission()) {
+            _uiState.update {
+                it.copy(
+                    form = it.form.copy(priceDropAlertEnabled = true),
+                    showNotificationPermissionHint = false,
+                )
+            }
+            return
+        }
+
         _uiState.update {
-            it.copy(form = it.form.copy(priceDropAlertEnabled = enabled))
+            it.copy(
+                form = it.form.copy(priceDropAlertEnabled = true),
+                showNotificationPermissionHint = false,
+            )
+        }
+        viewModelScope.launch {
+            _notificationPermissionRequest.emit(Unit)
+        }
+    }
+
+    fun onNotificationPermissionGranted() {
+        _uiState.update { it.copy(showNotificationPermissionHint = false) }
+    }
+
+    fun onNotificationPermissionDenied() {
+        _uiState.update { it.copy(showNotificationPermissionHint = true) }
+    }
+
+    fun refreshNotificationPermissionState() {
+        val form = _uiState.value.form
+        if (form.priceDropAlertEnabled) {
+            _uiState.update {
+                it.copy(
+                    showNotificationPermissionHint =
+                        !notificationPermissionHandler.hasPostNotificationsPermission(),
+                )
+            }
         }
     }
 
@@ -273,6 +334,9 @@ class VehicleViewModel @Inject constructor(
         }
 
         val editingId = _uiState.value.editingVehicleId
+        val previousVehicle = editingId?.let { id ->
+            _uiState.value.vehicles.firstOrNull { it.id == id }
+        }
         val vehicle = if (editingId == null) {
             Vehicle.create(
                 displayName = form.displayName,
@@ -296,6 +360,7 @@ class VehicleViewModel @Inject constructor(
             _uiState.update { it.copy(isSaving = true, error = null, errorMessage = null) }
             runCatching {
                 saveVehicleUseCase(vehicle)
+                configurePriceDropAlertUseCase(updated = vehicle, previous = previousVehicle)
             }.onSuccess {
                 _uiState.update { it.copy(isSaving = false) }
                 dismissForm()

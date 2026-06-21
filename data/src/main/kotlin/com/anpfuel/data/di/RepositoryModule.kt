@@ -29,8 +29,10 @@ import com.anpfuel.data.repository.SyncJobRepositoryImpl
 import com.anpfuel.data.repository.UserPreferencesRepositoryImpl
 import com.anpfuel.data.repository.ReverseGeocodeRepositoryImpl
 import com.anpfuel.data.repository.VehicleRepositoryImpl
+import com.anpfuel.data.notification.PriceDropNotificationRepositoryImpl
 import com.anpfuel.domain.repository.ReverseGeocodeRepository
 import com.anpfuel.domain.repository.VehicleRepository
+import com.anpfuel.domain.repository.PriceDropNotificationRepository
 import com.anpfuel.domain.repository.AveragePriceRepository
 import com.anpfuel.domain.repository.CacheRepository
 import com.anpfuel.domain.repository.DomainEventPublisher
@@ -101,6 +103,12 @@ abstract class RepositoryModule {
     abstract fun bindVehicleRepository(
         impl: VehicleRepositoryImpl,
     ): VehicleRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindPriceDropNotificationRepository(
+        impl: PriceDropNotificationRepositoryImpl,
+    ): PriceDropNotificationRepository
 
     @Binds
     @Singleton

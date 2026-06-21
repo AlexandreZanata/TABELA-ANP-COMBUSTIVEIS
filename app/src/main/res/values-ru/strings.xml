@@ -34,6 +34,10 @@
     <string name="vehicle_price_source_cheapest">Самая дешёвая АЗС</string>
     <string name="vehicle_price_source_specific">Конкретная АЗС</string>
     <string name="vehicle_price_drop_alert_label">Уведомлять о снижении цены</string>
+    <string name="vehicle_price_drop_alert_description">Получайте локальное уведомление после каждого еженедельного импорта, когда отслеживаемая цена снижается.</string>
+    <string name="notification_permission_denied_hint">Уведомления отключены. Включите их в системных настройках, чтобы получать оповещения о снижении цены.</string>
+    <string name="settings_notifications_section">Уведомления</string>
+    <string name="settings_open_notification_settings">Открыть настройки уведомлений</string>
     <string name="vehicle_add">Добавить транспорт</string>
     <string name="vehicle_edit">Редактировать транспорт</string>
     <string name="vehicle_save">Сохранить</string>

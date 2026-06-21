@@ -1,5 +1,7 @@
 package com.anpfuel.data.di
 
+import com.anpfuel.application.usecase.alert.ConfigurePriceDropAlertUseCase
+import com.anpfuel.application.usecase.alert.EvaluatePriceDropAlertsUseCase
 import com.anpfuel.application.usecase.location.SearchMunicipalityUseCase
 import com.anpfuel.application.usecase.location.ResolveDeviceLocationUseCase
 import com.anpfuel.application.usecase.location.SelectLocationUseCase
@@ -29,6 +31,7 @@ import com.anpfuel.application.usecase.vehicle.GetVehicleUseCase
 import com.anpfuel.application.usecase.vehicle.GetTankFillCostEstimatesUseCase
 import com.anpfuel.application.usecase.vehicle.ListVehiclesUseCase
 import com.anpfuel.application.usecase.vehicle.SaveVehicleUseCase
+import com.anpfuel.domain.repository.PriceDropNotificationRepository
 import com.anpfuel.domain.repository.ReverseGeocodeRepository
 import com.anpfuel.domain.repository.VehicleRepository
 import com.anpfuel.domain.repository.AveragePriceRepository
@@ -375,5 +378,31 @@ object UseCaseModule {
     ): DeleteVehicleUseCase = DeleteVehicleUseCase(
         vehicleRepository = vehicleRepository,
         eventPublisher = eventPublisher,
+    )
+
+    @Provides
+    @Singleton
+    fun provideEvaluatePriceDropAlertsUseCase(
+        vehicleRepository: VehicleRepository,
+        averagePriceRepository: AveragePriceRepository,
+        stationPriceRepository: StationPriceRepository,
+        priceTableRepository: PriceTableRepository,
+        userPreferencesRepository: UserPreferencesRepository,
+        priceDropNotificationRepository: PriceDropNotificationRepository,
+    ): EvaluatePriceDropAlertsUseCase = EvaluatePriceDropAlertsUseCase(
+        vehicleRepository = vehicleRepository,
+        averagePriceRepository = averagePriceRepository,
+        stationPriceRepository = stationPriceRepository,
+        priceTableRepository = priceTableRepository,
+        userPreferencesRepository = userPreferencesRepository,
+        priceDropNotificationRepository = priceDropNotificationRepository,
+    )
+
+    @Provides
+    @Singleton
+    fun provideConfigurePriceDropAlertUseCase(
+        priceDropNotificationRepository: PriceDropNotificationRepository,
+    ): ConfigurePriceDropAlertUseCase = ConfigurePriceDropAlertUseCase(
+        priceDropNotificationRepository = priceDropNotificationRepository,
     )
 }

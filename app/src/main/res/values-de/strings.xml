@@ -34,6 +34,10 @@
     <string name="vehicle_price_source_cheapest">Günstigste Tankstelle</string>
     <string name="vehicle_price_source_specific">Bestimmte Tankstelle</string>
     <string name="vehicle_price_drop_alert_label">Bei Preissenkung benachrichtigen</string>
+    <string name="vehicle_price_drop_alert_description">Erhalten Sie nach jedem wöchentlichen Import eine lokale Benachrichtigung, wenn der verfolgte Preis sinkt.</string>
+    <string name="notification_permission_denied_hint">Benachrichtigungen sind deaktiviert. Aktivieren Sie sie in den Systemeinstellungen, um Preissenkungsalarme zu erhalten.</string>
+    <string name="settings_notifications_section">Benachrichtigungen</string>
+    <string name="settings_open_notification_settings">Benachrichtigungseinstellungen öffnen</string>
     <string name="vehicle_add">Fahrzeug hinzufügen</string>
     <string name="vehicle_edit">Fahrzeug bearbeiten</string>
     <string name="vehicle_save">Speichern</string>

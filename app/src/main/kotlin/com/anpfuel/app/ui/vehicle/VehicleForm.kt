@@ -35,6 +35,7 @@ fun VehicleForm(
     stationOptions: List<VehicleStationOptionUiModel>,
     isLoadingStations: Boolean,
     isSaving: Boolean,
+    showNotificationPermissionHint: Boolean = false,
     locale: Locale,
     onDisplayNameChanged: (String) -> Unit,
     onTankCapacityChanged: (String) -> Unit,
@@ -186,11 +187,23 @@ fun VehicleForm(
                 style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onSurface,
             )
+            Text(
+                text = stringResource(R.string.vehicle_price_drop_alert_description),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
             Switch(
                 checked = form.priceDropAlertEnabled,
                 onCheckedChange = onPriceDropAlertChanged,
                 modifier = Modifier.align(Alignment.End),
             )
+            if (showNotificationPermissionHint) {
+                Text(
+                    text = stringResource(R.string.notification_permission_denied_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
         }
 
         Button(

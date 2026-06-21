@@ -35,6 +35,10 @@
     <string name="vehicle_price_source_cheapest">Cheapest station</string>
     <string name="vehicle_price_source_specific">Specific station</string>
     <string name="vehicle_price_drop_alert_label">Notify when price drops</string>
+    <string name="vehicle_price_drop_alert_description">Get a local notification after each weekly import when your tracked price drops.</string>
+    <string name="notification_permission_denied_hint">Notifications are disabled. Enable them in system settings to receive price drop alerts.</string>
+    <string name="settings_notifications_section">Notifications</string>
+    <string name="settings_open_notification_settings">Open notification settings</string>
     <string name="vehicle_add">Add vehicle</string>
     <string name="vehicle_edit">Edit vehicle</string>
     <string name="vehicle_save">Save</string>

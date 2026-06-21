@@ -53,6 +53,7 @@ fun SettingsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as? ComponentActivity
+    val context = LocalContext.current
 
     LaunchedEffect(viewModel) {
         viewModel.effects.collect { effect ->
@@ -78,6 +79,7 @@ fun SettingsScreen(
         onDismissClearAllDialog = viewModel::dismissClearAllDialog,
         onRetry = viewModel::load,
         onNavigateToWeekPicker = onNavigateToWeekPicker,
+        onOpenNotificationSettings = { viewModel.openNotificationSettings(context) },
         modifier = modifier,
     )
 }
@@ -99,6 +101,7 @@ private fun SettingsContent(
     onDismissClearAllDialog: () -> Unit,
     onRetry: () -> Unit,
     onNavigateToWeekPicker: () -> Unit,
+    onOpenNotificationSettings: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -187,6 +190,22 @@ private fun SettingsContent(
                             checked = uiState.preferences.showPriceHistory,
                             onCheckedChange = onShowPriceHistoryChanged,
                         )
+                    }
+
+                    if (uiState.showNotificationPermissionHint) {
+                        SettingsSection(title = stringResource(R.string.settings_notifications_section)) {
+                            Text(
+                                text = stringResource(R.string.notification_permission_denied_hint),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                            OutlinedButton(
+                                onClick = onOpenNotificationSettings,
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                Text(text = stringResource(R.string.settings_open_notification_settings))
+                            }
+                        }
                     }
 
                     SettingsSection(title = stringResource(R.string.settings_retention_weeks)) {
@@ -410,6 +429,7 @@ private fun SettingsScreenPreview() {
             onDismissClearAllDialog = {},
             onRetry = {},
             onNavigateToWeekPicker = {},
+            onOpenNotificationSettings = {},
         )
     }
 }

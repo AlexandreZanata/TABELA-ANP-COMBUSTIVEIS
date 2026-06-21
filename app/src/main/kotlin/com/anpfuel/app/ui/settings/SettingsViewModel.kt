@@ -6,6 +6,7 @@ import com.anpfuel.app.locale.AppLocaleHolder
 import com.anpfuel.app.locale.AppLocales
 import com.anpfuel.application.error.AppError
 import com.anpfuel.application.error.AppErrorResolver
+import com.anpfuel.app.notification.NotificationPermissionHandler
 import com.anpfuel.application.usecase.settings.ClearCacheUseCase
 import com.anpfuel.application.usecase.settings.GetSettingsUseCase
 import com.anpfuel.application.usecase.settings.GetStorageUsageUseCase
@@ -13,6 +14,7 @@ import com.anpfuel.application.usecase.settings.UpdatePreferencesUseCase
 import com.anpfuel.application.usecase.sync.AutoDownloadLatestWeekOutcome
 import com.anpfuel.application.usecase.sync.AutoDownloadLatestWeekUseCase
 import com.anpfuel.application.usecase.sync.SyncPriceTablesUseCase
+import com.anpfuel.application.usecase.vehicle.ListVehiclesUseCase
 import com.anpfuel.data.worker.SyncWorkScheduler
 import com.anpfuel.domain.event.CacheClearScope
 import com.anpfuel.domain.event.SyncJobOutcome
@@ -43,6 +45,7 @@ data class SettingsUiState(
     val isClearingCache: Boolean = false,
     val showClearAllDialog: Boolean = false,
     val syncMessage: String? = null,
+    val showNotificationPermissionHint: Boolean = false,
     val error: AppError? = null,
 )
 
@@ -60,6 +63,8 @@ class SettingsViewModel @Inject constructor(
     private val syncPriceTablesUseCase: SyncPriceTablesUseCase,
     private val autoDownloadLatestWeekUseCase: AutoDownloadLatestWeekUseCase,
     private val syncWorkScheduler: SyncWorkScheduler,
+    private val listVehiclesUseCase: ListVehiclesUseCase,
+    private val notificationPermissionHandler: NotificationPermissionHandler,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -78,12 +83,16 @@ class SettingsViewModel @Inject constructor(
             runCatching {
                 val preferences = getSettingsUseCase()
                 val storageUsage = getStorageUsageUseCase()
+                val vehicles = listVehiclesUseCase()
+                val showNotificationPermissionHint = vehicles.any { it.priceDropAlertEnabled } &&
+                    !notificationPermissionHandler.hasPostNotificationsPermission()
                 _uiState.update {
                     it.copy(
                         isLoading = false,
                         hasLoaded = true,
                         preferences = preferences,
                         storageUsage = storageUsage,
+                        showNotificationPermissionHint = showNotificationPermissionHint,
                     )
                 }
             }.onFailure { error ->
@@ -175,6 +184,7 @@ class SettingsViewModel @Inject constructor(
             }
 
             val storageUsage = getStorageUsageUseCase()
+            syncWorkScheduler.enqueuePriceDropEvaluation()
             _uiState.update {
                 it.copy(
                     isSyncing = false,
@@ -183,6 +193,10 @@ class SettingsViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    fun openNotificationSettings(launchContext: android.content.Context) {
+        notificationPermissionHandler.openNotificationSettings(launchContext)
     }
 
     fun requestClearAllCache() {

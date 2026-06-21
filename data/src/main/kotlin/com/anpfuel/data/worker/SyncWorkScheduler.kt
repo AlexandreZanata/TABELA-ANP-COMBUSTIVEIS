@@ -84,11 +84,16 @@ class SyncWorkScheduler @Inject constructor(
         )
     }
 
+    fun enqueuePriceDropEvaluation() {
+        SyncWorkScheduler.enqueuePriceDropEvaluation(context)
+    }
+
     companion object {
         const val PERIODIC_SYNC_WORK_NAME = "anp_periodic_sync"
         const val MANUAL_SYNC_WORK_NAME = "anp_manual_sync"
         const val FIRST_LAUNCH_SYNC_WORK_NAME = "anp_first_launch_sync"
         const val RETENTION_CLEANUP_WORK_NAME = "anp_retention_cleanup"
+        const val PRICE_DROP_EVALUATION_WORK_NAME = "anp_price_drop_evaluation"
         private const val PERIODIC_INTERVAL_DAYS = 7L
 
         fun scheduledInputData(): Data = workDataOf(
@@ -108,6 +113,15 @@ class SyncWorkScheduler @Inject constructor(
             WorkManager.getInstance(context).enqueueUniqueWork(
                 RETENTION_CLEANUP_WORK_NAME,
                 ExistingWorkPolicy.KEEP,
+                request,
+            )
+        }
+
+        fun enqueuePriceDropEvaluation(context: Context) {
+            val request = OneTimeWorkRequestBuilder<PriceDropEvaluationWorker>().build()
+            WorkManager.getInstance(context).enqueueUniqueWork(
+                PRICE_DROP_EVALUATION_WORK_NAME,
+                ExistingWorkPolicy.REPLACE,
                 request,
             )
         }

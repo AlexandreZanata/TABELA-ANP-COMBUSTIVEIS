@@ -34,6 +34,10 @@
     <string name="vehicle_price_source_cheapest">最安のスタンド</string>
     <string name="vehicle_price_source_specific">特定のスタンド</string>
     <string name="vehicle_price_drop_alert_label">値下がり時に通知</string>
+    <string name="vehicle_price_drop_alert_description">追跡中の価格が下がったとき、週次インポート後にローカル通知を受け取ります。</string>
+    <string name="notification_permission_denied_hint">通知が無効です。値下がりアラートを受け取るには、システム設定で通知を有効にしてください。</string>
+    <string name="settings_notifications_section">通知</string>
+    <string name="settings_open_notification_settings">通知設定を開く</string>
     <string name="vehicle_add">車両を追加</string>
     <string name="vehicle_edit">車両を編集</string>
     <string name="vehicle_save">保存</string>

@@ -34,6 +34,10 @@
     <string name="vehicle_price_source_cheapest">Station la moins chère</string>
     <string name="vehicle_price_source_specific">Station spécifique</string>
     <string name="vehicle_price_drop_alert_label">Alerter en cas de baisse de prix</string>
+    <string name="vehicle_price_drop_alert_description">Recevez une notification locale après chaque import hebdomadaire lorsque le prix suivi baisse.</string>
+    <string name="notification_permission_denied_hint">Les notifications sont désactivées. Activez-les dans les paramètres système pour recevoir des alertes de baisse de prix.</string>
+    <string name="settings_notifications_section">Notifications</string>
+    <string name="settings_open_notification_settings">Ouvrir les paramètres de notification</string>
     <string name="vehicle_add">Ajouter un véhicule</string>
     <string name="vehicle_edit">Modifier le véhicule</string>
     <string name="vehicle_save">Enregistrer</string>

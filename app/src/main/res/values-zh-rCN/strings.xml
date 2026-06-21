@@ -34,6 +34,10 @@
     <string name="vehicle_price_source_cheapest">最便宜加油站</string>
     <string name="vehicle_price_source_specific">指定加油站</string>
     <string name="vehicle_price_drop_alert_label">价格下降时通知</string>
+    <string name="vehicle_price_drop_alert_description">每次每周导入后，当跟踪的价格下降时接收本地通知。</string>
+    <string name="notification_permission_denied_hint">通知已禁用。请在系统设置中启用通知以接收降价提醒。</string>
+    <string name="settings_notifications_section">通知</string>
+    <string name="settings_open_notification_settings">打开通知设置</string>
     <string name="vehicle_add">添加车辆</string>
     <string name="vehicle_edit">编辑车辆</string>
     <string name="vehicle_save">保存</string>
