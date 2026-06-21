@@ -18,6 +18,7 @@ data class UserPreferences(
     val autoSyncOnWifi: Boolean = true,
     val showPriceHistory: Boolean = true,
     val onboardingCompleted: Boolean = false,
+    val locationPromptCompleted: Boolean = false,
     val activeSurveyWeek: SurveyWeek? = null,
 ) {
     companion object {

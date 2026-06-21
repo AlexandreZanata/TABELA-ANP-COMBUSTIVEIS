@@ -8,12 +8,14 @@ import com.anpfuel.data.local.dao.MunicipalityCatalogDao
 import com.anpfuel.data.local.dao.MunicipalityFtsDao
 import com.anpfuel.data.local.dao.StationPriceDao
 import com.anpfuel.data.local.dao.SurveyWeekDao
+import com.anpfuel.data.local.dao.VehicleDao
 import com.anpfuel.data.local.entity.AveragePriceEntity
 import com.anpfuel.data.local.entity.ImportAuditLogEntity
 import com.anpfuel.data.local.entity.MunicipalityCatalogEntity
 import com.anpfuel.data.local.entity.MunicipalityFtsEntity
 import com.anpfuel.data.local.entity.StationPriceEntity
 import com.anpfuel.data.local.entity.SurveyWeekEntity
+import com.anpfuel.data.local.entity.VehicleEntity
 
 @Database(
     entities = [
@@ -23,8 +25,9 @@ import com.anpfuel.data.local.entity.SurveyWeekEntity
         ImportAuditLogEntity::class,
         MunicipalityCatalogEntity::class,
         MunicipalityFtsEntity::class,
+        VehicleEntity::class,
     ],
-    version = 3,
+    version = 4,
     exportSchema = true,
 )
 abstract class AnpFuelDatabase : RoomDatabase() {
@@ -40,4 +43,6 @@ abstract class AnpFuelDatabase : RoomDatabase() {
     abstract fun municipalityCatalogDao(): MunicipalityCatalogDao
 
     abstract fun municipalityFtsDao(): MunicipalityFtsDao
+
+    abstract fun vehicleDao(): VehicleDao
 }

@@ -43,6 +43,7 @@ class SyncWorker @AssistedInject constructor(
                 SyncJobOutcome.PARTIAL,
                 -> {
                     SyncWorkScheduler.enqueueRetentionCleanup(applicationContext)
+                    SyncWorkScheduler.enqueuePriceDropEvaluation(applicationContext)
                     Result.success()
                 }
                 SyncJobOutcome.NO_NEW_DATA -> Result.success()

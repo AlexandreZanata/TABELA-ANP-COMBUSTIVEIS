@@ -45,6 +45,7 @@ class ClearCacheUseCase(
                 preferredState = null,
                 preferredMunicipality = null,
                 onboardingCompleted = false,
+                locationPromptCompleted = false,
             ),
         )
     }

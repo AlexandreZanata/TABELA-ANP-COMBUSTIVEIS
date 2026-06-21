@@ -25,6 +25,17 @@
 | **SurveyWeekCatalogEntry** | Metadata for one ANP listing week block: `surveyWeek`, summary/station URLs, optional `publishedAt`, optional `operationalNote` (v2). |
 | **SurveyWeekSelectionMode** | How the user chose a week in UC-009: `LATEST` or `SPECIFIC`. |
 | **ActiveSurveyWeek** | User preference (`UserPreferences.activeSurveyWeek`) for the week currently displayed and synced (BR-019). |
+| **Vehicle** | User-owned car profile: display name, `TankCapacity`, single `FuelProduct`, and `VehiclePriceSource`. |
+| **TankCapacity** | Value object — tank capacity in liters (> 0, ≤ 200). |
+| **TankFillCostEstimate** | Derived value: unit price × `TankCapacity` for the active `SurveyWeek`. |
+| **VehiclePriceSourceMode** | How unit price is resolved: `CHEAPEST_STATION` or `SPECIFIC_STATION`. |
+| **VehiclePriceSource** | `VehiclePriceSourceMode` plus optional `Cnpj` when mode is `SPECIFIC_STATION`. |
+| **PriceDropAlert** | User preference on a `Vehicle` to notify when fuel price drops vs previous imported week. |
+| **AlertPriceSource** | Price reference for alerts — same semantics as `VehiclePriceSourceMode` (+ optional CNPJ). |
+| **DeviceLocation** | Ephemeral latitude/longitude from Android location APIs; not persisted as PII. |
+| **ReverseGeocodeResult** | Resolved `BrazilianState` and municipality name from coordinates. |
+| **StationNavigationQuery** | Normalized address string plus municipality and state for external map apps. |
+| **GeocodingAttribution** | OSM/Nominatim attribution requirement when reverse geocoding is used (BR-021). |
 
 ## FuelProduct Enum
 
@@ -46,6 +57,15 @@
 
 27 federative units. Stored as enum with `name`, `abbreviation` (e.g. `SAO_PAULO`, `SP`).
 
+## VehiclePriceSourceMode / AlertPriceSource
+
+Shared enum values:
+
+| Value | Meaning |
+|-------|---------|
+| `CHEAPEST_STATION` | Minimum `StationPrice` for vehicle fuel in preferred municipality |
+| `SPECIFIC_STATION` | Price at a chosen `RetailStation` identified by `Cnpj` |
+
 ## Domain Events
 
 | Event | Fired when |
@@ -62,6 +82,12 @@
 | `PreferencesUpdated` | User changes a local preference |
 | `CacheCleared` | User clears local data (`ALL` or `STATION_DETAIL_ONLY`) |
 | `SurveyWeekSelected` | User selects a survey week for sync and display (UC-009) |
+| `VehicleRegistered` | User saves a new `Vehicle` (UC-010) |
+| `VehicleUpdated` | User edits an existing `Vehicle` (UC-010) |
+| `VehicleRemoved` | User deletes a `Vehicle` (UC-010) |
+| `PriceDropAlertConfigured` | User toggles or changes alert source on a vehicle (UC-014) |
+| `DeviceLocationResolved` | Reverse geocode succeeded and matched `MunicipalityCatalog` (UC-012) |
+| `StationNavigationRequested` | User taps navigate on a station row (UC-013) |
 
 ## Business Rules
 
@@ -193,6 +219,58 @@
 **WHEN** no `activeSurveyWeek` is set  
 **THEN** require manual week selection (BR-018) before sync
 
+### BR-021 — Nominatim Usage Compliance
+**GIVEN** a reverse geocode request  
+**WHEN** calling the public Nominatim API  
+**THEN** send a custom `User-Agent` identifying the app  
+**AND** enforce max 1 request per second (client-side throttle)  
+**AND** cache successful rounded `(lat, lon)` → municipality results locally  
+**AND** never run periodic bulk geocoding in background  
+**AND** display OSM attribution where geocoding is used
+
+### BR-022 — One Fuel Product per Vehicle
+**GIVEN** a `Vehicle`  
+**WHEN** saved  
+**THEN** exactly one `FuelProduct` is bound  
+**AND** tank fill cost uses only that product's price
+
+### BR-023 — Tank Fill Cost Price Source
+**GIVEN** a vehicle with `CHEAPEST_STATION` mode  
+**WHEN** station detail exists for the active week  
+**THEN** use the cheapest `StationPrice` for that fuel in the preferred municipality  
+**ELSE** fall back to `AveragePrice.minimum` if available  
+**AND** show informative empty state if neither exists (BR-010)
+
+**GIVEN** a vehicle with `SPECIFIC_STATION` mode  
+**WHEN** the chosen CNPJ has a price for the active week  
+**THEN** use that `StationPrice`  
+**ELSE** apply the same fallback chain as above
+
+### BR-024 — Multiple Vehicles on Home
+**GIVEN** the user registered N vehicles (N ≥ 1)  
+**WHEN** home renders the tank fill cost section  
+**THEN** show one card per vehicle in registration order  
+**AND** preserve stable vertical layout (placeholder height matches filled card)
+
+### BR-025 — Price Drop Alert Eligibility
+**GIVEN** `PriceDropAlert` enabled for a vehicle  
+**WHEN** a new `SurveyWeek` is imported and evaluated  
+**THEN** compare current price source vs the previous imported week for the same municipality and fuel  
+**AND** emit a local notification only if current < previous  
+**AND** never notify without `POST_NOTIFICATIONS` granted
+
+### BR-026 — Station Navigation Query
+**GIVEN** a `RetailStation` address from ANP  
+**WHEN** the user taps **Navigate**  
+**THEN** build a `StationNavigationQuery` with normalized address plus municipality and state  
+**AND** open the system geo app chooser (Maps, Waze, or other handlers)
+
+### BR-027 — Maximum Registered Vehicles
+**GIVEN** the user already has 3 saved vehicles  
+**WHEN** attempting to add another  
+**THEN** reject the operation with an informative UI message  
+**AND** do not persist a fourth vehicle
+
 ## Acronyms
 
 | Acronym | Meaning |
@@ -203,3 +281,4 @@
 | CNPJ | Cadastro Nacional da Pessoa Jurídica (Brazilian company tax ID) |
 | CNG | Compressed Natural Gas (GNV in Brazil) |
 | LPG | Liquefied Petroleum Gas (GLP in Brazil) |
+| OSM | OpenStreetMap — data provider for Nominatim geocoding |

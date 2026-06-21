@@ -27,7 +27,7 @@ Introduce the app value proposition and guide the user through survey week selec
 5. When week picker is shown: user taps **Use latest week** or selects a specific historical week.
 6. System persists `activeSurveyWeek`, emits `SurveyWeekSelected`, and triggers UC-001 scoped to the selected week (`SyncRequested(FIRST_LAUNCH)`).
 7. On `SyncJobCompleted` success, system sets onboarding complete flag.
-8. System navigates to UC-003 (location selection) or home if `preferredMunicipality` exists.
+8. System navigates to UC-012 location prompt (optional GPS) or UC-003 if user skips GPS, or home if `preferredMunicipality` already exists.
 
 ## Alternative flows
 
@@ -49,15 +49,27 @@ Introduce the app value proposition and guide the user through survey week selec
 - **THEN** show structured error with retry on week picker  
 - **AND** user may go back to intro slides or skip sync (A1)
 
+### A4 — User chooses manual location after sync
+
+- **WHEN** user declines device location on UC-012 prompt or taps **Choose manually**  
+- **THEN** navigate to UC-003 manual state + city picker  
+- **AND** set `locationPromptCompleted = true`
+
+### A5 — Device location resolves city successfully
+
+- **WHEN** user grants location and reverse geocode matches catalog  
+- **THEN** persist preferred municipality via UC-003 and navigate to Home  
+- **AND** set `locationPromptCompleted = true`
+
 ## Business rules
 
-- BR-005, BR-009, BR-011, BR-018, BR-019, BR-020
+- BR-005, BR-009, BR-011, BR-018, BR-019, BR-020, BR-021
 
 ## Domain events
 
 - `SurveyWeekSelected` (v2, via UC-009)
 - `SyncRequested(FIRST_LAUNCH)`
-- `PreferencesUpdated` (`activeSurveyWeek`, `onboardingCompleted`)
+- `PreferencesUpdated` (`activeSurveyWeek`, `onboardingCompleted`, `locationPromptCompleted`)
 
 ## Postconditions
 
@@ -72,7 +84,10 @@ Introduce the app value proposition and guide the user through survey week selec
 - `onboarding_body_offline`
 - `onboarding_action_get_started`
 - `week_picker_title`, `week_picker_latest`, `week_picker_updated_at`, `week_picker_operational_note` (UC-009)
+- `onboarding_location_prompt_title`, `onboarding_location_prompt_body`, `onboarding_location_use_device`, `onboarding_location_choose_manual` (UC-012)
+- `geocoding_osm_attribution` (UC-012)
 
 ## Related documentation
 
 - [uc-009-select-survey-week.md](uc-009-select-survey-week.md) — week picker after intro slides (Phase 12.3)
+- [uc-012-resolve-location-from-device.md](uc-012-resolve-location-from-device.md) — optional GPS step after sync

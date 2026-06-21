@@ -1,9 +1,13 @@
 package com.anpfuel.data.di
 
+import com.anpfuel.application.usecase.alert.ConfigurePriceDropAlertUseCase
+import com.anpfuel.application.usecase.alert.EvaluatePriceDropAlertsUseCase
 import com.anpfuel.application.usecase.location.SearchMunicipalityUseCase
+import com.anpfuel.application.usecase.location.ResolveDeviceLocationUseCase
 import com.anpfuel.application.usecase.location.SelectLocationUseCase
 import com.anpfuel.application.usecase.navigation.ResolveAppStartDestinationUseCase
 import com.anpfuel.application.usecase.network.ObserveNetworkConnectivityUseCase
+import com.anpfuel.application.usecase.onboarding.CompleteLocationPromptUseCase
 import com.anpfuel.application.usecase.onboarding.CompleteOnboardingUseCase
 import com.anpfuel.application.usecase.onboarding.OnboardingSelectWeekAndSyncUseCase
 import com.anpfuel.application.usecase.readiness.GetDataReadinessUseCase
@@ -15,12 +19,21 @@ import com.anpfuel.application.usecase.settings.ClearCacheUseCase
 import com.anpfuel.application.usecase.settings.GetSettingsUseCase
 import com.anpfuel.application.usecase.settings.GetStorageUsageUseCase
 import com.anpfuel.application.usecase.settings.UpdatePreferencesUseCase
+import com.anpfuel.application.usecase.station.BuildStationNavigationQueryUseCase
 import com.anpfuel.application.usecase.sync.AutoDownloadLatestWeekUseCase
 import com.anpfuel.application.usecase.sync.DiscoverSurveyWeekCatalogUseCase
 import com.anpfuel.application.usecase.sync.DownloadStationDetailUseCase
 import com.anpfuel.application.usecase.sync.SelectSurveyWeekUseCase
 import com.anpfuel.application.usecase.sync.SelectWeekAndSyncUseCase
 import com.anpfuel.application.usecase.sync.SyncPriceTablesUseCase
+import com.anpfuel.application.usecase.vehicle.DeleteVehicleUseCase
+import com.anpfuel.application.usecase.vehicle.GetVehicleUseCase
+import com.anpfuel.application.usecase.vehicle.GetTankFillCostEstimatesUseCase
+import com.anpfuel.application.usecase.vehicle.ListVehiclesUseCase
+import com.anpfuel.application.usecase.vehicle.SaveVehicleUseCase
+import com.anpfuel.domain.repository.PriceDropNotificationRepository
+import com.anpfuel.domain.repository.ReverseGeocodeRepository
+import com.anpfuel.domain.repository.VehicleRepository
 import com.anpfuel.domain.repository.AveragePriceRepository
 import com.anpfuel.domain.repository.CacheRepository
 import com.anpfuel.domain.repository.DomainEventPublisher
@@ -135,6 +148,16 @@ object UseCaseModule {
 
     @Provides
     @Singleton
+    fun provideCompleteLocationPromptUseCase(
+        userPreferencesRepository: UserPreferencesRepository,
+        eventPublisher: DomainEventPublisher,
+    ): CompleteLocationPromptUseCase = CompleteLocationPromptUseCase(
+        userPreferencesRepository = userPreferencesRepository,
+        eventPublisher = eventPublisher,
+    )
+
+    @Provides
+    @Singleton
     fun provideCompleteOnboardingUseCase(
         userPreferencesRepository: UserPreferencesRepository,
         priceTableRepository: PriceTableRepository,
@@ -209,6 +232,18 @@ object UseCaseModule {
 
     @Provides
     @Singleton
+    fun provideResolveDeviceLocationUseCase(
+        reverseGeocodeRepository: ReverseGeocodeRepository,
+        selectLocationUseCase: SelectLocationUseCase,
+        eventPublisher: DomainEventPublisher,
+    ): ResolveDeviceLocationUseCase = ResolveDeviceLocationUseCase(
+        reverseGeocodeRepository = reverseGeocodeRepository,
+        selectLocationUseCase = selectLocationUseCase,
+        eventPublisher = eventPublisher,
+    )
+
+    @Provides
+    @Singleton
     fun provideGetMunicipalityPricesUseCase(
         averagePriceRepository: AveragePriceRepository,
         municipalityCatalogRepository: MunicipalityCatalogRepository,
@@ -231,6 +266,16 @@ object UseCaseModule {
         averagePriceRepository = averagePriceRepository,
         priceTableRepository = priceTableRepository,
         userPreferencesRepository = userPreferencesRepository,
+    )
+
+    @Provides
+    @Singleton
+    fun provideBuildStationNavigationQueryUseCase(
+        userPreferencesRepository: UserPreferencesRepository,
+        eventPublisher: DomainEventPublisher,
+    ): BuildStationNavigationQueryUseCase = BuildStationNavigationQueryUseCase(
+        userPreferencesRepository = userPreferencesRepository,
+        eventPublisher = eventPublisher,
     )
 
     @Provides
@@ -283,5 +328,81 @@ object UseCaseModule {
         stationPriceRepository = stationPriceRepository,
         userPreferencesRepository = userPreferencesRepository,
         eventPublisher = eventPublisher,
+    )
+
+    @Provides
+    @Singleton
+    fun provideGetTankFillCostEstimatesUseCase(
+        averagePriceRepository: AveragePriceRepository,
+        stationPriceRepository: StationPriceRepository,
+        priceTableRepository: PriceTableRepository,
+        userPreferencesRepository: UserPreferencesRepository,
+    ): GetTankFillCostEstimatesUseCase = GetTankFillCostEstimatesUseCase(
+        averagePriceRepository = averagePriceRepository,
+        stationPriceRepository = stationPriceRepository,
+        priceTableRepository = priceTableRepository,
+        userPreferencesRepository = userPreferencesRepository,
+    )
+
+    @Provides
+    @Singleton
+    fun provideListVehiclesUseCase(
+        vehicleRepository: VehicleRepository,
+    ): ListVehiclesUseCase = ListVehiclesUseCase(
+        vehicleRepository = vehicleRepository,
+    )
+
+    @Provides
+    @Singleton
+    fun provideGetVehicleUseCase(
+        vehicleRepository: VehicleRepository,
+    ): GetVehicleUseCase = GetVehicleUseCase(
+        vehicleRepository = vehicleRepository,
+    )
+
+    @Provides
+    @Singleton
+    fun provideSaveVehicleUseCase(
+        vehicleRepository: VehicleRepository,
+        eventPublisher: DomainEventPublisher,
+    ): SaveVehicleUseCase = SaveVehicleUseCase(
+        vehicleRepository = vehicleRepository,
+        eventPublisher = eventPublisher,
+    )
+
+    @Provides
+    @Singleton
+    fun provideDeleteVehicleUseCase(
+        vehicleRepository: VehicleRepository,
+        eventPublisher: DomainEventPublisher,
+    ): DeleteVehicleUseCase = DeleteVehicleUseCase(
+        vehicleRepository = vehicleRepository,
+        eventPublisher = eventPublisher,
+    )
+
+    @Provides
+    @Singleton
+    fun provideEvaluatePriceDropAlertsUseCase(
+        vehicleRepository: VehicleRepository,
+        averagePriceRepository: AveragePriceRepository,
+        stationPriceRepository: StationPriceRepository,
+        priceTableRepository: PriceTableRepository,
+        userPreferencesRepository: UserPreferencesRepository,
+        priceDropNotificationRepository: PriceDropNotificationRepository,
+    ): EvaluatePriceDropAlertsUseCase = EvaluatePriceDropAlertsUseCase(
+        vehicleRepository = vehicleRepository,
+        averagePriceRepository = averagePriceRepository,
+        stationPriceRepository = stationPriceRepository,
+        priceTableRepository = priceTableRepository,
+        userPreferencesRepository = userPreferencesRepository,
+        priceDropNotificationRepository = priceDropNotificationRepository,
+    )
+
+    @Provides
+    @Singleton
+    fun provideConfigurePriceDropAlertUseCase(
+        priceDropNotificationRepository: PriceDropNotificationRepository,
+    ): ConfigurePriceDropAlertUseCase = ConfigurePriceDropAlertUseCase(
+        priceDropNotificationRepository = priceDropNotificationRepository,
     )
 }

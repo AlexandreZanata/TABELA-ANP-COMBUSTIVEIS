@@ -11,6 +11,7 @@
     <string name="nav_history">Histórico</string>
     <string name="nav_stations">Postos</string>
     <string name="nav_settings">Configurações</string>
+    <string name="nav_vehicles">Veículos</string>
 
     <!-- Home (UC-005) -->
     <string name="home_title">ANP</string>
@@ -18,6 +19,41 @@
     <string name="home_no_location_message">Nenhuma cidade selecionada.</string>
     <string name="home_no_location_hint">Busque ou navegue por estado para ver os preços.</string>
     <string name="home_view_price_details">Ver detalhes completos dos preços</string>
+
+    <!-- Tank fill cost / Vehicles (UC-010, UC-011) -->
+    <string name="home_tank_fill_cost_title">Custo para encher o tanque</string>
+    <string name="home_tank_fill_cost_vehicle_format">%1$s (%2$s L)</string>
+    <string name="home_tank_fill_cost_placeholder_title">Acompanhe o custo real de encher o tanque</string>
+    <string name="home_tank_fill_cost_placeholder_body">Cadastre um veículo para estimar quanto custa encher o tanque na sua cidade.</string>
+    <string name="home_tank_fill_cost_liters_format">%1$s (%2$d L)</string>
+    <string name="home_tank_fill_cost_unavailable">Preço indisponível</string>
+    <string name="home_tank_fill_cost_station_name">Em %1$s</string>
+    <string name="home_tank_fill_cost_go_to_station">Ir até o posto</string>
+    <string name="vehicle_screen_title">Veículos</string>
+    <string name="vehicle_name_hint">Nome do veículo</string>
+    <string name="vehicle_tank_capacity_hint">Capacidade do tanque (litros)</string>
+    <string name="vehicle_fuel_product_label">Tipo de combustível</string>
+    <string name="vehicle_price_source_label">Referência de preço</string>
+    <string name="vehicle_price_source_cheapest">Posto mais barato</string>
+    <string name="vehicle_price_source_specific">Posto específico</string>
+    <string name="vehicle_price_drop_alert_label">Avisar quando o preço cair</string>
+    <string name="vehicle_price_drop_alert_description">Receba uma notificação local após cada importação semanal quando o preço acompanhado cair.</string>
+    <string name="notification_permission_denied_hint">As notificações estão desativadas. Ative-as nas configurações do sistema para receber alertas de queda de preço.</string>
+    <string name="settings_notifications_section">Notificações</string>
+    <string name="settings_open_notification_settings">Abrir configurações de notificação</string>
+    <string name="vehicle_add">Adicionar veículo</string>
+    <string name="vehicle_edit">Editar veículo</string>
+    <string name="vehicle_save">Salvar</string>
+    <string name="vehicle_delete">Excluir</string>
+    <string name="vehicle_delete_confirm">Remover este veículo?</string>
+    <string name="vehicle_empty_message">Nenhum veículo cadastrado</string>
+    <string name="vehicle_empty_hint">Adicione até 3 veículos para acompanhar o custo do tanque.</string>
+    <string name="vehicle_max_reached">Limite de 3 veículos atingido</string>
+    <string name="vehicle_select_station">Selecionar posto</string>
+    <string name="vehicle_station_option_format">%1$s — %2$s</string>
+    <string name="vehicle_validation_name_required">Informe o nome do veículo</string>
+    <string name="vehicle_validation_tank_capacity">Informe uma capacidade válida (1–200 L)</string>
+    <string name="vehicle_validation_station_required">Selecione um posto</string>
 
     <string name="home_empty_message">Nenhum dado de preço sincronizado ainda.</string>
     <string name="home_empty_hint">Conclua a introdução ou sincronize para carregar as tabelas semanais da ANP.</string>
@@ -48,6 +84,15 @@
     <string name="onboarding_action_get_started">Começar</string>
     <string name="onboarding_action_sync_now">Sincronizar agora</string>
     <string name="onboarding_action_skip">Pular por enquanto</string>
+    <string name="onboarding_location_prompt_title">Encontrar sua cidade automaticamente?</string>
+    <string name="onboarding_location_prompt_body">Podemos usar a localização do dispositivo uma vez para sugerir sua cidade nos preços. Você também pode escolher manualmente.</string>
+    <string name="onboarding_location_use_device">Usar minha localização</string>
+    <string name="onboarding_location_choose_manual">Escolher manualmente</string>
+    <string name="onboarding_location_permission_rationale">O acesso à localização ajuda a detectar sua cidade para consulta de preços. As coordenadas não são armazenadas.</string>
+    <string name="onboarding_location_failed">Não foi possível detectar sua cidade. Escolha estado e cidade manualmente.</string>
+    <string name="onboarding_location_resolving">Detectando sua cidade…</string>
+    <string name="geocoding_osm_attribution">Detecção de cidade: dados © colaboradores OpenStreetMap</string>
+    <string name="settings_geocoding_attribution">Geocodificação por OpenStreetMap (Nominatim)</string>
 
     <!-- UC-009 Week picker (Phase 12) -->
     <string name="week_picker_title">Semana de pesquisa</string>
@@ -106,7 +151,8 @@
 
     <!-- UC-006 History -->
     <string name="history_title">Histórico</string>
-    <string name="history_insufficient_data">O histórico ficará disponível após mais sincronizações semanais.</string>
+    <string name="history_insufficient_data">Para comparar preços, é preciso ter dados de mais de uma semana baixados no app.</string>
+    <string name="history_insufficient_data_hint">Use o seletor de semana acima ou sincronize tabelas anteriores da ANP.</string>
     <string name="history_week_label">%1$s</string>
     <string name="history_disabled">O histórico de preços está desativado nas configurações.</string>
     <string name="history_fuel_product_label">Combustível</string>
@@ -115,11 +161,15 @@
     <!-- UC-007 Stations -->
     <string name="stations_title">Postos</string>
     <string name="stations_sort_by_price">Menor preço primeiro</string>
+    <string name="stations_tap_to_navigate_hint">Toque em um posto para abrir no Google Maps.</string>
     <string name="stations_download_prompt">Os preços por posto ainda não estão neste dispositivo. Baixe o arquivo de postos da ANP desta semana para comparar preços por estabelecimento.</string>
     <string name="stations_download_action">Baixar preços por posto</string>
     <string name="stations_empty">Nenhum posto informou este combustível na cidade selecionada nesta semana.</string>
     <string name="stations_brand_label">Bandeira: %1$s</string>
     <string name="stations_collected_at_label">Coleta: %1$s</string>
+    <string name="stations_navigate_action">Ir</string>
+    <string name="stations_navigate_no_app">Não foi possível abrir o Google Maps. Instale o app ou use o navegador.</string>
+    <string name="a11y_station_navigate">Ir para %1$s</string>
     <string name="prices_view_stations">Ver preços por posto</string>
 
     <!-- FuelProduct labels -->
@@ -215,6 +265,8 @@
 
     <!-- Accessibility (Phase 9.3) -->
     <string name="a11y_loading">Carregando conteúdo</string>
+    <string name="a11y_tank_fill_cost_placeholder">Adicionar veículo para acompanhar o custo do tanque</string>
+    <string name="a11y_tank_fill_cost_card">%1$s, custo do tanque %2$s</string>
     <string name="a11y_fuel_price_card">%1$s, preço médio %2$s</string>
     <string name="a11y_station_price_row">%1$s, preço %2$s</string>
     <string name="a11y_price_trend_chart">Gráfico de tendência de preços</string>

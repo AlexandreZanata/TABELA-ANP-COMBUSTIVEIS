@@ -5,9 +5,12 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.anpfuel.app.ui.model.AveragePriceUiModel
+import com.anpfuel.app.ui.model.TankFillCostEstimateUiModel
 import com.anpfuel.app.ui.theme.AnpFuelTheme
+import com.anpfuel.domain.model.TankFillCostUnitPriceSource
 import com.anpfuel.domain.state.DataReadinessState
 import com.anpfuel.domain.valueobject.BrazilianState
+import com.anpfuel.domain.valueobject.DomainId
 import com.anpfuel.domain.valueobject.FuelProduct
 import com.anpfuel.domain.valueobject.SurveyWeek
 import org.junit.Rule
@@ -80,5 +83,78 @@ class HomeScreenTest {
         }
 
         composeTestRule.onNodeWithText("No fuel price data synced yet.").assertIsDisplayed()
+    }
+
+    @Test
+    fun showsTankFillPlaceholderWhenNoVehicles() {
+        composeTestRule.setContent {
+            AnpFuelTheme {
+                HomeContent(
+                    uiState = HomeUiState(
+                        isLoading = false,
+                        readiness = DataReadinessState.READY,
+                        hasCachedData = true,
+                        hasLocation = true,
+                        municipality = "Curitiba",
+                        state = BrazilianState.PARANA,
+                        surveyWeek = SurveyWeek.fromIsoDates("2026-06-07", "2026-06-13"),
+                        prices = emptyList(),
+                        tankFillCostEstimates = emptyList(),
+                    ),
+                    darkTheme = false,
+                    onToggleTheme = {},
+                    onNavigate = {},
+                    onRefresh = {},
+                    onRetry = {},
+                    onWeekChanged = {},
+                    includeSurveyWeekChip = false,
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("Track your real fill-up cost").assertIsDisplayed()
+    }
+
+    @Test
+    fun showsTankFillCostCardWhenVehicleRegistered() {
+        composeTestRule.setContent {
+            AnpFuelTheme {
+                HomeContent(
+                    uiState = HomeUiState(
+                        isLoading = false,
+                        readiness = DataReadinessState.READY,
+                        hasCachedData = true,
+                        hasLocation = true,
+                        municipality = "Curitiba",
+                        state = BrazilianState.PARANA,
+                        surveyWeek = SurveyWeek.fromIsoDates("2026-06-07", "2026-06-13"),
+                        prices = emptyList(),
+                        tankFillCostEstimates = listOf(
+                            TankFillCostEstimateUiModel(
+                                vehicleId = DomainId.generate(),
+                                displayName = "Gol",
+                                tankCapacityLiters = 50,
+                                tankCapacityLitersLabel = "50",
+                                fuelProduct = FuelProduct.GASOLINE_REGULAR,
+                                totalCostFormatted = "R$ 274,50",
+                                stationDisplayName = null,
+                                stationNavigationQuery = null,
+                                unitPriceSource = TankFillCostUnitPriceSource.CHEAPEST_STATION,
+                            ),
+                        ),
+                    ),
+                    darkTheme = false,
+                    onToggleTheme = {},
+                    onNavigate = {},
+                    onRefresh = {},
+                    onRetry = {},
+                    onWeekChanged = {},
+                    includeSurveyWeekChip = false,
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("Gol").assertIsDisplayed()
+        composeTestRule.onNodeWithText("R$ 274,50", substring = true).assertIsDisplayed()
     }
 }

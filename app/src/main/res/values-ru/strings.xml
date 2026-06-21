@@ -11,6 +11,7 @@
     <string name="nav_history">История</string>
     <string name="nav_stations">АЗС</string>
     <string name="nav_settings">Настройки</string>
+    <string name="nav_vehicles">Транспорт</string>
 
     <!-- Home (UC-005) -->
     <string name="home_title">ANP</string>
@@ -18,6 +19,40 @@
     <string name="home_no_location_message">Город ещё не выбран.</string>
     <string name="home_no_location_hint">Ищите или просматривайте по штату, чтобы увидеть цены на топливо.</string>
     <string name="home_view_price_details">Показать полные сведения о ценах</string>
+
+    <string name="home_tank_fill_cost_title">Стоимость полного бака</string>
+    <string name="home_tank_fill_cost_vehicle_format">%1$s (%2$s л)</string>
+    <string name="home_tank_fill_cost_placeholder_title">Отслеживайте реальную стоимость заправки</string>
+    <string name="home_tank_fill_cost_placeholder_body">Добавьте транспорт, чтобы оценить стоимость полного бака в вашем городе.</string>
+    <string name="home_tank_fill_cost_liters_format">%1$s (%2$d л)</string>
+    <string name="home_tank_fill_cost_unavailable">Цена недоступна</string>
+    <string name="home_tank_fill_cost_station_name">На %1$s</string>
+    <string name="home_tank_fill_cost_go_to_station">Перейти к АЗС</string>
+    <string name="vehicle_screen_title">Транспорт</string>
+    <string name="vehicle_name_hint">Название транспорта</string>
+    <string name="vehicle_tank_capacity_hint">Объём бака (литры)</string>
+    <string name="vehicle_fuel_product_label">Тип топлива</string>
+    <string name="vehicle_price_source_label">Источник цены</string>
+    <string name="vehicle_price_source_cheapest">Самая дешёвая АЗС</string>
+    <string name="vehicle_price_source_specific">Конкретная АЗС</string>
+    <string name="vehicle_price_drop_alert_label">Уведомлять о снижении цены</string>
+    <string name="vehicle_price_drop_alert_description">Получайте локальное уведомление после каждого еженедельного импорта, когда отслеживаемая цена снижается.</string>
+    <string name="notification_permission_denied_hint">Уведомления отключены. Включите их в системных настройках, чтобы получать оповещения о снижении цены.</string>
+    <string name="settings_notifications_section">Уведомления</string>
+    <string name="settings_open_notification_settings">Открыть настройки уведомлений</string>
+    <string name="vehicle_add">Добавить транспорт</string>
+    <string name="vehicle_edit">Редактировать транспорт</string>
+    <string name="vehicle_save">Сохранить</string>
+    <string name="vehicle_delete">Удалить</string>
+    <string name="vehicle_delete_confirm">Удалить этот транспорт?</string>
+    <string name="vehicle_empty_message">Транспорт ещё не добавлен</string>
+    <string name="vehicle_empty_hint">Добавьте до 3 единиц транспорта для отслеживания стоимости бака.</string>
+    <string name="vehicle_max_reached">Достигнут максимум — 3 транспорта</string>
+    <string name="vehicle_select_station">Выберите АЗС</string>
+    <string name="vehicle_station_option_format">%1$s — %2$s</string>
+    <string name="vehicle_validation_name_required">Введите название транспорта</string>
+    <string name="vehicle_validation_tank_capacity">Введите допустимый объём (1–200 л)</string>
+    <string name="vehicle_validation_station_required">Выберите АЗС</string>
 
     <string name="home_empty_message">Данные о ценах на топливо ещё не синхронизированы.</string>
     <string name="home_empty_hint">Завершите введение или выполните синхронизацию для загрузки еженедельных таблиц ANP.</string>
@@ -48,6 +83,15 @@
     <string name="onboarding_action_get_started">Начать</string>
     <string name="onboarding_action_sync_now">Синхронизировать сейчас</string>
     <string name="onboarding_action_skip">Пропустить пока</string>
+    <string name="onboarding_location_prompt_title">Найти ваш город автоматически?</string>
+    <string name="onboarding_location_prompt_body">Мы можем один раз использовать геолокацию устройства, чтобы предложить город для цен. Вы также можете выбрать вручную.</string>
+    <string name="onboarding_location_use_device">Использовать мою геолокацию</string>
+    <string name="onboarding_location_choose_manual">Выбрать вручную</string>
+    <string name="onboarding_location_permission_rationale">Доступ к геолокации помогает определить ваш город для просмотра цен. Координаты не сохраняются.</string>
+    <string name="onboarding_location_failed">Не удалось определить город. Выберите штат и город вручную.</string>
+    <string name="onboarding_location_resolving">Определение города…</string>
+    <string name="geocoding_osm_attribution">Определение города: данные © участники OpenStreetMap</string>
+    <string name="settings_geocoding_attribution">Геокодирование OpenStreetMap (Nominatim)</string>
 
     <!-- UC-009 Week picker (Phase 12) -->
     <string name="week_picker_title">Неделя опроса</string>
@@ -106,7 +150,8 @@
 
     <!-- UC-006 History -->
     <string name="history_title">История цен</string>
-    <string name="history_insufficient_data">История будет доступна после дополнительных еженедельных синхронизаций.</string>
+    <string name="history_insufficient_data">Чтобы сравнить цены, на устройстве должны быть данные более чем за одну неделю опроса.</string>
+    <string name="history_insufficient_data_hint">Используйте выбор недели выше или синхронизируйте более ранние таблицы ANP.</string>
     <string name="history_week_label">%1$s</string>
     <string name="history_disabled">История цен отключена в настройках.</string>
     <string name="history_fuel_product_label">Вид топлива</string>
@@ -115,11 +160,15 @@
     <!-- UC-007 Stations -->
     <string name="stations_title">АЗС</string>
     <string name="stations_sort_by_price">Сортировка по цене (сначала самые низкие)</string>
+    <string name="stations_tap_to_navigate_hint">Нажмите на АЗС, чтобы открыть её в Google Maps.</string>
     <string name="stations_download_prompt">Цены по АЗС ещё не загружены на это устройство. Загрузите файл АЗС ANP за эту неделю, чтобы сравнить цены по станциям.</string>
     <string name="stations_download_action">Загрузить цены по АЗС</string>
     <string name="stations_empty">Ни одна АЗС не сообщила об этом топливе в выбранном городе за эту неделю.</string>
     <string name="stations_brand_label">Бренд: %1$s</string>
     <string name="stations_collected_at_label">Собрано: %1$s</string>
+    <string name="stations_navigate_action">Маршрут</string>
+    <string name="stations_navigate_no_app">Не найдено приложение карт для построения маршрута.</string>
+    <string name="a11y_station_navigate">Маршрут к %1$s</string>
     <string name="prices_view_stations">Показать цены по АЗС</string>
 
     <!-- FuelProduct labels -->
@@ -215,6 +264,8 @@
 
     <!-- Accessibility (Phase 9.3) -->
     <string name="a11y_loading">Загрузка содержимого</string>
+    <string name="a11y_tank_fill_cost_placeholder">Добавить транспорт для отслеживания стоимости бака</string>
+    <string name="a11y_tank_fill_cost_card">%1$s, стоимость бака %2$s</string>
     <string name="a11y_fuel_price_card">%1$s, средняя цена %2$s</string>
     <string name="a11y_station_price_row">%1$s, цена %2$s</string>
     <string name="a11y_price_trend_chart">График динамики цен</string>

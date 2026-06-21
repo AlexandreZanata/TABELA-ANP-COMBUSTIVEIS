@@ -32,6 +32,10 @@ There is **no authentication** in v1. The End User is anonymous; preferences are
 4. Optionally see **cheapest stations** near my selected city.
 5. Optionally see **price history** for my city over past weeks.
 6. Trust that data comes from **official ANP sources**.
+7. Track **estimated tank fill cost** per registered vehicle on home (UC-011).
+8. Get **local alerts** when fuel price drops vs the previous survey week (UC-014).
+9. **Skip manual city selection** on first launch by optionally sharing device location (UC-012).
+10. **Navigate to a gas station** in Maps or Waze from the station list (UC-013).
 
 ---
 
@@ -61,10 +65,11 @@ flowchart LR
 2. **Onboarding (first run)** — Explain data source (ANP), offline model, weekly cadence. User **selects survey week** (UC-009) before first sync.
 3. **Week selection** — User picks **latest week** or a historical week from the gov.br catalog; optional operational notes shown per week block.
 4. **Sync** — Targeted download/import for the selected week only (UC-001 scoped); progress visible.
-5. **Home** — Show selected city (or prompt to select), **active week chip** (tap to change week), prices per `FuelProduct` with vector icons.
-6. **Location selection** — User picks state + municipality, or **searches nationally** by name (IBGE catalog + FTS, UC-004).
+5. **Home** — Show selected city (or prompt to select), **active week chip** (tap to change week), prices per `FuelProduct` with vector icons, and tank fill cost cards (UC-011).
+6. **Location selection** — User picks state + municipality, **searches nationally** by name (IBGE catalog + FTS, UC-004), or **uses device location** once after onboarding (UC-012).
 7. **Fuel detail** — Tap a fuel to see min/avg/max, station count, and optional station list.
-8. **Settings** — Language, sync preferences, storage management, data attribution, week picker shortcut.
+8. **Vehicles** — Register cars with tank size and fuel type; choose cheapest or specific station for cost estimates (UC-010).
+9. **Settings** — Language, sync preferences, storage management, data attribution, week picker shortcut, geocoding attribution.
 
 ### Week picker journey (v2 — UC-009)
 
@@ -158,6 +163,8 @@ Stored on device only. No cloud sync in v1.
 | `autoSyncOnWifi` | boolean | `true` | BR-014 |
 | `showPriceHistory` | boolean | `true` | UC-006 |
 | `activeSurveyWeek` | `SurveyWeek?` | null | BR-018, BR-019, UC-009 |
+| `locationPromptCompleted` | boolean | `false` | UC-012 — show GPS prompt only once |
+| `vehicles` | list of `Vehicle` | empty | UC-010, stored in Room (not cloud) |
 
 ---
 
@@ -187,13 +194,20 @@ Stored on device only. No cloud sync in v1.
 - **Fuel product vector icons** — per-fuel MDI icons with accessible labels (Phase 14)
 - Active week chip on app bars; week picker bottom sheet for returning users
 
+### v3 — Vehicles, geolocation, navigation, alerts (shipped v3.0.0)
+
+- **Tank fill cost on home** (UC-011) — per-vehicle estimate below survey week label
+- **Vehicle profiles** (UC-010) — up to 3 vehicles, one `FuelProduct` each
+- **Optional device location** (UC-012) — Nominatim reverse geocode after first sync
+- **Station navigation** (UC-013) — open Maps/Waze from station list
+- **Local price drop notifications** (UC-014) — after weekly sync, no backend
+
 ### Out of scope (v1)
 
 - User accounts / login
-- Push notifications
-- GPS / "nearest station" map
 - Real-time prices
 - Backend API
+- Server-side push notifications
 
 ---
 
@@ -212,6 +226,11 @@ Detailed specs live in `docs/use-cases/`. **Do not implement undocumented use ca
 | UC-007 | View station prices | User | [uc-007-view-station-prices.md](use-cases/uc-007-view-station-prices.md) |
 | UC-008 | Manage settings and storage | User | [uc-008-manage-settings.md](use-cases/uc-008-manage-settings.md) |
 | UC-009 | Select survey week | User | [uc-009-select-survey-week.md](use-cases/uc-009-select-survey-week.md) |
+| UC-010 | Manage vehicles | User | [uc-010-manage-vehicles.md](use-cases/uc-010-manage-vehicles.md) |
+| UC-011 | Estimate tank fill cost | User | [uc-011-estimate-tank-fill-cost.md](use-cases/uc-011-estimate-tank-fill-cost.md) |
+| UC-012 | Resolve location from device | User | [uc-012-resolve-location-from-device.md](use-cases/uc-012-resolve-location-from-device.md) |
+| UC-013 | Navigate to station | User | [uc-013-navigate-to-station.md](use-cases/uc-013-navigate-to-station.md) |
+| UC-014 | Fuel price drop alerts | User, System | [uc-014-fuel-price-drop-alerts.md](use-cases/uc-014-fuel-price-drop-alerts.md) |
 
 ---
 
@@ -241,6 +260,13 @@ Rules referenced by use cases. Full list maintained in [glossary.md](glossary.md
 | BR-018 | Week selection required before sync when auto-download latest is disabled |
 | BR-019 | Active survey week overrides default-latest display |
 | BR-020 | Latest survey week auto-selected and synced unless user opts out |
+| BR-021 | Nominatim reverse geocode compliance (rate limit, cache, attribution) |
+| BR-022 | One `FuelProduct` per `Vehicle` |
+| BR-023 | Tank fill cost and alert price resolution (station → average fallback) |
+| BR-024 | Multiple vehicle tank cost cards on home with stable layout |
+| BR-025 | Price drop alerts only when price decreases vs previous week |
+| BR-026 | Normalized station address for external map navigation |
+| BR-027 | Maximum three registered vehicles |
 
 ---
 
@@ -255,6 +281,12 @@ Rules referenced by use cases. Full list maintained in [glossary.md](glossary.md
 | `PreferencesUpdated` | UC-008 | changed keys |
 | `CacheCleared` | UC-008 | scope: `ALL` \| `STATION_DETAIL_ONLY` |
 | `SurveyWeekSelected` | UC-009 | surveyWeek, selectionMode: `LATEST` \| `SPECIFIC` |
+| `VehicleRegistered` | UC-010 | vehicleId, displayName, fuelProduct |
+| `VehicleUpdated` | UC-010 | vehicleId, changed fields |
+| `VehicleRemoved` | UC-010 | vehicleId |
+| `PriceDropAlertConfigured` | UC-014 | vehicleId, enabled, alertPriceSource |
+| `DeviceLocationResolved` | UC-012 | state, municipality |
+| `StationNavigationRequested` | UC-013 | cnpj, stationNavigationQuery |
 
 ---
 
@@ -288,10 +320,13 @@ ANP typically publishes weekly; the 8-day threshold allows for publication delay
 
 ## Privacy and compliance
 
-- **No personal data collected** in v1.
+- **No account or cloud sync** — preferences and vehicles stored on device only.
+- **Optional device location** (UC-012) — one-shot GPS for municipality resolution; coordinates not persisted.
+- **Nominatim** — reverse geocode calls subject to OSM usage policy; results cached locally (BR-021).
+- **Local notifications** (UC-014) — generated on device after sync; no push backend.
 - CNPJ and station addresses are **public ANP data** — display as-is, no masking required.
-- No analytics SDK in v1 without explicit future ADR.
-- LGPD: no consent flow needed for v1 (no PII processing); document in README if scope changes.
+- No analytics SDK without explicit future ADR.
+- LGPD: location and notifications require transparent disclosure in privacy policy and runtime permission prompts.
 
 ---
 

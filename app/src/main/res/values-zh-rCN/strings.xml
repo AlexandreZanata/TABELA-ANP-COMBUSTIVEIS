@@ -11,6 +11,7 @@
     <string name="nav_history">历史</string>
     <string name="nav_stations">加油站</string>
     <string name="nav_settings">设置</string>
+    <string name="nav_vehicles">车辆</string>
 
     <!-- Home (UC-005) -->
     <string name="home_title">ANP</string>
@@ -18,6 +19,40 @@
     <string name="home_no_location_message">尚未选择城市。</string>
     <string name="home_no_location_hint">搜索或按州浏览以查看燃油价格。</string>
     <string name="home_view_price_details">查看完整价格详情</string>
+
+    <string name="home_tank_fill_cost_title">满箱费用</string>
+    <string name="home_tank_fill_cost_vehicle_format">%1$s（%2$s 升）</string>
+    <string name="home_tank_fill_cost_placeholder_title">跟踪真实加油费用</string>
+    <string name="home_tank_fill_cost_placeholder_body">添加车辆以估算在您所在城市加满油箱的费用。</string>
+    <string name="home_tank_fill_cost_liters_format">%1$s（%2$d 升）</string>
+    <string name="home_tank_fill_cost_unavailable">价格不可用</string>
+    <string name="home_tank_fill_cost_station_name">在 %1$s</string>
+    <string name="home_tank_fill_cost_go_to_station">前往加油站</string>
+    <string name="vehicle_screen_title">车辆</string>
+    <string name="vehicle_name_hint">车辆名称</string>
+    <string name="vehicle_tank_capacity_hint">油箱容量（升）</string>
+    <string name="vehicle_fuel_product_label">燃料类型</string>
+    <string name="vehicle_price_source_label">价格参考</string>
+    <string name="vehicle_price_source_cheapest">最便宜加油站</string>
+    <string name="vehicle_price_source_specific">指定加油站</string>
+    <string name="vehicle_price_drop_alert_label">价格下降时通知</string>
+    <string name="vehicle_price_drop_alert_description">每次每周导入后，当跟踪的价格下降时接收本地通知。</string>
+    <string name="notification_permission_denied_hint">通知已禁用。请在系统设置中启用通知以接收降价提醒。</string>
+    <string name="settings_notifications_section">通知</string>
+    <string name="settings_open_notification_settings">打开通知设置</string>
+    <string name="vehicle_add">添加车辆</string>
+    <string name="vehicle_edit">编辑车辆</string>
+    <string name="vehicle_save">保存</string>
+    <string name="vehicle_delete">删除</string>
+    <string name="vehicle_delete_confirm">移除此车辆？</string>
+    <string name="vehicle_empty_message">尚无车辆</string>
+    <string name="vehicle_empty_hint">最多添加 3 辆车以跟踪满箱费用。</string>
+    <string name="vehicle_max_reached">已达 3 辆车上限</string>
+    <string name="vehicle_select_station">选择加油站</string>
+    <string name="vehicle_station_option_format">%1$s — %2$s</string>
+    <string name="vehicle_validation_name_required">请输入车辆名称</string>
+    <string name="vehicle_validation_tank_capacity">请输入有效容量（1–200 升）</string>
+    <string name="vehicle_validation_station_required">请选择加油站</string>
 
     <string name="home_empty_message">尚未同步燃油价格数据。</string>
     <string name="home_empty_hint">完成引导或同步以加载 ANP 每周数据表。</string>
@@ -48,6 +83,15 @@
     <string name="onboarding_action_get_started">开始使用</string>
     <string name="onboarding_action_sync_now">立即同步</string>
     <string name="onboarding_action_skip">暂时跳过</string>
+    <string name="onboarding_location_prompt_title">自动查找您的城市？</string>
+    <string name="onboarding_location_prompt_body">我们可以使用一次设备位置来推荐您的城市以查看油价。您也可以手动选择。</string>
+    <string name="onboarding_location_use_device">使用我的位置</string>
+    <string name="onboarding_location_choose_manual">手动选择</string>
+    <string name="onboarding_location_permission_rationale">位置访问有助于检测您的城市以查询油价。坐标不会被存储。</string>
+    <string name="onboarding_location_failed">无法检测您的城市。请手动选择州和城市。</string>
+    <string name="onboarding_location_resolving">正在检测您的城市…</string>
+    <string name="geocoding_osm_attribution">城市检测数据 © OpenStreetMap 贡献者</string>
+    <string name="settings_geocoding_attribution">地理编码由 OpenStreetMap（Nominatim）提供</string>
 
     <!-- UC-009 Week picker (Phase 12) -->
     <string name="week_picker_title">调查周</string>
@@ -106,7 +150,8 @@
 
     <!-- UC-006 History -->
     <string name="history_title">价格历史</string>
-    <string name="history_insufficient_data">完成更多每周同步后可查看历史记录。</string>
+    <string name="history_insufficient_data">若要比较价格，本设备上需要有超过一个调查周的数据。</string>
+    <string name="history_insufficient_data_hint">使用上方的周选择器，或同步更早的 ANP 每周数据表。</string>
     <string name="history_week_label">%1$s</string>
     <string name="history_disabled">价格历史已在设置中关闭。</string>
     <string name="history_fuel_product_label">燃油产品</string>
@@ -115,11 +160,15 @@
     <!-- UC-007 Stations -->
     <string name="stations_title">加油站</string>
     <string name="stations_sort_by_price">按价格排序（从低到高）</string>
+    <string name="stations_tap_to_navigate_hint">点击加油站即可在 Google 地图中打开。</string>
     <string name="stations_download_prompt">此设备上尚无加油站级别价格。下载本周 ANP 加油站文件以按站点比较价格。</string>
     <string name="stations_download_action">下载加油站价格</string>
     <string name="stations_empty">所选城市本周没有加油站报告此燃油价格。</string>
     <string name="stations_brand_label">品牌：%1$s</string>
     <string name="stations_collected_at_label">采集时间：%1$s</string>
+    <string name="stations_navigate_action">导航</string>
+    <string name="stations_navigate_no_app">未找到可打开路线的地图应用。</string>
+    <string name="a11y_station_navigate">导航至 %1$s</string>
     <string name="prices_view_stations">查看加油站价格</string>
 
     <!-- FuelProduct labels -->
@@ -215,6 +264,8 @@
 
     <!-- Accessibility (Phase 9.3) -->
     <string name="a11y_loading">正在加载内容</string>
+    <string name="a11y_tank_fill_cost_placeholder">添加车辆以跟踪满箱费用</string>
+    <string name="a11y_tank_fill_cost_card">%1$s，满箱费用 %2$s</string>
     <string name="a11y_fuel_price_card">%1$s，平均价格 %2$s</string>
     <string name="a11y_station_price_row">%1$s，价格 %2$s</string>
     <string name="a11y_price_trend_chart">价格趋势图</string>

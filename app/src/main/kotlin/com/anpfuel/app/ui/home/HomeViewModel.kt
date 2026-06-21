@@ -9,7 +9,11 @@ import com.anpfuel.application.usecase.network.ObserveNetworkConnectivityUseCase
 import com.anpfuel.application.usecase.price.GetMunicipalityPricesUseCase
 import com.anpfuel.application.usecase.readiness.GetDataReadinessUseCase
 import com.anpfuel.application.usecase.sync.SyncPriceTablesUseCase
+import com.anpfuel.application.usecase.vehicle.GetTankFillCostEstimatesUseCase
+import com.anpfuel.application.usecase.vehicle.ListVehiclesUseCase
+import com.anpfuel.app.mapper.TankFillCostUiMapper
 import com.anpfuel.app.ui.model.AveragePriceUiModel
+import com.anpfuel.app.ui.model.TankFillCostEstimateUiModel
 import com.anpfuel.domain.event.SyncRequestSource
 import com.anpfuel.domain.exception.DomainException
 import com.anpfuel.domain.state.DataReadinessState
@@ -34,6 +38,7 @@ data class HomeUiState(
     val state: BrazilianState? = null,
     val surveyWeek: SurveyWeek? = null,
     val prices: List<AveragePriceUiModel> = emptyList(),
+    val tankFillCostEstimates: List<TankFillCostEstimateUiModel> = emptyList(),
     val hasLocation: Boolean = false,
     val hasCachedData: Boolean = false,
     val isEmptyMunicipality: Boolean = false,
@@ -49,11 +54,15 @@ class HomeViewModel @Inject constructor(
     private val getMunicipalityPricesUseCase: GetMunicipalityPricesUseCase,
     private val selectLocationUseCase: SelectLocationUseCase,
     private val syncPriceTablesUseCase: SyncPriceTablesUseCase,
+    private val listVehiclesUseCase: ListVehiclesUseCase,
+    private val getTankFillCostEstimatesUseCase: GetTankFillCostEstimatesUseCase,
     observeNetworkConnectivityUseCase: ObserveNetworkConnectivityUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+
+    private var hasPresentedContent = false
 
     init {
         viewModelScope.launch {
@@ -63,12 +72,18 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun load(locale: Locale) {
+    fun load(locale: Locale, showLoadingIndicator: Boolean = false) {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null, errorMessage = null) }
+            val showLoading = showLoadingIndicator || !hasPresentedContent
+            if (showLoading) {
+                _uiState.update { it.copy(isLoading = true, error = null, errorMessage = null) }
+            } else {
+                _uiState.update { it.copy(error = null, errorMessage = null) }
+            }
             runCatching {
                 val readinessResult = getDataReadinessUseCase()
                 val preferred = selectLocationUseCase.getPreferredLocation()
+                val vehicles = listVehiclesUseCase()
 
                 if (preferred == null || !readinessResult.hasCachedData) {
                     _uiState.update {
@@ -81,18 +96,32 @@ class HomeViewModel @Inject constructor(
                             state = preferred?.state,
                             surveyWeek = readinessResult.latestSurveyWeek,
                             prices = emptyList(),
+                            tankFillCostEstimates = emptyList(),
                             isEmptyMunicipality = false,
                             dataAvailability = null,
                             operationalNote = null,
                         )
                     }
+                    hasPresentedContent = true
                     return@launch
                 }
 
                 val pricesResult = getMunicipalityPricesUseCase()
+                val tankFillResult = getTankFillCostEstimatesUseCase(
+                    vehicles = vehicles,
+                    state = pricesResult.state,
+                    municipality = pricesResult.municipality,
+                    surveyWeek = pricesResult.surveyWeek,
+                )
                 val uiPrices = com.anpfuel.app.mapper.AveragePriceUiMapper.toUiModels(
                     prices = pricesResult.prices,
                     locale = locale,
+                )
+                val uiTankFillEstimates = TankFillCostUiMapper.toUiModels(
+                    items = tankFillResult.items,
+                    locale = locale,
+                    state = tankFillResult.state,
+                    municipality = tankFillResult.municipality,
                 )
 
                 _uiState.update {
@@ -105,11 +134,13 @@ class HomeViewModel @Inject constructor(
                         state = pricesResult.state,
                         surveyWeek = pricesResult.surveyWeek,
                         prices = uiPrices,
+                        tankFillCostEstimates = uiTankFillEstimates,
                         isEmptyMunicipality = pricesResult.isEmpty,
                         dataAvailability = pricesResult.dataAvailability,
                         operationalNote = pricesResult.operationalNote,
                     )
                 }
+                hasPresentedContent = true
             }.onFailure { error ->
                 val appError = AppErrorResolver.fromThrowable(error)
                 _uiState.update {
@@ -119,6 +150,7 @@ class HomeViewModel @Inject constructor(
                         errorMessage = error.message ?: error.javaClass.simpleName,
                     )
                 }
+                hasPresentedContent = true
             }
         }
     }

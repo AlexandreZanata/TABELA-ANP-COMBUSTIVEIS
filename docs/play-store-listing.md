@@ -1,6 +1,6 @@
 # Play Store Listing Draft
 
-> **Status:** Draft for v1.0.0  
+> **Status:** Draft for v3.0.0  
 > **Distribution:** Sideload via [GitHub Releases](https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/releases) is the primary path until Play Console submission.  
 > **Product contract:** [user-business-logic.md](user-business-logic.md) · **Privacy:** [privacy-policy.md](privacy-policy.md)
 
@@ -25,8 +25,10 @@
 
 | Question | Answer |
 |----------|--------|
-| Collects or shares user data? | **No** |
-| Data encrypted in transit? | **Yes** (HTTPS to gov.br only) |
+| Collects or shares user data? | **No** — vehicle names are user-entered labels stored on device only |
+| Optional location used? | **Yes, one-shot** — only if user taps Use my location; coordinates not stored |
+| Local notifications? | **Optional** — price drop alerts generated on device after sync |
+| Data encrypted in transit? | **Yes** (HTTPS to gov.br and Nominatim when used) |
 | Users can request data deletion? | **N/A** — no account; clear cache in Settings (UC-008) |
 | Independent security review? | **No** |
 
@@ -53,9 +55,12 @@ Browse official Brazilian fuel prices from ANP (National Agency of Petroleum, Na
 
 **Features**
 • Average gasoline, ethanol, and diesel prices by municipality
+• **Tank fill cost** — register vehicles and see estimated full-tank price for your city
+• **Price drop alerts** — optional local notifications when your tracked fuel price falls week over week
 • Search any Brazilian city with autocomplete
 • Works offline after the first sync
-• Optional per-station prices (CNPJ, brand, address)
+• Optional per-station prices (CNPJ, brand, address) with **Navigate** to Maps/Waze
+• Optional **Use my location** during onboarding to detect your city (coordinates not stored)
 • Price history trends for your selected city
 • English and Brazilian Portuguese UI
 • No account, no ads, no backend — 100% on-device
@@ -99,9 +104,12 @@ Consulte preços oficiais de combustíveis da ANP (Agência Nacional do Petróle
 
 **Recursos**
 • Médias de gasolina, etanol e diesel por município
+• **Custo do tanque** — cadastre veículos e veja o preço estimado de encher o tanque na sua cidade
+• **Alertas de queda de preço** — notificações locais opcionais quando o combustível acompanhado cair entre semanas
 • Busca de cidades brasileiras com autocompletar
 • Funciona offline após a primeira sincronização
-• Preços por posto (CNPJ, bandeira, endereço), sob demanda
+• Preços por posto (CNPJ, bandeira, endereço) com botão **Ir** para Maps/Waze
+• **Usar minha localização** opcional no onboarding para detectar sua cidade (coordenadas não armazenadas)
 • Histórico de preços da cidade selecionada
 • Interface em português (Brasil) e inglês
 • Sem conta, sem anúncios, sem servidor — 100% no aparelho
@@ -148,9 +156,11 @@ Nenhum dado pessoal coletado. Política de privacidade no repositório.
 Suggested screenshot captions (pt-BR primary market):
 
 1. Home — médias da semana na sua cidade
-2. Busca — encontre qualquer município
-3. Detalhe — compare combustíveis e histórico
-4. Offline — dados em cache sem internet
+2. Home — custo do tanque com veículo cadastrado
+3. Veículos — cadastro e alerta de queda de preço
+4. Postos — botão Ir para Maps/Waze
+5. Busca — encontre qualquer município
+6. Offline — dados em cache sem internet
 
 ---
 

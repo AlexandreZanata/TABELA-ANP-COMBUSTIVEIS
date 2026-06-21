@@ -8,11 +8,13 @@ import com.anpfuel.application.usecase.location.SelectLocationUseCase
 import com.anpfuel.application.usecase.network.ObserveNetworkConnectivityUseCase
 import com.anpfuel.application.usecase.price.GetStationPricesUseCase
 import com.anpfuel.application.usecase.price.StationPricesOutcome
+import com.anpfuel.application.usecase.station.BuildStationNavigationQueryUseCase
 import com.anpfuel.application.usecase.sync.DownloadStationDetailUseCase
 import com.anpfuel.app.mapper.StationPriceUiMapper
 import com.anpfuel.app.ui.model.StationPriceUiModel
 import com.anpfuel.domain.event.SyncJobOutcome
 import com.anpfuel.domain.valueobject.BrazilianState
+import com.anpfuel.domain.model.RetailStation
 import com.anpfuel.domain.valueobject.FuelProduct
 import com.anpfuel.domain.valueobject.SurveyWeek
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,6 +25,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 data class StationsUiState(
@@ -41,9 +46,14 @@ data class StationsUiState(
     val errorMessage: String? = null,
 )
 
+sealed interface StationsNavigationEffect {
+    data class LaunchMaps(val navigationQuery: String) : StationsNavigationEffect
+}
+
 @HiltViewModel
 class StationsViewModel @Inject constructor(
     private val getStationPricesUseCase: GetStationPricesUseCase,
+    private val buildStationNavigationQueryUseCase: BuildStationNavigationQueryUseCase,
     private val downloadStationDetailUseCase: DownloadStationDetailUseCase,
     private val selectLocationUseCase: SelectLocationUseCase,
     observeNetworkConnectivityUseCase: ObserveNetworkConnectivityUseCase,
@@ -58,6 +68,11 @@ class StationsViewModel @Inject constructor(
         ),
     )
     val uiState: StateFlow<StationsUiState> = _uiState.asStateFlow()
+
+    private val _navigationEffects = MutableSharedFlow<StationsNavigationEffect>(extraBufferCapacity = 1)
+    val navigationEffects: SharedFlow<StationsNavigationEffect> = _navigationEffects.asSharedFlow()
+
+    private val stationByCnpj = mutableMapOf<String, RetailStation>()
 
     init {
         viewModelScope.launch {
@@ -77,6 +92,17 @@ class StationsViewModel @Inject constructor(
         }
         _uiState.update { it.copy(selectedFuelProduct = fuelProduct) }
         loadForFuel(fuelProduct, locale)
+    }
+
+    fun onNavigateToStation(cnpjDigits: String) {
+        val station = stationByCnpj[cnpjDigits] ?: return
+
+        viewModelScope.launch {
+            val result = buildStationNavigationQueryUseCase(station)
+            _navigationEffects.emit(
+                StationsNavigationEffect.LaunchMaps(result.navigationQuery),
+            )
+        }
     }
 
     fun downloadStationDetail(locale: Locale) {
@@ -166,6 +192,10 @@ class StationsViewModel @Inject constructor(
                     }
 
                     is StationPricesOutcome.Success -> {
+                        stationByCnpj.clear()
+                        outcome.stations.forEach { stationPrice ->
+                            stationByCnpj[stationPrice.station.cnpj.digits] = stationPrice.station
+                        }
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
@@ -176,6 +206,8 @@ class StationsViewModel @Inject constructor(
                                 stations = StationPriceUiMapper.toUiModels(
                                     stations = outcome.stations,
                                     locale = locale,
+                                    preferredState = outcome.state,
+                                    preferredMunicipality = outcome.municipality,
                                 ),
                                 showEmpty = outcome.isEmpty,
                             )

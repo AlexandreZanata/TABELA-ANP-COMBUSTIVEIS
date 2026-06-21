@@ -1,5 +1,6 @@
 package com.anpfuel.app.ui.stations
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -21,6 +22,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,11 +31,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anpfuel.app.R
 import com.anpfuel.app.mapper.AppErrorMapper
+import com.anpfuel.app.navigation.MapAppChooser
+import com.anpfuel.app.navigation.MapNavigationResult
 import com.anpfuel.app.mapper.FuelProductI18n
 import com.anpfuel.app.ui.components.AnpAttributionFooter
 import com.anpfuel.app.ui.components.EmptyState
 import com.anpfuel.app.ui.components.ErrorState
 import com.anpfuel.app.ui.components.FuelProductIcon
+import com.anpfuel.app.ui.components.StationsNavigateHintBanner
 import com.anpfuel.app.ui.components.FuelProductLabel
 import com.anpfuel.app.ui.components.LoadingState
 import com.anpfuel.app.ui.components.OfflineBanner
@@ -51,6 +56,26 @@ fun StationsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val locale = LocalConfiguration.current.locales[0]
+    val context = LocalContext.current
+
+    LaunchedEffect(viewModel) {
+        viewModel.navigationEffects.collect { effect ->
+            when (effect) {
+                is StationsNavigationEffect.LaunchMaps -> {
+                    when (MapAppChooser.openNavigation(context, effect.navigationQuery)) {
+                        MapNavigationResult.NoAppFound -> {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.stations_navigate_no_app),
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                        }
+                        MapNavigationResult.Launched -> Unit
+                    }
+                }
+            }
+        }
+    }
 
     LaunchedEffect(locale) {
         viewModel.load(locale)
@@ -62,6 +87,7 @@ fun StationsScreen(
         onDownloadStationDetail = { viewModel.downloadStationDetail(locale) },
         onRetry = { viewModel.load(locale) },
         onWeekChanged = { viewModel.load(locale) },
+        onNavigateToStation = viewModel::onNavigateToStation,
         modifier = modifier,
     )
 }
@@ -74,6 +100,7 @@ private fun StationsContent(
     onDownloadStationDetail: () -> Unit,
     onRetry: () -> Unit,
     onWeekChanged: () -> Unit,
+    onNavigateToStation: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     AnpScaffold(
@@ -219,8 +246,14 @@ private fun StationsContent(
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
+                    StationsNavigateHintBanner(
+                        modifier = Modifier.padding(top = 4.dp, bottom = 8.dp),
+                    )
                     uiState.stations.forEach { station ->
-                        StationPriceRow(station = station)
+                        StationPriceRow(
+                            station = station,
+                            onNavigate = { onNavigateToStation(station.cnpjDigits) },
+                        )
                     }
                 }
             }
@@ -239,11 +272,13 @@ private fun StationsScreenPreview() {
                 state = BrazilianState.PARANA,
                 stations = listOf(
                     StationPriceUiModel(
+                        cnpjDigits = "12345678000195",
                         displayName = "Posto Centro",
                         brand = "BR",
                         address = "Rua XV de Novembro, 1000",
                         priceFormatted = "R$ 5,79",
                         collectedAtLabel = "Jun 10, 2026",
+                        navigationQuery = "Rua XV de Novembro, 1000, Curitiba - PR, Brazil",
                     ),
                 ),
             ),
@@ -251,6 +286,7 @@ private fun StationsScreenPreview() {
             onDownloadStationDetail = {},
             onRetry = {},
             onWeekChanged = {},
+            onNavigateToStation = {},
         )
     }
 }

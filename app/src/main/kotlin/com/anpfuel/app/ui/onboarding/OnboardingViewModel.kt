@@ -4,6 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anpfuel.app.ui.weekpicker.WeekPickerSelectionPolicy
 import com.anpfuel.application.error.AppError
+import com.anpfuel.application.usecase.location.ResolveDeviceLocationOutcome
+import com.anpfuel.app.location.LocationPermissionHandler
+import com.anpfuel.application.usecase.location.ResolveDeviceLocationUseCase
+import com.anpfuel.application.usecase.onboarding.CompleteLocationPromptUseCase
 import com.anpfuel.application.usecase.onboarding.CompleteOnboardingResult
 import com.anpfuel.application.usecase.onboarding.CompleteOnboardingUseCase
 import com.anpfuel.application.usecase.onboarding.OnboardingSelectWeekAndSyncResult
@@ -12,6 +16,7 @@ import com.anpfuel.application.usecase.sync.DiscoverSurveyWeekCatalogOutcome
 import com.anpfuel.application.usecase.sync.DiscoverSurveyWeekCatalogUseCase
 import com.anpfuel.domain.model.SurveyWeekCatalogEntry
 import com.anpfuel.domain.repository.UserPreferencesRepository
+import com.anpfuel.domain.valueobject.DeviceLocation
 import com.anpfuel.domain.valueobject.SurveyWeekSelectionMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -28,6 +33,7 @@ enum class OnboardingStep {
     INTRO,
     WEEK_PICKER,
     SYNCING,
+    LOCATION_PROMPT,
 }
 
 data class OnboardingUiState(
@@ -41,6 +47,7 @@ data class OnboardingUiState(
     val pendingWeekSelection: SurveyWeekCatalogEntry? = null,
     val pendingSelectionMode: SurveyWeekSelectionMode? = null,
     val pendingConfirmation: SurveyWeekCatalogEntry? = null,
+    val isResolvingLocation: Boolean = false,
 ) {
     val isOnLastPage: Boolean
         get() = pageIndex == pageCount - 1
@@ -56,6 +63,9 @@ class OnboardingViewModel @Inject constructor(
     private val discoverSurveyWeekCatalogUseCase: DiscoverSurveyWeekCatalogUseCase,
     private val onboardingSelectWeekAndSyncUseCase: OnboardingSelectWeekAndSyncUseCase,
     private val completeOnboardingUseCase: CompleteOnboardingUseCase,
+    private val completeLocationPromptUseCase: CompleteLocationPromptUseCase,
+    private val resolveDeviceLocationUseCase: ResolveDeviceLocationUseCase,
+    private val locationPermissionHandler: LocationPermissionHandler,
     private val userPreferencesRepository: UserPreferencesRepository,
 ) : ViewModel() {
 
@@ -64,6 +74,9 @@ class OnboardingViewModel @Inject constructor(
 
     private val _navigation = MutableSharedFlow<OnboardingNavigation>(extraBufferCapacity = 1)
     val navigation: SharedFlow<OnboardingNavigation> = _navigation.asSharedFlow()
+
+    private val _locationPermissionRequest = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    val locationPermissionRequest: SharedFlow<Unit> = _locationPermissionRequest.asSharedFlow()
 
     fun onNextPage() {
         _uiState.update { state ->
@@ -204,6 +217,78 @@ class OnboardingViewModel @Inject constructor(
         }
     }
 
+    fun onChooseManualLocation() {
+        viewModelScope.launch {
+            completeLocationPromptUseCase()
+            _navigation.emit(OnboardingNavigation.ToLocation)
+        }
+    }
+
+    fun onUseDeviceLocationClick() {
+        if (_uiState.value.isResolvingLocation) {
+            return
+        }
+
+        if (locationPermissionHandler.hasLocationPermission()) {
+            onResolveDeviceLocation(locationPermissionHandler.getLastKnownLocation())
+        } else {
+            viewModelScope.launch {
+                _locationPermissionRequest.emit(Unit)
+            }
+        }
+    }
+
+    fun onLocationPermissionGranted() {
+        onResolveDeviceLocation(locationPermissionHandler.getLastKnownLocation())
+    }
+
+    fun onLocationPermissionDenied() {
+        viewModelScope.launch {
+            completeLocationPromptUseCase()
+            _navigation.emit(OnboardingNavigation.ToLocation)
+        }
+    }
+
+    fun onResolveDeviceLocation(location: DeviceLocation?) {
+        if (_uiState.value.isResolvingLocation) {
+            return
+        }
+
+        if (location == null) {
+            viewModelScope.launch {
+                completeLocationPromptUseCase()
+                _navigation.emit(OnboardingNavigation.ToLocation)
+            }
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    isResolvingLocation = true,
+                )
+            }
+
+            when (resolveDeviceLocationUseCase(location)) {
+                is ResolveDeviceLocationOutcome.Success -> {
+                    completeLocationPromptUseCase()
+                    _uiState.update { it.copy(isResolvingLocation = false) }
+                    _navigation.emit(OnboardingNavigation.ToHome)
+                }
+
+                ResolveDeviceLocationOutcome.MunicipalityNotInCatalog,
+                ResolveDeviceLocationOutcome.RateLimited,
+                ResolveDeviceLocationOutcome.NetworkError,
+                ResolveDeviceLocationOutcome.InvalidGeocodeResponse,
+                -> {
+                    completeLocationPromptUseCase()
+                    _uiState.update { it.copy(isResolvingLocation = false) }
+                    _navigation.emit(OnboardingNavigation.ToLocation)
+                }
+            }
+        }
+    }
+
     private fun selectWeekAndSync(
         entry: SurveyWeekCatalogEntry,
         selectionMode: SurveyWeekSelectionMode,
@@ -267,14 +352,28 @@ class OnboardingViewModel @Inject constructor(
     }
 
     private suspend fun navigateAfterCompletion() {
-        _uiState.update { it.copy(step = OnboardingStep.SYNCING, error = null) }
         val preferences = userPreferencesRepository.getPreferences()
-        val destination = if (preferences.preferredMunicipality.isNullOrBlank()) {
-            OnboardingNavigation.ToLocation
-        } else {
-            OnboardingNavigation.ToHome
+        when {
+            !preferences.preferredMunicipality.isNullOrBlank() -> {
+                _uiState.update { it.copy(step = OnboardingStep.SYNCING, error = null) }
+                _navigation.emit(OnboardingNavigation.ToHome)
+            }
+
+            preferences.locationPromptCompleted -> {
+                _uiState.update { it.copy(step = OnboardingStep.SYNCING, error = null) }
+                _navigation.emit(OnboardingNavigation.ToLocation)
+            }
+
+            else -> {
+                _uiState.update {
+                    it.copy(
+                        step = OnboardingStep.LOCATION_PROMPT,
+                        error = null,
+                        isResolvingLocation = false,
+                    )
+                }
+            }
         }
-        _navigation.emit(destination)
     }
 
     companion object {

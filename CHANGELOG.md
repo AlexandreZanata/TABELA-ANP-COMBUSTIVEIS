@@ -4,6 +4,25 @@ All notable changes to this project are documented in this file.
 
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [3.0.0] - 2026-06-21
+
+### Added
+
+- **Vehicle profiles (UC-010)** — register up to 3 vehicles with tank capacity, fuel type, and price reference (cheapest station or specific CNPJ)
+- **Tank fill cost on Home (UC-011)** — estimated full-tank cost per vehicle using active survey week prices
+- **Optional device location (UC-012)** — one-shot GPS + Nominatim reverse geocode during onboarding; coordinates not stored (BR-021)
+- **Station navigation (UC-013)** — open Maps/Waze from station list with normalized address query (BR-026)
+- **Local price drop alerts (UC-014)** — on-device notifications after weekly import when tracked price falls vs previous week (BR-025)
+- `NotificationPermissionHandler`, `PriceDropEvaluationWorker`, and notification channel for UC-014
+- Database migration v3 → v4: `vehicle` table
+
+### Changed
+
+- Onboarding may show optional location prompt after first sync (UC-002 extended)
+- Settings links to system notification settings when alerts are enabled but permission is denied
+- App version **3.0.0** (versionCode 3)
+- Privacy policy updated for optional location, Nominatim, vehicles, and local notifications
+
 ## [2.0.0] - 2026-06-19
 
 ### Added
@@ -35,5 +54,6 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Offline-first sync with WorkManager
 - i18n: English (default) and Brazilian Portuguese
 
+[3.0.0]: https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/compare/v2.0.0...v3.0.0
 [2.0.0]: https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/releases/tag/v1.0.0

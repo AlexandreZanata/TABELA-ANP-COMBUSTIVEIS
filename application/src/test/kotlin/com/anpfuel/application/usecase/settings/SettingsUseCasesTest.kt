@@ -122,6 +122,7 @@ class SettingsUseCasesTest {
 
         assertEquals(CacheClearScope.ALL, result.scope)
         assertFalse(savedPreferences.captured.onboardingCompleted)
+        assertFalse(savedPreferences.captured.locationPromptCompleted)
         assertEquals(null, savedPreferences.captured.preferredState)
         assertEquals(null, savedPreferences.captured.preferredMunicipality)
         coVerify(exactly = 1) { cacheRepository.clearAllImportedData() }

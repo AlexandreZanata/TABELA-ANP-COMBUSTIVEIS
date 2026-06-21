@@ -12,7 +12,7 @@ Read these documents in order:
 | [docs/architecture.md](docs/architecture.md) | Layer boundaries and module dependencies |
 | [docs/tech-stack.md](docs/tech-stack.md) | Accepted libraries and versions (do not substitute) |
 | [docs/glossary.md](docs/glossary.md) | Domain language and business rules (BR-001 … BR-015) |
-| [docs/use-cases/](docs/use-cases/) | UC-001 … UC-008 — **undocumented flows must not be implemented** |
+| [docs/use-cases/](docs/use-cases/) | UC-001 … UC-014 — **undocumented flows must not be implemented** |
 | [docs/commit-conventions.md](docs/commit-conventions.md) | Commit and PR format |
 
 Agent engineering rules live in [`.cursor/rules/`](.cursor/rules/) and mirror the same constraints.
