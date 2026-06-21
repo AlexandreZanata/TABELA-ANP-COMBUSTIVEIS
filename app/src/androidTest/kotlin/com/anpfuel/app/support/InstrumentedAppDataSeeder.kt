@@ -8,13 +8,18 @@ import com.anpfuel.data.local.AnpFuelDatabase
 import com.anpfuel.data.local.AnpFuelDatabaseMigrations
 import com.anpfuel.data.local.entity.AveragePriceEntity
 import com.anpfuel.data.local.entity.SurveyWeekEntity
+import com.anpfuel.data.mapper.VehicleMapper
 import com.anpfuel.data.local.preferences.SyncStateDataStore
 import com.anpfuel.data.local.preferences.UserPreferencesDataStore
 import com.anpfuel.domain.model.UserPreferences
+import com.anpfuel.domain.model.Vehicle
 import com.anpfuel.domain.state.SyncJobState
 import com.anpfuel.domain.valueobject.BrazilianState
 import com.anpfuel.domain.valueobject.DomainId
+import com.anpfuel.domain.valueobject.FuelProduct
 import com.anpfuel.domain.valueobject.SurveyWeek
+import com.anpfuel.domain.valueobject.TankCapacity
+import com.anpfuel.domain.valueobject.VehiclePriceSource
 import java.io.File
 import kotlinx.coroutines.runBlocking
 
@@ -35,6 +40,11 @@ object InstrumentedAppDataSeeder {
             state = BrazilianState.PARANA,
             surveyWeek = SurveyWeek.fromIsoDates("2026-06-07", "2026-06-13"),
         )
+    }
+
+    suspend fun seedReturningUserHomeStateWithVehicle(context: Context) {
+        seedReturningUserHomeState(context)
+        seedSampleVehicle(context)
     }
 
     suspend fun seedAppendixA2PostSyncState(context: Context) {
@@ -119,6 +129,30 @@ object InstrumentedAppDataSeeder {
         }
 
         SyncStateDataStore(context).writeState(SyncJobState.COMPLETED)
+    }
+
+    private suspend fun seedSampleVehicle(context: Context) {
+        val vehicle = Vehicle.create(
+            displayName = "Gol",
+            tankCapacity = TankCapacity.of(50.0),
+            fuelProduct = FuelProduct.GASOLINE_REGULAR,
+            priceSource = VehiclePriceSource.cheapest(),
+            sortOrder = 0,
+        )
+        val database = Room.databaseBuilder(context, AnpFuelDatabase::class.java, DATABASE_NAME)
+            .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING)
+            .addMigrations(
+                AnpFuelDatabaseMigrations.MIGRATION_1_2,
+                AnpFuelDatabaseMigrations.MIGRATION_2_3,
+                AnpFuelDatabaseMigrations.MIGRATION_3_4,
+            )
+            .allowMainThreadQueries()
+            .build()
+        try {
+            database.vehicleDao().upsert(VehicleMapper.toEntity(vehicle))
+        } finally {
+            database.close()
+        }
     }
 
     fun clearAppStorage(context: Context) {

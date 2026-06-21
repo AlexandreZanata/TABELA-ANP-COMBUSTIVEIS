@@ -260,4 +260,37 @@ class DomainModelCoverageTest {
         assertEquals("Posto Centro", estimate.stationDisplayName)
         assertEquals(estimate, estimate.copy())
     }
+
+    @Test
+    fun reverseGeocodeResultRequiresNonBlankMunicipality() {
+        val result = ReverseGeocodeResult(
+            state = BrazilianState.PARANA,
+            municipality = "Curitiba",
+            displayName = "Curitiba, Paraná, Brazil",
+        )
+
+        assertEquals("Curitiba", result.municipality)
+        assertEquals(result, result.copy())
+        assertThrows(DomainException::class.java) {
+            ReverseGeocodeResult(
+                state = BrazilianState.PARANA,
+                municipality = " ",
+            )
+        }
+    }
+
+    @Test
+    fun priceDropAlertNotificationHoldsVehicleAndFormattedPrice() {
+        val vehicleId = DomainId.generate()
+        val notification = PriceDropAlertNotification(
+            vehicleId = vehicleId,
+            vehicleDisplayName = "Gol",
+            currentPriceFormatted = "R$ 5,40",
+        )
+
+        assertEquals(vehicleId, notification.vehicleId)
+        assertEquals("Gol", notification.vehicleDisplayName)
+        assertEquals(notification, notification.copy())
+        assertNotEquals(notification, notification.copy(vehicleDisplayName = "Onix"))
+    }
 }

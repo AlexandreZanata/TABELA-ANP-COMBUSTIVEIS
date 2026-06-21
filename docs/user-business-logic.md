@@ -194,11 +194,11 @@ Stored on device only. No cloud sync in v1.
 - **Fuel product vector icons** — per-fuel MDI icons with accessible labels (Phase 14)
 - Active week chip on app bars; week picker bottom sheet for returning users
 
-### v3 — Vehicles, geolocation, navigation, alerts (planned)
+### v3 — Vehicles, geolocation, navigation, alerts (shipped v3.0.0)
 
 - **Tank fill cost on home** (UC-011) — per-vehicle estimate below survey week label
 - **Vehicle profiles** (UC-010) — up to 3 vehicles, one `FuelProduct` each
-- **Optional device location** (UC-012) — Nominatim reverse geocode on first launch
+- **Optional device location** (UC-012) — Nominatim reverse geocode after first sync
 - **Station navigation** (UC-013) — open Maps/Waze from station list
 - **Local price drop notifications** (UC-014) — after weekly sync, no backend
 

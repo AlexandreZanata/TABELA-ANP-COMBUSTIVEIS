@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/actions/workflows/ci.yml/badge.svg)](https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Release](https://img.shields.io/badge/release-v2.0.0-blue.svg)](docs/releases/v2.0.0.md)
+[![Release](https://img.shields.io/badge/release-v3.0.0-blue.svg)](docs/releases/v3.0.0.md)
 
 Open-source Android app to browse Brazilian ANP (National Petroleum Agency) weekly fuel price surveys — fully offline-capable, no backend required.
 
@@ -10,6 +10,10 @@ Open-source Android app to browse Brazilian ANP (National Petroleum Agency) week
 
 ## Features
 
+- **Vehicle profiles & tank fill cost** — register up to 3 vehicles; Home shows estimated full-tank price (UC-010, UC-011)
+- **Optional device location** — one-shot GPS + Nominatim reverse geocode after onboarding (UC-012)
+- **Station navigation** — open Maps/Waze from station list (UC-013)
+- **Local price drop alerts** — on-device notifications after weekly sync (UC-014)
 - **Survey week picker** — choose latest or any historical ANP week (gov.br catalog parity)
 - **National city search** — ~5 570 IBGE municipalities with FTS ranking and typo tolerance
 - Automatic download of ANP price tables from [gov.br/anp](https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas)
@@ -39,7 +43,7 @@ Full specification: **[docs/tech-stack.md](docs/tech-stack.md)** · ADR: **[docs
 
 ```
 :app/               # Compose UI, ViewModels, theme, navigation
-:application/       # Use cases (UC-001…UC-009)
+:application/       # Use cases (UC-001…UC-014)
 :domain/            # Entities, Value Objects, rules, events, ports
 :data/              # Room, OkHttp, parser, WorkManager, repositories
 docs/               # Architecture, use cases, glossary
@@ -68,7 +72,7 @@ See [docs/data-sources.md](docs/data-sources.md) for column schemas and download
 |----------|---------|
 | [docs/user-business-logic.md](docs/user-business-logic.md) | **Product contract** — user journeys, states, rules |
 | [docs/use-cases/](docs/use-cases/) | Detailed use cases (UC-001 … UC-014) |
-| [docs/glossary.md](docs/glossary.md) | Domain language + business rules (BR-001 … BR-019) |
+| [docs/glossary.md](docs/glossary.md) | Domain language + business rules (BR-001 … BR-027) |
 | [docs/attribution.md](docs/attribution.md) | Third-party assets (fuel icons) |
 | [CHANGELOG.md](CHANGELOG.md) | Release history |
 | [docs/architecture.md](docs/architecture.md) | Layers, packages, data flow, database |
@@ -82,6 +86,7 @@ See [docs/data-sources.md](docs/data-sources.md) for column schemas and download
 | [docs/privacy-policy.md](docs/privacy-policy.md) | Privacy policy — no personal data collected |
 | [docs/local-build.md](docs/local-build.md) | **Local compile** — debug APK, install, prerequisites |
 | [docs/release-build.md](docs/release-build.md) | Signed release APK/AAB build instructions |
+| [docs/releases/v3.0.0.md](docs/releases/v3.0.0.md) | GitHub Release v3.0.0 draft notes |
 | [docs/releases/v2.0.0.md](docs/releases/v2.0.0.md) | GitHub Release v2.0.0 draft notes |
 | [docs/releases/v1.0.0.md](docs/releases/v1.0.0.md) | GitHub Release v1.0.0 draft notes |
 | [.local/PROJECT_PLAN.md](.local/PROJECT_PLAN.md) | Micro-step execution plan (POCs & gates) |
@@ -112,7 +117,7 @@ Full details: **[docs/local-build.md](docs/local-build.md)**.
 
 ## Releases
 
-**Latest:** [v2.0.0](docs/releases/v2.0.0.md) — week picker, national search, safe areas, fuel icons. Previous: [v1.0.0](docs/releases/v1.0.0.md).
+**Latest:** [v3.0.0](docs/releases/v3.0.0.md) — vehicles, tank fill cost, location, navigation, price alerts. Previous: [v2.0.0](docs/releases/v2.0.0.md), [v1.0.0](docs/releases/v1.0.0.md).
 
 Validate a release locally:
 
