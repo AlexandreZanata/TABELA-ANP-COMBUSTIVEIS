@@ -2,11 +2,13 @@ package com.anpfuel.domain.event
 
 import com.anpfuel.domain.state.SyncJobState
 import com.anpfuel.domain.valueobject.BrazilianState
+import com.anpfuel.domain.valueobject.Cnpj
 import com.anpfuel.domain.valueobject.DomainId
 import com.anpfuel.domain.valueobject.FuelProduct
 import com.anpfuel.domain.valueobject.PriceTableType
 import com.anpfuel.domain.valueobject.SurveyWeek
 import com.anpfuel.domain.valueobject.SurveyWeekSelectionMode
+import com.anpfuel.domain.valueobject.VehiclePriceSource
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -50,6 +52,12 @@ class DomainEventCatalogTest {
                 is PreferencesUpdated -> "PreferencesUpdated"
                 is CacheCleared -> "CacheCleared"
                 is SurveyWeekSelected -> "SurveyWeekSelected"
+                is VehicleRegistered -> "VehicleRegistered"
+                is VehicleUpdated -> "VehicleUpdated"
+                is VehicleRemoved -> "VehicleRemoved"
+                is PriceDropAlertConfigured -> "PriceDropAlertConfigured"
+                is DeviceLocationResolved -> "DeviceLocationResolved"
+                is StationNavigationRequested -> "StationNavigationRequested"
             }
             assertTrue(name in GLOSSARY_EVENT_NAMES)
         }
@@ -166,6 +174,54 @@ class DomainEventCatalogTest {
                 id = id,
                 timestamp = timestamp,
             ),
+            VehicleRegistered.create(
+                payload = VehicleRegistered.Payload(
+                    vehicleId = DomainId.generate(),
+                    displayName = "Gol",
+                    fuelProduct = FuelProduct.GASOLINE_REGULAR,
+                ),
+                id = id,
+                timestamp = timestamp,
+            ),
+            VehicleUpdated.create(
+                payload = VehicleUpdated.Payload(
+                    vehicleId = DomainId.generate(),
+                    displayName = "Gol 1.0",
+                    fuelProduct = FuelProduct.GASOLINE_REGULAR,
+                ),
+                id = id,
+                timestamp = timestamp,
+            ),
+            VehicleRemoved.create(
+                payload = VehicleRemoved.Payload(vehicleId = DomainId.generate()),
+                id = id,
+                timestamp = timestamp,
+            ),
+            PriceDropAlertConfigured.create(
+                payload = PriceDropAlertConfigured.Payload(
+                    vehicleId = DomainId.generate(),
+                    enabled = true,
+                    alertPriceSource = VehiclePriceSource.cheapest(),
+                ),
+                id = id,
+                timestamp = timestamp,
+            ),
+            DeviceLocationResolved.create(
+                payload = DeviceLocationResolved.Payload(
+                    state = BrazilianState.PARANA,
+                    municipality = "CURITIBA",
+                ),
+                id = id,
+                timestamp = timestamp,
+            ),
+            StationNavigationRequested.create(
+                payload = StationNavigationRequested.Payload(
+                    cnpj = Cnpj.parse("12345678000195"),
+                    navigationQuery = "RUA A, CURITIBA - PR, Brazil",
+                ),
+                id = id,
+                timestamp = timestamp,
+            ),
         )
     }
 
@@ -182,6 +238,12 @@ class DomainEventCatalogTest {
         is PreferencesUpdated -> event.payload
         is CacheCleared -> event.payload
         is SurveyWeekSelected -> event.payload
+        is VehicleRegistered -> event.payload
+        is VehicleUpdated -> event.payload
+        is VehicleRemoved -> event.payload
+        is PriceDropAlertConfigured -> event.payload
+        is DeviceLocationResolved -> event.payload
+        is StationNavigationRequested -> event.payload
     }
 
     private companion object {
@@ -198,6 +260,12 @@ class DomainEventCatalogTest {
             "PreferencesUpdated",
             "CacheCleared",
             "SurveyWeekSelected",
+            "VehicleRegistered",
+            "VehicleUpdated",
+            "VehicleRemoved",
+            "PriceDropAlertConfigured",
+            "DeviceLocationResolved",
+            "StationNavigationRequested",
         )
     }
 }

@@ -4,6 +4,8 @@ import com.anpfuel.domain.exception.DomainException
 import com.anpfuel.domain.valueobject.DataAvailability
 import com.anpfuel.domain.valueobject.BrazilianState
 import com.anpfuel.domain.valueobject.Cnpj
+import com.anpfuel.domain.valueobject.TankCapacity
+import com.anpfuel.domain.valueobject.VehiclePriceSource
 import com.anpfuel.domain.valueobject.DomainId
 import com.anpfuel.domain.valueobject.FuelProduct
 import com.anpfuel.domain.valueobject.GeographicScope
@@ -225,5 +227,37 @@ class DomainModelCoverageTest {
         assertFalse(updated.autoSyncOnWifi)
         assertFalse(updated.showPriceHistory)
         assertTrue(updated.onboardingCompleted)
+    }
+
+    @Test
+    fun vehicleCreateTrimsDisplayNameAndStoresTankCapacity() {
+        val vehicle = Vehicle.create(
+            displayName = "  Gol 1.0  ",
+            tankCapacity = TankCapacity.of(50.0),
+            fuelProduct = FuelProduct.GASOLINE_REGULAR,
+            priceSource = VehiclePriceSource.cheapest(),
+        )
+
+        assertEquals("Gol 1.0", vehicle.displayName)
+        assertEquals(TankCapacity.of(50.0), vehicle.tankCapacity)
+    }
+
+    @Test
+    fun tankFillCostEstimateHoldsComputedValues() {
+        val vehicleId = DomainId.generate()
+        val estimate = TankFillCostEstimate(
+            vehicleId = vehicleId,
+            displayName = "Gol",
+            tankCapacity = TankCapacity.of(50.0),
+            fuelProduct = FuelProduct.GASOLINE_REGULAR,
+            unitPrice = PriceAmount.of("5.49"),
+            totalCost = PriceAmount.of("274.50"),
+            unitPriceSource = TankFillCostUnitPriceSource.CHEAPEST_STATION,
+            stationDisplayName = "Posto Centro",
+        )
+
+        assertEquals(vehicleId, estimate.vehicleId)
+        assertEquals("Posto Centro", estimate.stationDisplayName)
+        assertEquals(estimate, estimate.copy())
     }
 }
