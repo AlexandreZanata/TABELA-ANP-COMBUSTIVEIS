@@ -287,6 +287,23 @@ private fun SettingsContent(
                         }
                     }
 
+                    SettingsSection(title = stringResource(R.string.settings_share_section)) {
+                        OutlinedButton(
+                            onClick = {
+                                val sendIntent = Intent().apply {
+                                    action = Intent.ACTION_SEND
+                                    putExtra(Intent.EXTRA_TEXT, context.getString(R.string.settings_share_app_message))
+                                    type = "text/plain"
+                                }
+                                val shareIntent = Intent.createChooser(sendIntent, null)
+                                context.startActivity(shareIntent)
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(text = stringResource(R.string.settings_share_app))
+                        }
+                    }
+
                     SettingsSection(title = stringResource(R.string.settings_clear_cache)) {
                         OutlinedButton(
                             onClick = onClearStationCache,

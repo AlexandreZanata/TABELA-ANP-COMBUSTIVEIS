@@ -78,3 +78,7 @@ uploads/
 # Misc
 *.orig
 *.rej
+
+# GitHub release artifact (never commit)
+*.apk
+Edit.md

@@ -191,6 +191,9 @@
     <string name="location_search_municipality_hint">Buscar município</string>
     <string name="location_search_no_matches">Nenhum resultado encontrado.</string>
     <string name="location_no_data_this_week">Sem dados de preço nesta semana</string>
+    <string name="location_use_current">Usar localização atual</string>
+    <string name="location_resolving_current">Detectando sua cidade…</string>
+    <string name="location_current_failed">Não foi possível detectar sua cidade. Escolha manualmente.</string>
 
     <!-- UC-004 Search -->
     <string name="search_municipality_hint">Buscar município</string>
@@ -262,6 +265,11 @@
     <string name="settings_attribution_section">Fonte dos dados</string>
     <string name="settings_anp_attribution_link">Abrir página oficial da ANP</string>
     <string name="anp_official_url" translatable="false">https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas</string>
+
+    <!-- Compartilhar -->
+    <string name="settings_share_section">Compartilhar</string>
+    <string name="settings_share_app">Compartilhar app</string>
+    <string name="settings_share_app_message">Confira o Preços ANP Combustíveis — preços semanais de combustíveis da ANP, grátis: https://github.com/AlexandreZanata/brazil-fuel-prices-app/releases/latest/download/app-release.apk</string>
 
     <!-- Accessibility (Phase 9.3) -->
     <string name="a11y_loading">Carregando conteúdo</string>

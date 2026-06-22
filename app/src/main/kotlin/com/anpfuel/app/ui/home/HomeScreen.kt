@@ -5,9 +5,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -219,26 +223,10 @@ internal fun HomeContent(
                             onClick = { onNavigate(Routes.VEHICLES) },
                         )
                     } else {
-                        uiState.tankFillCostEstimates.forEach { estimate ->
-                            TankFillCostCard(
-                                estimate = estimate,
-                                onClick = { onNavigate(Routes.VEHICLES) },
-                                onGoToStation = estimate.stationNavigationQuery?.let { query ->
-                                    {
-                                        when (MapAppChooser.openNavigation(context, query)) {
-                                            MapNavigationResult.NoAppFound -> {
-                                                Toast.makeText(
-                                                    context,
-                                                    context.getString(R.string.stations_navigate_no_app),
-                                                    Toast.LENGTH_SHORT,
-                                                ).show()
-                                            }
-                                            MapNavigationResult.Launched -> Unit
-                                        }
-                                    }
-                                },
-                            )
-                        }
+                        VehicleCarousel(
+                            estimates = uiState.tankFillCostEstimates,
+                            onNavigate = onNavigate,
+                        )
                     }
                     uiState.prices.forEach { price ->
                         FuelPriceCard(
@@ -255,6 +243,45 @@ internal fun HomeContent(
                     RowActions(onNavigate = onNavigate)
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun VehicleCarousel(
+    estimates: List<TankFillCostEstimateUiModel>,
+    onNavigate: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val cardWidth = screenWidth * 0.85f
+
+    LazyRow(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        contentPadding = PaddingValues(horizontal = 4.dp),
+    ) {
+        items(estimates, key = { it.vehicleId.value }) { estimate ->
+            TankFillCostCard(
+                estimate = estimate,
+                onClick = { onNavigate(Routes.VEHICLES) },
+                onGoToStation = estimate.stationNavigationQuery?.let { query ->
+                    {
+                        when (MapAppChooser.openNavigation(context, query)) {
+                            MapNavigationResult.NoAppFound -> {
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.stations_navigate_no_app),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
+                            }
+                            MapNavigationResult.Launched -> Unit
+                        }
+                    }
+                },
+                modifier = Modifier.width(cardWidth),
+            )
         }
     }
 }
