@@ -11,6 +11,13 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.ui.res.stringResource
+import com.anpfuel.app.R
+
 /**
  * Top app bar that respects the status bar inset under edge-to-edge.
  * Set [applyStatusBarInsets] to false for full-bleed hero layouts (Phase 13.2).
@@ -20,7 +27,17 @@ import androidx.compose.ui.Modifier
 fun AnpTopAppBar(
     title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
-    navigationIcon: @Composable () -> Unit = {},
+    onNavigateUp: (() -> Unit)? = null,
+    navigationIcon: @Composable () -> Unit = {
+        if (onNavigateUp != null) {
+            IconButton(onClick = onNavigateUp) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = stringResource(R.string.action_back),
+                )
+            }
+        }
+    },
     actions: @Composable RowScope.() -> Unit = {},
     applyStatusBarInsets: Boolean = true,
     colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(),

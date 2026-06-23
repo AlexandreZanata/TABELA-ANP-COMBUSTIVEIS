@@ -309,6 +309,18 @@ private fun PriceMetadata(uiState: HomeUiState) {
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+
+        val currentDate = java.time.LocalDate.now()
+        if (week.endDate.isBefore(currentDate)) {
+            val formatter = java.time.format.DateTimeFormatter.ofLocalizedDate(java.time.format.FormatStyle.SHORT).withLocale(locale)
+            val formattedDate = week.endDate.format(formatter)
+            Text(
+                text = "Tabela de preço desatualizada, os preços podem sofrer alterações, ultima atualização: $formattedDate",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
     }
 }
 
@@ -320,10 +332,6 @@ private fun RowActions(onNavigate: (String) -> Unit) {
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        AssistChip(
-            onClick = { onNavigate(Routes.SEARCH) },
-            label = { Text(text = stringResource(R.string.nav_search)) },
-        )
         AssistChip(
             onClick = { onNavigate(Routes.LOCATION) },
             label = { Text(text = stringResource(R.string.nav_location)) },

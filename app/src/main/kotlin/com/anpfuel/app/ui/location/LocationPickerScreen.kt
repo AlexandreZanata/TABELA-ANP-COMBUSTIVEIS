@@ -55,6 +55,7 @@ import com.anpfuel.domain.valueobject.BrazilianState
 @Composable
 fun LocationPickerScreen(
     onNavigateToHome: () -> Unit,
+    onNavigateBack: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     viewModel: LocationPickerViewModel = hiltViewModel(),
 ) {
@@ -92,6 +93,7 @@ fun LocationPickerScreen(
 
     LocationPickerContent(
         uiState = uiState,
+        onNavigateBack = onNavigateBack,
         onStateSelected = viewModel::onStateSelected,
         onMunicipalitySelected = viewModel::onMunicipalitySelected,
         onBackToStates = viewModel::onBackToStates,
@@ -107,6 +109,7 @@ fun LocationPickerScreen(
 @Composable
 internal fun LocationPickerContent(
     uiState: LocationPickerUiState,
+    onNavigateBack: (() -> Unit)? = null,
     onStateSelected: (BrazilianState) -> Unit,
     onMunicipalitySelected: (String) -> Unit,
     onBackToStates: () -> Unit,
@@ -130,6 +133,13 @@ internal fun LocationPickerContent(
                 navigationIcon = {
                     if (showBackToStates) {
                         IconButton(onClick = onBackToStates) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.action_back),
+                            )
+                        }
+                    } else if (onNavigateBack != null) {
+                        IconButton(onClick = onNavigateBack) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringResource(R.string.action_back),
@@ -412,6 +422,7 @@ private fun LocationPickerStatesPreview() {
                 isLoading = false,
                 states = listOf(BrazilianState.PARANA, BrazilianState.SAO_PAULO),
             ),
+            onNavigateBack = {},
             onStateSelected = {},
             onMunicipalitySelected = {},
             onBackToStates = {},

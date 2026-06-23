@@ -46,6 +46,7 @@ import java.text.NumberFormat
 
 @Composable
 fun SettingsScreen(
+    onNavigateBack: (() -> Unit)? = null,
     onNavigateToOnboarding: () -> Unit,
     onNavigateToWeekPicker: () -> Unit,
     modifier: Modifier = Modifier,
@@ -66,6 +67,7 @@ fun SettingsScreen(
 
     SettingsContent(
         uiState = uiState,
+        onNavigateBack = onNavigateBack,
         onLocaleSelected = viewModel::onLocaleSelected,
         onSyncStationDetailChanged = viewModel::onSyncStationDetailChanged,
         onAutoDownloadLatestWeekChanged = viewModel::onAutoDownloadLatestWeekChanged,
@@ -88,6 +90,7 @@ fun SettingsScreen(
 @Composable
 private fun SettingsContent(
     uiState: SettingsUiState,
+    onNavigateBack: (() -> Unit)? = null,
     onLocaleSelected: (String) -> Unit,
     onSyncStationDetailChanged: (Boolean) -> Unit,
     onAutoDownloadLatestWeekChanged: (Boolean) -> Unit,
@@ -130,6 +133,7 @@ private fun SettingsContent(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             AnpTopAppBar(
+                onNavigateUp = onNavigateBack,
                 title = { Text(text = stringResource(R.string.settings_title)) },
             )
         },
@@ -433,6 +437,7 @@ private fun SettingsScreenPreview() {
                     importedWeekCount = 3,
                 ),
             ),
+            onNavigateBack = {},
             onLocaleSelected = {},
             onSyncStationDetailChanged = {},
             onAutoDownloadLatestWeekChanged = {},

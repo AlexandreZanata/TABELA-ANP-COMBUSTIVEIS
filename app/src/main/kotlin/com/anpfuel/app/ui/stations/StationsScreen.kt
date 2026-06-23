@@ -51,6 +51,7 @@ import com.anpfuel.domain.valueobject.FuelProduct
 
 @Composable
 fun StationsScreen(
+    onNavigateBack: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     viewModel: StationsViewModel = hiltViewModel(),
 ) {
@@ -83,6 +84,7 @@ fun StationsScreen(
 
     StationsContent(
         uiState = uiState,
+        onNavigateBack = onNavigateBack,
         onFuelProductSelected = { fuelProduct -> viewModel.onFuelProductSelected(fuelProduct, locale) },
         onDownloadStationDetail = { viewModel.downloadStationDetail(locale) },
         onRetry = { viewModel.load(locale) },
@@ -96,6 +98,7 @@ fun StationsScreen(
 @Composable
 private fun StationsContent(
     uiState: StationsUiState,
+    onNavigateBack: (() -> Unit)? = null,
     onFuelProductSelected: (FuelProduct) -> Unit,
     onDownloadStationDetail: () -> Unit,
     onRetry: () -> Unit,
@@ -108,6 +111,7 @@ private fun StationsContent(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             AnpTopAppBar(
+                onNavigateUp = onNavigateBack,
                 title = {
                     Text(
                         text = stringResource(R.string.stations_title),
@@ -282,6 +286,7 @@ private fun StationsScreenPreview() {
                     ),
                 ),
             ),
+            onNavigateBack = {},
             onFuelProductSelected = {},
             onDownloadStationDetail = {},
             onRetry = {},

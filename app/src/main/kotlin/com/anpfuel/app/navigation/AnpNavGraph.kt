@@ -83,6 +83,7 @@ fun AnpNavGraph(
         }
         composable(Routes.SEARCH) {
             SearchScreen(
+                onNavigateBack = { navController.popBackStack() },
                 onNavigateToHome = {
                     navController.navigate(Routes.HOME) {
                         popUpTo(Routes.HOME) { inclusive = true }
@@ -96,6 +97,7 @@ fun AnpNavGraph(
         }
         composable(Routes.LOCATION) {
             LocationPickerScreen(
+                onNavigateBack = { navController.popBackStack() },
                 onNavigateToHome = {
                     navController.navigate(Routes.HOME) {
                         popUpTo(Routes.HOME) { inclusive = true }
@@ -105,13 +107,16 @@ fun AnpNavGraph(
             )
         }
         composable(Routes.PRICES) {
-            PricesScreen(onNavigate = navController::navigate)
+            PricesScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigate = navController::navigate
+            )
         }
         composable(Routes.HISTORY) {
-            HistoryScreen()
+            HistoryScreen(onNavigateBack = { navController.popBackStack() })
         }
         composable(Routes.STATIONS) {
-            StationsScreen()
+            StationsScreen(onNavigateBack = { navController.popBackStack() })
         }
         composable(
             route = Routes.STATIONS_WITH_FUEL,
@@ -119,7 +124,7 @@ fun AnpNavGraph(
                 navArgument("fuelProduct") { type = NavType.StringType },
             ),
         ) {
-            StationsScreen()
+            StationsScreen(onNavigateBack = { navController.popBackStack() })
         }
         composable(Routes.VEHICLES) {
             VehicleScreen(
@@ -128,6 +133,7 @@ fun AnpNavGraph(
         }
         composable(Routes.SETTINGS) {
             SettingsScreen(
+                onNavigateBack = { navController.popBackStack() },
                 onNavigateToOnboarding = {
                     navController.navigate(Routes.ONBOARDING) {
                         popUpTo(Routes.HOME) { inclusive = true }

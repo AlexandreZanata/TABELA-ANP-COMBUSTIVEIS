@@ -47,6 +47,7 @@ import com.anpfuel.domain.valueobject.SurveyWeek
 
 @Composable
 fun PricesScreen(
+    onNavigateBack: (() -> Unit)? = null,
     onNavigate: (String) -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: PricesViewModel = hiltViewModel(),
@@ -60,6 +61,7 @@ fun PricesScreen(
 
     PricesContent(
         uiState = uiState,
+        onNavigateBack = onNavigateBack,
         onNavigate = onNavigate,
         onRetry = { viewModel.load(locale) },
         onWeekChanged = { viewModel.load(locale) },
@@ -71,6 +73,7 @@ fun PricesScreen(
 @Composable
 private fun PricesContent(
     uiState: PricesUiState,
+    onNavigateBack: (() -> Unit)? = null,
     onNavigate: (String) -> Unit,
     onRetry: () -> Unit,
     onWeekChanged: () -> Unit,
@@ -81,6 +84,7 @@ private fun PricesContent(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             AnpTopAppBar(
+                onNavigateUp = onNavigateBack,
                 title = { Text(text = stringResource(R.string.prices_title)) },
                 actions = {
                     SurveyWeekChipAction(onWeekChanged = onWeekChanged)
@@ -202,6 +206,7 @@ private fun PricesScreenPreview() {
                 ),
             ),
             onRetry = {},
+            onNavigateBack = {},
             onNavigate = {},
             onWeekChanged = {},
         )
