@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/actions/workflows/ci.yml/badge.svg)](https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Release](https://img.shields.io/badge/release-v3.1.0-blue.svg)](https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/releases/tag/v3.1.0)
+[![Release](https://img.shields.io/badge/release-v3.1.0-blue.svg)](https://github.com/AlexandreZanata/brazil-fuel-prices-app/releases/tag/v3.1.0)
 
 Open-source Android app to browse Brazilian ANP (National Petroleum Agency) weekly fuel price surveys — fully offline-capable, no backend required.
 
@@ -12,8 +12,8 @@ Open-source Android app to browse Brazilian ANP (National Petroleum Agency) week
 
 Install the signed release APK directly from GitHub — lightweight sideload, no Play Store required:
 
-- **[Download v3.1.0 APK](https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/releases/download/v3.1.0/app-release.apk)**
-- **[GitHub Releases](https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/releases)** — release notes and previous versions
+- **[Download v3.1.0 APK](https://github.com/AlexandreZanata/brazil-fuel-prices-app/releases/download/v3.1.0/app-release.apk)**
+- **[GitHub Releases](https://github.com/AlexandreZanata/brazil-fuel-prices-app/releases)** — release notes and previous versions
 
 See [docs/releases/v3.1.0.md](docs/releases/v3.1.0.md) for the full v3.1.0 changelog.
 
@@ -127,7 +127,7 @@ Full details: **[docs/local-build.md](docs/local-build.md)**.
 
 ## Releases
 
-**Latest:** [v3.1.0](https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/releases/tag/v3.1.0) — [APK download](https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/releases/download/v3.1.0/app-release.apk) · [release notes](docs/releases/v3.1.0.md). Previous: [v3.0.0](docs/releases/v3.0.0.md), [v2.0.0](docs/releases/v2.0.0.md), [v1.0.0](docs/releases/v1.0.0.md).
+**Latest:** [v3.1.0](https://github.com/AlexandreZanata/brazil-fuel-prices-app/releases/tag/v3.1.0) — [APK download](https://github.com/AlexandreZanata/brazil-fuel-prices-app/releases/download/v3.1.0/app-release.apk) · [release notes](docs/releases/v3.1.0.md). Previous: [v3.0.0](docs/releases/v3.0.0.md), [v2.0.0](docs/releases/v2.0.0.md), [v1.0.0](docs/releases/v1.0.0.md).
 
 Validate a release locally:
 
