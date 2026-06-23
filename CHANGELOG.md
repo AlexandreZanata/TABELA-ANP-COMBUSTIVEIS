@@ -4,6 +4,29 @@ All notable changes to this project are documented in this file.
 
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [3.1.0] - 2026-06-23
+
+### Added
+
+- **Horizontal vehicle carousel on Home** — swipe between registered vehicles; tank cost card follows selection
+- **Use current location** in location picker — resolves municipality via device GPS (`ResolveDeviceLocationUseCase`)
+- **Share app** in Settings — system share sheet with direct APK download link
+- **Back navigation** on secondary screens (History, Prices, Search, Stations, Settings, Location picker)
+- **Stale price table warning** on Home when the latest survey week end date is before today
+
+### Changed
+
+- Tank cost card layout and station row tap-to-navigate UX (Maps with station name, address, and city — BR-026)
+- System locale detection with pt-BR fallback when device language is unsupported
+- New UI strings localized in all 8 supported locales (en, pt-BR, es, fr, de, ja, ru, zh-CN)
+- App version **3.1.0** (versionCode 4)
+
+### Fixed
+
+- First-launch onboarding sync failure (listing cache, catalog URL reuse, sync lock, auto-retry)
+- Vehicle form specific-station picker — full-width selectable rows instead of squashed filter chips
+- Home no longer reloads when returning from other screens (scroll position preserved)
+
 ## [3.0.0] - 2026-06-21
 
 ### Added
@@ -54,6 +77,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Offline-first sync with WorkManager
 - i18n: English (default) and Brazilian Portuguese
 
+[3.1.0]: https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/compare/v2.0.0...v3.0.0
 [2.0.0]: https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/releases/tag/v1.0.0

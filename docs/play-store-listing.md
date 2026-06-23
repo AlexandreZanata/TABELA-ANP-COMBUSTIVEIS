@@ -1,6 +1,6 @@
 # Play Store Listing Draft
 
-> **Status:** Draft for v3.0.0  
+> **Status:** Draft for v3.1.0  
 > **Distribution:** Sideload via [GitHub Releases](https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/releases) is the primary path until Play Console submission.  
 > **Product contract:** [user-business-logic.md](user-business-logic.md) · **Privacy:** [privacy-policy.md](privacy-policy.md)
 
