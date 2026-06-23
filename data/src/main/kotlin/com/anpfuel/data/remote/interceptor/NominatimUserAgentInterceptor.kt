@@ -20,6 +20,6 @@ class NominatimUserAgentInterceptor(
     companion object {
         const val USER_AGENT_HEADER = "User-Agent"
         const val DEFAULT_USER_AGENT =
-            "AnpFuel/3.0.0 (Android; https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/issues)"
+            "AnpFuel/3.1.0 (Android; https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/issues)"
     }
 }
