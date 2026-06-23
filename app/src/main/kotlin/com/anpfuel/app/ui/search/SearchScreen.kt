@@ -39,6 +39,7 @@ import com.anpfuel.domain.model.MunicipalitySearchResult
 
 @Composable
 fun SearchScreen(
+    onNavigateBack: (() -> Unit)? = null,
     onNavigateToHome: () -> Unit,
     onNavigateToLocationPicker: () -> Unit,
     modifier: Modifier = Modifier,
@@ -57,6 +58,7 @@ fun SearchScreen(
 
     SearchContent(
         uiState = uiState,
+        onNavigateBack = onNavigateBack,
         onQueryChange = viewModel::onQueryChange,
         onResultSelected = viewModel::onResultSelected,
         onBrowseByState = viewModel::onBrowseByState,
@@ -68,6 +70,7 @@ fun SearchScreen(
 @Composable
 internal fun SearchContent(
     uiState: SearchUiState,
+    onNavigateBack: (() -> Unit)? = null,
     onQueryChange: (String) -> Unit,
     onResultSelected: (MunicipalitySearchResult) -> Unit,
     onBrowseByState: () -> Unit,
@@ -78,6 +81,7 @@ internal fun SearchContent(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             AnpTopAppBar(
+                onNavigateUp = onNavigateBack,
                 title = { Text(text = stringResource(R.string.nav_search)) },
             )
         },
@@ -175,6 +179,7 @@ private fun SearchScreenPreview() {
                 query = "CU",
                 showMinCharsHint = true,
             ),
+            onNavigateBack = {},
             onQueryChange = {},
             onResultSelected = {},
             onBrowseByState = {},

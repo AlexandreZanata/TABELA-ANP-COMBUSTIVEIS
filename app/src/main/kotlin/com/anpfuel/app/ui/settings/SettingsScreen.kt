@@ -46,6 +46,7 @@ import java.text.NumberFormat
 
 @Composable
 fun SettingsScreen(
+    onNavigateBack: (() -> Unit)? = null,
     onNavigateToOnboarding: () -> Unit,
     onNavigateToWeekPicker: () -> Unit,
     modifier: Modifier = Modifier,
@@ -66,6 +67,7 @@ fun SettingsScreen(
 
     SettingsContent(
         uiState = uiState,
+        onNavigateBack = onNavigateBack,
         onLocaleSelected = viewModel::onLocaleSelected,
         onSyncStationDetailChanged = viewModel::onSyncStationDetailChanged,
         onAutoDownloadLatestWeekChanged = viewModel::onAutoDownloadLatestWeekChanged,
@@ -88,6 +90,7 @@ fun SettingsScreen(
 @Composable
 private fun SettingsContent(
     uiState: SettingsUiState,
+    onNavigateBack: (() -> Unit)? = null,
     onLocaleSelected: (String) -> Unit,
     onSyncStationDetailChanged: (Boolean) -> Unit,
     onAutoDownloadLatestWeekChanged: (Boolean) -> Unit,
@@ -130,6 +133,7 @@ private fun SettingsContent(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             AnpTopAppBar(
+                onNavigateUp = onNavigateBack,
                 title = { Text(text = stringResource(R.string.settings_title)) },
             )
         },
@@ -287,6 +291,29 @@ private fun SettingsContent(
                         }
                     }
 
+                    SettingsSection(title = stringResource(R.string.settings_share_section)) {
+                        OutlinedButton(
+                            onClick = {
+                                val sendIntent = Intent().apply {
+                                    action = Intent.ACTION_SEND
+                                    putExtra(
+                                        Intent.EXTRA_TEXT,
+                                        context.getString(
+                                            R.string.settings_share_app_message,
+                                            context.getString(R.string.app_release_apk_url),
+                                        ),
+                                    )
+                                    type = "text/plain"
+                                }
+                                val shareIntent = Intent.createChooser(sendIntent, null)
+                                context.startActivity(shareIntent)
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(text = stringResource(R.string.settings_share_app))
+                        }
+                    }
+
                     SettingsSection(title = stringResource(R.string.settings_clear_cache)) {
                         OutlinedButton(
                             onClick = onClearStationCache,
@@ -416,6 +443,7 @@ private fun SettingsScreenPreview() {
                     importedWeekCount = 3,
                 ),
             ),
+            onNavigateBack = {},
             onLocaleSelected = {},
             onSyncStationDetailChanged = {},
             onAutoDownloadLatestWeekChanged = {},

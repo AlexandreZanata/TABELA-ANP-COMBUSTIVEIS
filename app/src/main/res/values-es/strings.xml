@@ -19,6 +19,7 @@
     <string name="home_no_location_message">Aún no se ha seleccionado ninguna ciudad.</string>
     <string name="home_no_location_hint">Busque o explore por estado para ver los precios del combustible.</string>
     <string name="home_view_price_details">Ver detalles completos de precios</string>
+    <string name="home_stale_price_table_message">La tabla de precios puede estar desactualizada; los valores pueden cambiar. Última actualización: %1$s</string>
 
     <string name="home_tank_fill_cost_title">Costo de llenar el tanque</string>
     <string name="home_tank_fill_cost_vehicle_format">%1$s (%2$s L)</string>
@@ -190,6 +191,9 @@
     <string name="location_search_municipality_hint">Buscar municipio</string>
     <string name="location_search_no_matches">No se encontraron coincidencias.</string>
     <string name="location_no_data_this_week">Sin datos de precios esta semana</string>
+    <string name="location_use_current">Usar ubicación actual</string>
+    <string name="location_resolving_current">Detectando su ciudad…</string>
+    <string name="location_current_failed">No se pudo detectar su ciudad. Elija manualmente.</string>
 
     <!-- UC-004 Search -->
     <string name="search_municipality_hint">Buscar municipio</string>
@@ -261,6 +265,11 @@
     <string name="settings_attribution_section">Fuente de datos</string>
     <string name="settings_anp_attribution_link">Abrir página oficial de la ANP</string>
     <string name="anp_official_url" translatable="false">https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas</string>
+
+    <!-- Share -->
+    <string name="settings_share_section">Compartir</string>
+    <string name="settings_share_app">Compartir app</string>
+    <string name="settings_share_app_message">Mira ANP Fuel Prices — precios semanales de combustible de la ANP, gratis: %1$s</string>
 
     <!-- Accessibility (Phase 9.3) -->
     <string name="a11y_loading">Cargando contenido</string>

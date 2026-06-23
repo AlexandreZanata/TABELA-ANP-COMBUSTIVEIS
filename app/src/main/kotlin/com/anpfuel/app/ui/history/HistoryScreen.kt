@@ -48,6 +48,7 @@ import java.math.BigDecimal
 
 @Composable
 fun HistoryScreen(
+    onNavigateBack: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     viewModel: HistoryViewModel = hiltViewModel(),
 ) {
@@ -60,6 +61,7 @@ fun HistoryScreen(
 
     HistoryContent(
         uiState = uiState,
+        onNavigateBack = onNavigateBack,
         onFuelProductSelected = { fuelProduct -> viewModel.onFuelProductSelected(fuelProduct, locale) },
         onRetry = { viewModel.load(locale) },
         onWeekChanged = { viewModel.load(locale) },
@@ -71,6 +73,7 @@ fun HistoryScreen(
 @Composable
 private fun HistoryContent(
     uiState: HistoryUiState,
+    onNavigateBack: (() -> Unit)? = null,
     onFuelProductSelected: (FuelProduct) -> Unit,
     onRetry: () -> Unit,
     onWeekChanged: () -> Unit,
@@ -83,6 +86,7 @@ private fun HistoryContent(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             AnpTopAppBar(
+                onNavigateUp = onNavigateBack,
                 title = {
                     Text(
                         text = stringResource(R.string.history_title),
@@ -221,6 +225,7 @@ private fun HistoryScreenPreview() {
                     ),
                 ),
             ),
+            onNavigateBack = {},
             onFuelProductSelected = {},
             onRetry = {},
             onWeekChanged = {},

@@ -19,6 +19,7 @@
     <string name="home_no_location_message">No city selected yet.</string>
     <string name="home_no_location_hint">Search or browse by state to view fuel prices.</string>
     <string name="home_view_price_details">View full price details</string>
+    <string name="home_stale_price_table_message">Price table may be outdated; values can change. Last update: %1$s</string>
 
     <!-- Tank fill cost / Vehicles (UC-010, UC-011) -->
     <string name="home_tank_fill_cost_title">Tank fill cost</string>
@@ -191,6 +192,9 @@
     <string name="location_search_municipality_hint">Search municipality</string>
     <string name="location_search_no_matches">No matches found.</string>
     <string name="location_no_data_this_week">No price data for this week</string>
+    <string name="location_use_current">Use current location</string>
+    <string name="location_resolving_current">Detecting your city…</string>
+    <string name="location_current_failed">Could not detect your city. Choose manually.</string>
 
     <!-- UC-004 Search -->
     <string name="search_municipality_hint">Search municipality</string>
@@ -262,6 +266,12 @@
     <string name="settings_attribution_section">Data source</string>
     <string name="settings_anp_attribution_link">Open official ANP page</string>
     <string name="anp_official_url" translatable="false">https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas</string>
+
+    <!-- Share -->
+    <string name="settings_share_section">Share</string>
+    <string name="settings_share_app">Share app</string>
+    <string name="settings_share_app_message">Check out ANP Fuel Prices — free weekly fuel prices from ANP: %1$s</string>
+    <string name="app_release_apk_url" translatable="false">https://github.com/AlexandreZanata/TABELA-ANP-COMBUSTIVEIS/releases/latest/download/app-release.apk</string>
 
     <!-- Accessibility (Phase 9.3) -->
     <string name="a11y_loading">Loading content</string>
