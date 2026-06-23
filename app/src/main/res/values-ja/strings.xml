@@ -19,6 +19,7 @@
     <string name="home_no_location_message">都市がまだ選択されていません。</string>
     <string name="home_no_location_hint">検索するか州別に閲覧して燃料価格を表示します。</string>
     <string name="home_view_price_details">価格の詳細を表示</string>
+    <string name="home_stale_price_table_message">価格表が古い可能性があります。価格は変動する場合があります。最終更新: %1$s</string>
 
     <string name="home_tank_fill_cost_title">満タンコスト</string>
     <string name="home_tank_fill_cost_vehicle_format">%1$s（%2$s L）</string>
@@ -190,6 +191,9 @@
     <string name="location_search_municipality_hint">自治体を検索</string>
     <string name="location_search_no_matches">一致するものが見つかりませんでした。</string>
     <string name="location_no_data_this_week">今週の価格データなし</string>
+    <string name="location_use_current">現在地を使用</string>
+    <string name="location_resolving_current">市区町村を検出しています…</string>
+    <string name="location_current_failed">市区町村を検出できませんでした。手動で選択してください。</string>
 
     <!-- UC-004 Search -->
     <string name="search_municipality_hint">自治体を検索</string>
@@ -261,6 +265,11 @@
     <string name="settings_attribution_section">データソース</string>
     <string name="settings_anp_attribution_link">ANP公式ページを開く</string>
     <string name="anp_official_url" translatable="false">https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas</string>
+
+    <!-- Share -->
+    <string name="settings_share_section">共有</string>
+    <string name="settings_share_app">アプリを共有</string>
+    <string name="settings_share_app_message">ANP Fuel Prices をチェック — ANPの週次燃料価格、無料: %1$s</string>
 
     <!-- Accessibility (Phase 9.3) -->
     <string name="a11y_loading">コンテンツを読み込み中</string>

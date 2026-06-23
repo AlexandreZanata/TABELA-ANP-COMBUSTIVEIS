@@ -1,22 +1,30 @@
 package com.anpfuel.app.ui.location
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.MyLocation
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -47,10 +55,33 @@ import com.anpfuel.domain.valueobject.BrazilianState
 @Composable
 fun LocationPickerScreen(
     onNavigateToHome: () -> Unit,
+    onNavigateBack: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     viewModel: LocationPickerViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+    ) { permissions ->
+        val granted = permissions.values.any { it }
+        if (granted) {
+            viewModel.onLocationPermissionGranted()
+        } else {
+            viewModel.onLocationPermissionDenied()
+        }
+    }
+
+    LaunchedEffect(viewModel) {
+        viewModel.locationPermissionRequest.collect {
+            locationPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                ),
+            )
+        }
+    }
 
     LaunchedEffect(viewModel) {
         viewModel.navigation.collect { destination ->
@@ -62,12 +93,14 @@ fun LocationPickerScreen(
 
     LocationPickerContent(
         uiState = uiState,
+        onNavigateBack = onNavigateBack,
         onStateSelected = viewModel::onStateSelected,
         onMunicipalitySelected = viewModel::onMunicipalitySelected,
         onBackToStates = viewModel::onBackToStates,
         onRetry = viewModel::loadStates,
         onStateSearchQueryChange = viewModel::onStateSearchQueryChange,
         onMunicipalitySearchQueryChange = viewModel::onMunicipalitySearchQueryChange,
+        onUseCurrentLocation = viewModel::onUseCurrentLocationClick,
         modifier = modifier,
     )
 }
@@ -76,12 +109,14 @@ fun LocationPickerScreen(
 @Composable
 internal fun LocationPickerContent(
     uiState: LocationPickerUiState,
+    onNavigateBack: (() -> Unit)? = null,
     onStateSelected: (BrazilianState) -> Unit,
     onMunicipalitySelected: (String) -> Unit,
     onBackToStates: () -> Unit,
     onRetry: () -> Unit,
     onStateSearchQueryChange: (String) -> Unit,
     onMunicipalitySearchQueryChange: (String) -> Unit,
+    onUseCurrentLocation: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val step = uiState.step
@@ -98,6 +133,13 @@ internal fun LocationPickerContent(
                 navigationIcon = {
                     if (showBackToStates) {
                         IconButton(onClick = onBackToStates) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.action_back),
+                            )
+                        }
+                    } else if (onNavigateBack != null) {
+                        IconButton(onClick = onNavigateBack) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringResource(R.string.action_back),
@@ -132,8 +174,11 @@ internal fun LocationPickerContent(
                         states = uiState.states,
                         searchQuery = uiState.stateSearchQuery,
                         preferredLocation = uiState.preferredLocation,
+                        isResolvingLocation = uiState.isResolvingLocation,
+                        locationResolveError = uiState.locationResolveError,
                         onStateSelected = onStateSelected,
                         onSearchQueryChange = onStateSearchQueryChange,
+                        onUseCurrentLocation = onUseCurrentLocation,
                     )
                 }
 
@@ -167,8 +212,11 @@ private fun StateListContent(
     states: List<BrazilianState>,
     searchQuery: String,
     preferredLocation: com.anpfuel.application.usecase.location.PreferredLocation?,
+    isResolvingLocation: Boolean,
+    locationResolveError: String?,
     onStateSelected: (BrazilianState) -> Unit,
     onSearchQueryChange: (String) -> Unit,
+    onUseCurrentLocation: () -> Unit,
 ) {
     val stateLabels = states.associateWith { state ->
         stringResource(BrazilianStateI18n.toStringRes(state))
@@ -180,6 +228,37 @@ private fun StateListContent(
     )
 
     Column(modifier = Modifier.fillMaxSize()) {
+        OutlinedButton(
+            onClick = onUseCurrentLocation,
+            enabled = !isResolvingLocation,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+        ) {
+            if (isResolvingLocation) {
+                CircularProgressIndicator(
+                    modifier = Modifier.height(18.dp),
+                    strokeWidth = 2.dp,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = stringResource(R.string.location_resolving_current))
+            } else {
+                Icon(
+                    imageVector = Icons.Default.MyLocation,
+                    contentDescription = null,
+                    modifier = Modifier.padding(end = 8.dp),
+                )
+                Text(text = stringResource(R.string.location_use_current))
+            }
+        }
+        if (locationResolveError != null) {
+            Text(
+                text = stringResource(R.string.location_current_failed),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+            )
+        }
         LocationPickerSearchField(
             value = searchQuery,
             onValueChange = onSearchQueryChange,
@@ -343,12 +422,14 @@ private fun LocationPickerStatesPreview() {
                 isLoading = false,
                 states = listOf(BrazilianState.PARANA, BrazilianState.SAO_PAULO),
             ),
+            onNavigateBack = {},
             onStateSelected = {},
             onMunicipalitySelected = {},
             onBackToStates = {},
             onRetry = {},
             onStateSearchQueryChange = {},
             onMunicipalitySearchQueryChange = {},
+            onUseCurrentLocation = {},
         )
     }
 }

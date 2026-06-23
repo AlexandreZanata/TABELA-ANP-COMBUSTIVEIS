@@ -19,6 +19,7 @@
     <string name="home_no_location_message">Aucune ville sélectionnée pour le moment.</string>
     <string name="home_no_location_hint">Recherchez ou parcourez par État pour voir les prix des carburants.</string>
     <string name="home_view_price_details">Voir les détails complets des prix</string>
+    <string name="home_stale_price_table_message">Le tableau des prix peut être obsolète ; les valeurs peuvent changer. Dernière mise à jour : %1$s</string>
 
     <string name="home_tank_fill_cost_title">Coût du plein</string>
     <string name="home_tank_fill_cost_vehicle_format">%1$s (%2$s L)</string>
@@ -190,6 +191,9 @@
     <string name="location_search_municipality_hint">Rechercher une municipalité</string>
     <string name="location_search_no_matches">Aucune correspondance trouvée.</string>
     <string name="location_no_data_this_week">Aucune donnée de prix cette semaine</string>
+    <string name="location_use_current">Utiliser la position actuelle</string>
+    <string name="location_resolving_current">Détection de votre ville…</string>
+    <string name="location_current_failed">Impossible de détecter votre ville. Choisissez manuellement.</string>
 
     <!-- UC-004 Search -->
     <string name="search_municipality_hint">Rechercher une municipalité</string>
@@ -261,6 +265,11 @@
     <string name="settings_attribution_section">Source des données</string>
     <string name="settings_anp_attribution_link">Ouvrir la page officielle de l\'ANP</string>
     <string name="anp_official_url" translatable="false">https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas</string>
+
+    <!-- Share -->
+    <string name="settings_share_section">Partager</string>
+    <string name="settings_share_app">Partager l\'application</string>
+    <string name="settings_share_app_message">Découvrez ANP Fuel Prices — prix hebdomadaires des carburants de l\'ANP, gratuit : %1$s</string>
 
     <!-- Accessibility (Phase 9.3) -->
     <string name="a11y_loading">Chargement du contenu</string>

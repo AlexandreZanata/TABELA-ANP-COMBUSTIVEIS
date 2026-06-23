@@ -2,10 +2,14 @@ package com.anpfuel.app.ui.location
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.anpfuel.app.location.LocationPermissionHandler
 import com.anpfuel.application.usecase.location.CatalogMunicipalityItem
 import com.anpfuel.application.usecase.location.PreferredLocation
+import com.anpfuel.application.usecase.location.ResolveDeviceLocationOutcome
+import com.anpfuel.application.usecase.location.ResolveDeviceLocationUseCase
 import com.anpfuel.application.usecase.location.SelectLocationUseCase
 import com.anpfuel.domain.valueobject.BrazilianState
+import com.anpfuel.domain.valueobject.DeviceLocation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -31,6 +35,8 @@ data class LocationPickerUiState(
     val municipalitySearchQuery: String = "",
     val preferredLocation: PreferredLocation? = null,
     val isSaving: Boolean = false,
+    val isResolvingLocation: Boolean = false,
+    val locationResolveError: String? = null,
     val errorMessage: String? = null,
 ) {
     val municipalitiesEmpty: Boolean
@@ -44,6 +50,8 @@ sealed interface LocationPickerNavigation {
 @HiltViewModel
 class LocationPickerViewModel @Inject constructor(
     private val selectLocationUseCase: SelectLocationUseCase,
+    private val resolveDeviceLocationUseCase: ResolveDeviceLocationUseCase,
+    private val locationPermissionHandler: LocationPermissionHandler,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LocationPickerUiState())
@@ -51,6 +59,9 @@ class LocationPickerViewModel @Inject constructor(
 
     private val _navigation = MutableSharedFlow<LocationPickerNavigation>(extraBufferCapacity = 1)
     val navigation: SharedFlow<LocationPickerNavigation> = _navigation.asSharedFlow()
+
+    private val _locationPermissionRequest = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    val locationPermissionRequest: SharedFlow<Unit> = _locationPermissionRequest.asSharedFlow()
 
     init {
         loadStates()
@@ -148,6 +159,67 @@ class LocationPickerViewModel @Inject constructor(
                         isSaving = false,
                         errorMessage = error.message ?: error.javaClass.simpleName,
                     )
+                }
+            }
+        }
+    }
+
+    fun onUseCurrentLocationClick() {
+        if (_uiState.value.isResolvingLocation) {
+            return
+        }
+
+        _uiState.update { it.copy(locationResolveError = null) }
+
+        if (locationPermissionHandler.hasLocationPermission()) {
+            resolveDeviceLocation(locationPermissionHandler.getLastKnownLocation())
+        } else {
+            viewModelScope.launch {
+                _locationPermissionRequest.emit(Unit)
+            }
+        }
+    }
+
+    fun onLocationPermissionGranted() {
+        resolveDeviceLocation(locationPermissionHandler.getLastKnownLocation())
+    }
+
+    fun onLocationPermissionDenied() {
+        // Permission denied — user must choose manually
+    }
+
+    private fun resolveDeviceLocation(location: DeviceLocation?) {
+        if (_uiState.value.isResolvingLocation) {
+            return
+        }
+
+        if (location == null) {
+            _uiState.update {
+                it.copy(locationResolveError = "location_current_failed")
+            }
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isResolvingLocation = true, locationResolveError = null) }
+
+            when (resolveDeviceLocationUseCase(location)) {
+                is ResolveDeviceLocationOutcome.Success -> {
+                    _uiState.update { it.copy(isResolvingLocation = false) }
+                    _navigation.emit(LocationPickerNavigation.ToHome)
+                }
+
+                ResolveDeviceLocationOutcome.MunicipalityNotInCatalog,
+                ResolveDeviceLocationOutcome.RateLimited,
+                ResolveDeviceLocationOutcome.NetworkError,
+                ResolveDeviceLocationOutcome.InvalidGeocodeResponse,
+                -> {
+                    _uiState.update {
+                        it.copy(
+                            isResolvingLocation = false,
+                            locationResolveError = "location_current_failed",
+                        )
+                    }
                 }
             }
         }

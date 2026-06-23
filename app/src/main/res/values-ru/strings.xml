@@ -19,6 +19,7 @@
     <string name="home_no_location_message">Город ещё не выбран.</string>
     <string name="home_no_location_hint">Ищите или просматривайте по штату, чтобы увидеть цены на топливо.</string>
     <string name="home_view_price_details">Показать полные сведения о ценах</string>
+    <string name="home_stale_price_table_message">Таблица цен может быть устаревшей; значения могут измениться. Последнее обновление: %1$s</string>
 
     <string name="home_tank_fill_cost_title">Стоимость полного бака</string>
     <string name="home_tank_fill_cost_vehicle_format">%1$s (%2$s л)</string>
@@ -190,6 +191,9 @@
     <string name="location_search_municipality_hint">Поиск муниципалитета</string>
     <string name="location_search_no_matches">Совпадений не найдено.</string>
     <string name="location_no_data_this_week">Нет данных о ценах за эту неделю</string>
+    <string name="location_use_current">Использовать текущее местоположение</string>
+    <string name="location_resolving_current">Определяем ваш город…</string>
+    <string name="location_current_failed">Не удалось определить город. Выберите вручную.</string>
 
     <!-- UC-004 Search -->
     <string name="search_municipality_hint">Поиск муниципалитета</string>
@@ -261,6 +265,11 @@
     <string name="settings_attribution_section">Источник данных</string>
     <string name="settings_anp_attribution_link">Открыть официальную страницу ANP</string>
     <string name="anp_official_url" translatable="false">https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/levantamento-de-precos-de-combustiveis-ultimas-semanas-pesquisadas</string>
+
+    <!-- Share -->
+    <string name="settings_share_section">Поделиться</string>
+    <string name="settings_share_app">Поделиться приложением</string>
+    <string name="settings_share_app_message">Попробуйте ANP Fuel Prices — еженедельные цены на топливо от ANP, бесплатно: %1$s</string>
 
     <!-- Accessibility (Phase 9.3) -->
     <string name="a11y_loading">Загрузка содержимого</string>
